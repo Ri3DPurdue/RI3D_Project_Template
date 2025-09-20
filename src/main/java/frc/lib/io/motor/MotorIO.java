@@ -5,23 +5,25 @@ import static frc.lib.io.motor.Setpoint.Type;
 public abstract class MotorIO {
     private Setpoint currentSetpoint;
     private boolean enabled;
+    private MotorOutputs outputs;
 
     protected MotorIO() {
         currentSetpoint = new Setpoint(Type.Idle, 0);
+        outputs = new MotorOutputs();
         enabled = true;
     }
 
-    public void enable() {
+    public final void enable() {
         enabled = true;
         runSetpoint(currentSetpoint);
     }
 
-    public void disable() {
+    public final void disable() {
         enabled = false;
         runSetpoint(Setpoint.IDLE);
     }
 
-    public void applySetpoint(Setpoint setpoint) {
+    public final void applySetpoint(Setpoint setpoint) {
         if (enabled) {
             currentSetpoint.set(setpoint);
 
@@ -29,9 +31,14 @@ public abstract class MotorIO {
         }
     }
 
-    public Setpoint getCurrentSetpoint() {
+    public final Setpoint getCurrentSetpoint() {
         return currentSetpoint.clone();
     }
 
+    public void periodic() {
+        updateOutputs(outputs);
+    }
+
     protected abstract void runSetpoint(Setpoint setpoint);
+    protected abstract void updateOutputs(MotorOutputs outputs);
 }
