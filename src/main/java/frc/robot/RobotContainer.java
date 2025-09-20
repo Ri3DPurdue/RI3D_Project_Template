@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.lib.Lib;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -34,6 +35,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the trigger bindings
+        Lib.printMessage();
         configureBindings();
     }
 
