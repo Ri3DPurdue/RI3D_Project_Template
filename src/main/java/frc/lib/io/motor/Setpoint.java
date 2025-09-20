@@ -3,7 +3,7 @@ package frc.lib.io.motor;
 public class Setpoint {
     public static enum Type {
         Voltage,
-        Amperage,
+        Current,
         
         Position,
         Velocity,
