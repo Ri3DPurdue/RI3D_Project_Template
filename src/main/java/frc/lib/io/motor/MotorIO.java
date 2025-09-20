@@ -23,17 +23,14 @@ public abstract class MotorIO {
 
     public void applySetpoint(Setpoint setpoint) {
         if (enabled) {
-            currentSetpoint.outputType = setpoint.outputType;
-            currentSetpoint.value = setpoint.value;
+            currentSetpoint.set(setpoint);
 
             runSetpoint(currentSetpoint);
         }
     }
 
     public Setpoint getCurrentSetpoint() {
-        Setpoint setpoint = new Setpoint(currentSetpoint.outputType, currentSetpoint.value);
-
-        return setpoint;
+        return currentSetpoint.clone();
     }
 
     protected abstract void runSetpoint(Setpoint setpoint);
