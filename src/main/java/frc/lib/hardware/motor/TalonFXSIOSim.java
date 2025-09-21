@@ -25,6 +25,7 @@ public class TalonFXSIOSim extends TalonFXSIO {
      */
     public TalonFXSIOSim(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion, SimObject simObject, double conversionFactor) {
         super(canbus, leaderID, followerIds, followerInversion);
+        this.conversionFactor = conversionFactor;
     }
 
     @Override
