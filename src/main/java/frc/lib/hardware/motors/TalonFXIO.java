@@ -18,8 +18,8 @@ public class TalonFXIO extends MotorIO {
     private TalonFX[] motors;
     private PositionVoltage positionRequest;
     private VelocityVoltage velocityRequest;
-    private MotionMagicVoltage motionMagicRequest;
-    private NeutralOut neutralRequest;
+    private MotionMagicVoltage profiledPositionRequest;
+    private NeutralOut idleRequest;
 
     /**
      * Constructs a {@link TalonFXIO}
@@ -41,7 +41,8 @@ public class TalonFXIO extends MotorIO {
         }
         positionRequest = new PositionVoltage(0);
         velocityRequest = new VelocityVoltage(0);
-        motionMagicRequest = new MotionMagicVoltage(0);
+        profiledPositionRequest = new MotionMagicVoltage(0);
+        idleRequest = new NeutralOut();
     }
 
     @Override
@@ -78,7 +79,7 @@ public class TalonFXIO extends MotorIO {
 
     @Override
     protected void setProfiledPosition(double position) {
-        motors[0].setControl(motionMagicRequest.withPosition(position));
+        motors[0].setControl(profiledPositionRequest.withPosition(position));
     }
 
     @Override
@@ -88,6 +89,6 @@ public class TalonFXIO extends MotorIO {
 
     @Override
     protected void setIdle() {
-        motors[0].setControl(neutralRequest);
+        motors[0].setControl(idleRequest);
     }
 }
