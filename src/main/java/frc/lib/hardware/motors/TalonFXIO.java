@@ -1,6 +1,7 @@
 package frc.lib.hardware.motors;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -17,12 +18,16 @@ public class TalonFXIO extends MotorIO {
     private MotionMagicVoltage motionMagicRequest;
     private NeutralOut neutralRequest;
 
-    public TalonFXIO(CANBus canbus, int leaderID, int... followerIds) {
+    public TalonFXIO(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion) {
         super(followerIds.length);
+        if (followerIds.length != followerInversion.length) {
+            throw new IllegalArgumentException("Number of followers and followerInversion length must be equal");
+        }
         motors = new TalonFX[followerIds.length + 1];
         motors[0] = new TalonFX(leaderID, canbus);
         for (int i = 1; i < followerIds.length + 1; i++) {
             motors[i] = new TalonFX(followerIds[i], canbus);
+            motors[i].setControl(new Follower(leaderID, followerInversion[i]));
         }
         positionRequest = new PositionVoltage(0);
         velocityRequest = new VelocityVoltage(0);
