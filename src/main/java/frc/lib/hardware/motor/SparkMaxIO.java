@@ -19,7 +19,7 @@ public class SparkMaxIO extends MotorIO {
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
      */
-    private static class Exploded {
+    protected static class Exploded {
         public final SparkMax motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
