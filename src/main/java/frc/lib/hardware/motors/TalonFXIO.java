@@ -11,6 +11,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
+/**
+ * A class that represents a {@link TalonFX}
+ */
 public class TalonFXIO extends MotorIO {
     private TalonFX[] motors;
     private PositionVoltage positionRequest;
@@ -18,6 +21,13 @@ public class TalonFXIO extends MotorIO {
     private MotionMagicVoltage motionMagicRequest;
     private NeutralOut neutralRequest;
 
+    /**
+     * Constructs a {@link TalonFXIO}
+     * @param canbus The canbus the motor's and its followers are on
+     * @param leaderID The can ID of the leader motor
+     * @param followerIds The canID of the follower motors
+     * @param followerInversion Whether each follower is inverted with respect to the leader or not
+     */
     public TalonFXIO(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion) {
         super(followerIds.length);
         if (followerIds.length != followerInversion.length) {
