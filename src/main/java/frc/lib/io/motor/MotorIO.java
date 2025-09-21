@@ -7,7 +7,16 @@ public abstract class MotorIO {
     private boolean enabled;
     private MotorOutputs[] outputs;
 
+    /**
+     * Sets up the internal state for a MotorIO
+     * @throws IllegalArgumentException If numFollowers is less than 0
+     * @param numFollowers
+     */
     protected MotorIO(int numFollowers) {
+        if (numFollowers < 0) {
+            throw new IllegalArgumentException("Number of followers must be non-negative");
+        }
+
         currentSetpoint = new Setpoint(Type.Idle, 0);
         outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
@@ -18,9 +27,13 @@ public abstract class MotorIO {
     }
 
     /**
+     * <p>
      * Enables the motor, causing it to take the previously set setpoint
+     * </p>
+     * <p>
      * Note: A setpoint will still be applied, even if the motor is disabled,
      * it just won't take effect until the motor is re-enabled
+     * </p>
      */
     public final void enable() {
         enabled = true;
@@ -28,9 +41,13 @@ public abstract class MotorIO {
     }
 
     /**
+     * <p>
      * Disabled the motor, causing it to idle until re-enabled
+     * </p>
+     * <p>
      * Note: Setpoints will still be applied, but it will only take effect once
      * the motor gets re-enabled
+     * </p>
      */
     public final void disable() {
         enabled = false;
@@ -42,10 +59,13 @@ public abstract class MotorIO {
     }
 
     /**
+     * <p>
      * Applies the given setpoint to the motor
+     * </p>
+     * <p>
      * Note: Copies the value from the supplied setpoint so you can keep
      * ownership of the value supplied
-     * 
+     * </p>
      * @param setpoint
      */
     public final void applySetpoint(Setpoint setpoint) {
@@ -111,6 +131,7 @@ public abstract class MotorIO {
 
     /**
      * Gets the outputs for the motor
+     * @implNote The first element in the array is where the main motor output is to go
      * @param outputs The array to write the outputs into
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
