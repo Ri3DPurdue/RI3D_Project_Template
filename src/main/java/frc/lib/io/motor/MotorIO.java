@@ -6,6 +6,7 @@ public abstract class MotorIO {
     private Setpoint currentSetpoint;
     private boolean enabled;
     private MotorOutputs[] outputs;
+    protected final double distanceFactor = 1.0;
 
     /**
      * Sets up the internal state for a MotorIO
