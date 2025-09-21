@@ -1,27 +1,28 @@
 package frc.lib.hardware.motor;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
-public class SparkIO extends MotorIO {
+public class SparkMaxIO extends MotorIO {
     private static class SparkController {
-        public final SparkBase motor;
+        public final SparkMax motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
 
         public SparkController(
-            SparkBase motor
+            int id, MotorType type
         ) {
-            this.motor = motor;
+            this.motor = new SparkMax(id, type);
             this.controller = motor.getClosedLoopController();
             this.encoder = motor.getEncoder();
         }
@@ -30,27 +31,35 @@ public class SparkIO extends MotorIO {
     protected final SparkController main;
     protected final SparkController[] followers;
 
-    protected SparkIO(SparkBase mainMotor, SparkBase... followers) {
+    protected SparkMaxIO(MotorType type, int mainMotor, int... followers) {
         super(followers.length);
         
-        main = new SparkController(mainMotor);
+        main = new SparkController(mainMotor, type);
 
         this.followers = new SparkController[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
-            this.followers[i] = new SparkController(followers[i]);
+            this.followers[i] = new SparkController(followers[i], type);
+
+            SparkMaxConfig config = new SparkMaxConfig();
+            config.follow(mainMotor);
+
+            this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 
     private static void loadOutputs(SparkController controller, MotorOutputs outputs) {
+        double output = controller.motor.getAppliedOutput();
+
         outputs.statorCurrent = controller.motor.getOutputCurrent();
+        outputs.supplyCurrent = outputs.statorCurrent * output;
 
-        // TODO: Figure out that stator current vs supply current actually is
-        outputs.supplyCurrent = 0;
+        outputs.supplyVoltage = controller.motor.getBusVoltage();
+        outputs.statorVoltage = outputs.supplyVoltage * output;
 
-        outputs.voltage = controller.motor.getBusVoltage() * controller.motor.getAppliedOutput();
         outputs.position = controller.encoder.getPosition();
         outputs.velocity = controller.encoder.getVelocity();
+        
         outputs.temperatureCelsius = controller.motor.getMotorTemperature();
     }
 
@@ -96,66 +105,5 @@ public class SparkIO extends MotorIO {
     @Override
     protected void setIdle() {
         setVoltage(0);
-    }
-
-    /**
-     * Creates a SparkIO with a group of SparkMax motor controllers
-     * @param type
-     * @param main
-     * @param followers
-     * @return
-     */
-    public static SparkIO createSparkMaxIO(MotorType type, int main, int... followers) {
-        SparkBase mainMotor = new SparkMax(main, type);
-
-        SparkBase[] followerMotors = new SparkBase[followers.length];
-
-        for (int i = 0; i < followers.length; i++) {
-            followerMotors[i] = new SparkMax(followers[i], type);
-        }
-
-        return new SparkIO(mainMotor, followerMotors);
-    }
-
-    /**
-     * Creates a SparkIO with a group of SparkMax motor controllers with the kBrushless motor type
-     * @param main
-     * @param followers
-     * @return
-     */
-    public static SparkIO createSparkMaxIO(int main, int... followers) {
-        return createSparkMaxIO(MotorType.kBrushless, main, followers);
-    }
-
-
-    /**
-     * Creates a SparkIO with a group of SparkFlex motor controllers
-     * @param type
-     * @param main
-     * @param followers
-     * @return
-     */
-    public static SparkIO createSparkFlexIO(MotorType type, int main, int... followers) {
-        SparkBase mainMotor = new SparkFlex(main, type);
-
-
-        SparkBase[] followerMotors = new SparkBase[followers.length];
-
-        for (int i = 0; i < followers.length; i++) {
-            followerMotors[i] = new SparkFlex(followers[i], type);
-        }
-
-        return new SparkIO(mainMotor, followerMotors);
-    }
-
-    /**
-     * Creates a SparkIO with a group of SparkFlex motor controllers with the kBrushless motor type
-     * @param type
-     * @param main
-     * @param followers
-     * @return
-     */
-    public static SparkIO createSparkFlexIO(int main, int... followers) {
-        return createSparkFlexIO(MotorType.kBrushless, main, followers);
     }
 }
