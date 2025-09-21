@@ -9,23 +9,24 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
-public class TalonFXImpl extends MotorIO {
+public class TalonFXIO extends MotorIO {
     private TalonFX[] motors;
     private PositionVoltage positionRequest;
     private VelocityVoltage velocityRequest;
     private MotionMagicVoltage motionMagicRequest;
 
-    public TalonFXImpl(CANBus canbus, int... ids) {
-        super(ids.length);
-        motors = new TalonFX[ids.length];
-        for (int i = 0; i < ids.length; i++) {
-            motors[i] = new TalonFX(ids[i], canbus);
+    public TalonFXIO(CANBus canbus, int leaderID, int... followerIds) {
+        super(followerIds.length);
+        motors = new TalonFX[followerIds.length + 1];
+        motors[0] = new TalonFX(leaderID, canbus);
+        for (int i = 1; i < followerIds.length + 1; i++) {
+            motors[i] = new TalonFX(followerIds[i], canbus);
         }
     }
 
     @Override
     protected void updateOutputs(MotorOutputs[] outputs) {
-        for (int i = 0; i <outputs.length; i++) {
+        for (int i = 0; i < outputs.length; i++) {
             outputs[i] = new MotorOutputs(
                 motors[i].getPosition().getValueAsDouble(), 
                 motors[i].getVelocity().getValueAsDouble(), 
