@@ -66,5 +66,5 @@ of you<br>
 To your right is 0 degrees, and ahead of you is 90 degrees<br>
 The corner created from the alliance wall on the blue side and the field wall parallel to 0 degrees and closest to you is 0, 0<br>
 
-### BEANS (Best Emperically Allowed Number)
+### BEANS (Best Empirically Allowed Number)
 No. Not again. It was too confusing, apparently...
