@@ -59,10 +59,13 @@ public abstract class MotorIO {
     }
 
     /**
+     * <p>
      * Applies the given setpoint to the motor
+     * </p>
+     * <p>
      * Note: Copies the value from the supplied setpoint so you can keep
      * ownership of the value supplied
-     * 
+     * </p>
      * @param setpoint
      */
     public final void applySetpoint(Setpoint setpoint) {
