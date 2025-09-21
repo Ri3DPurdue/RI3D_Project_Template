@@ -50,7 +50,8 @@ public class TalonFXIO extends MotorIO {
         for (int i = 0; i < outputs.length; i++) {
                 outputs[i].position = motors[i].getPosition().getValueAsDouble();
                 outputs[i].velocity = motors[i].getVelocity().getValueAsDouble();
-                outputs[i].voltage = motors[i].getMotorVoltage().getValueAsDouble();
+                outputs[i].statorVoltage = motors[i].getMotorVoltage().getValueAsDouble();
+                outputs[i].supplyVoltage = motors[i].getSupplyVoltage().getValueAsDouble();
                 outputs[i].statorCurrent = motors[i].getStatorCurrent().getValueAsDouble();
                 outputs[i].supplyCurrent = motors[i].getSupplyCurrent().getValueAsDouble();
                 outputs[i].temperatureCelsius = motors[i].getDeviceTemp().getValueAsDouble();
