@@ -14,12 +14,12 @@ import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
 public class SparkFlexIO extends MotorIO {
-    private static class SparkController {
+    private static class Exploded {
         public final SparkFlex motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
 
-        public SparkController(
+        public Exploded(
             int id, MotorType type
         ) {
             this.motor = new SparkFlex(id, type);
@@ -28,18 +28,18 @@ public class SparkFlexIO extends MotorIO {
         }
     }
     
-    protected final SparkController main;
-    protected final SparkController[] followers;
+    protected final Exploded main;
+    protected final Exploded[] followers;
 
     protected SparkFlexIO(MotorType type, int mainMotor, int... followers) {
         super(followers.length);
         
-        main = new SparkController(mainMotor, type);
+        main = new Exploded(mainMotor, type);
 
-        this.followers = new SparkController[followers.length];
+        this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
-            this.followers[i] = new SparkController(followers[i], type);
+            this.followers[i] = new Exploded(followers[i], type);
 
             SparkFlexConfig config = new SparkFlexConfig();
             config.follow(mainMotor);
@@ -48,7 +48,7 @@ public class SparkFlexIO extends MotorIO {
         }
     }
 
-    private static void loadOutputs(SparkController controller, MotorOutputs outputs) {
+    private static void loadOutputs(Exploded controller, MotorOutputs outputs) {
         double output = controller.motor.getAppliedOutput();
 
         outputs.statorCurrent = controller.motor.getOutputCurrent();
