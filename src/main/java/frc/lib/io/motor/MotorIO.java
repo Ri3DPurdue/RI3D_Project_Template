@@ -8,6 +8,10 @@ public abstract class MotorIO {
     private MotorOutputs[] outputs;
 
     protected MotorIO(int numFollowers) {
+        if (numFollowers < 0) {
+            throw new IllegalArgumentException("Number of followers must be non-negative");
+        }
+
         currentSetpoint = new Setpoint(Type.Idle, 0);
         outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
