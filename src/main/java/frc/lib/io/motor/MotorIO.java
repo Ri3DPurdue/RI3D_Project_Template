@@ -13,7 +13,7 @@ public abstract class MotorIO {
         for (int i = 0; i < numFollowers + 1; i++) {
             outputs[i] = new MotorOutputs();
         }
-        
+
         enabled = true;
     }
 
@@ -49,9 +49,9 @@ public abstract class MotorIO {
      * @param setpoint
      */
     public final void applySetpoint(Setpoint setpoint) {
-        if (enabled) {
-            currentSetpoint.set(setpoint);
+        currentSetpoint.set(setpoint);
 
+        if (enabled) {
             switch (setpoint.outputType) {
                 case Voltage:
                     setVoltage(setpoint.value);
