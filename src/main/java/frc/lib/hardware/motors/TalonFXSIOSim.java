@@ -4,8 +4,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
 
-import edu.wpi.first.math.util.Units;
-import frc.lib.io.motor.MotorOutputs;
 import frc.lib.sim.SimObject;
 
 /**
@@ -13,6 +11,7 @@ import frc.lib.sim.SimObject;
  */
 public class TalonFXSIOSim extends TalonFXSIO {
     private SimObject sim;
+    private double conversionFactor;
 
     /**
      * Constructs a {@link TalonFXSIOSim}
@@ -21,8 +20,10 @@ public class TalonFXSIOSim extends TalonFXSIO {
      * @param followerIds The canID of the follower motors
      * @param followerInversion Whether each follower is inverted with respect to the leader or not
      * @param simObject The object which will simulate the physics for this group of motors
+     * @param conversionFactor This multiplied by mechanims units should yield rotations of the motor. So if you have a flywheel
+     * with a five to one gear reduction, this would be 5/2pi, since if the flywheel rotates 1 radian, the motor rotated 5/2pi rotations
      */
-    public TalonFXSIOSim(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion, SimObject simObject) {
+    public TalonFXSIOSim(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion, SimObject simObject, double conversionFactor) {
         super(canbus, leaderID, followerIds, followerInversion);
     }
 
@@ -32,8 +33,8 @@ public class TalonFXSIOSim extends TalonFXSIO {
         sim.update();
         for (TalonFXS motor : motors) {
             TalonFXSSimState simState = motor.getSimState();
-            simState.setRawRotorPosition(Units.rotationsToRadians(sim.getPosition()));
-            simState.setRotorVelocity(Units.rotationsToRadians(sim.getVelocity()));
+            simState.setRawRotorPosition(sim.getPosition() * conversionFactor);
+            simState.setRotorVelocity(sim.getVelocity() * conversionFactor);
         }
         super.periodic();
     }
