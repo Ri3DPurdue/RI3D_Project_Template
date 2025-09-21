@@ -7,6 +7,11 @@ public abstract class MotorIO {
     private boolean enabled;
     private MotorOutputs[] outputs;
 
+    /**
+     * Sets up the internal state for a MotorIO
+     * @throws IllegalArgumentException If numFollowers is less than 0
+     * @param numFollowers
+     */
     protected MotorIO(int numFollowers) {
         if (numFollowers < 0) {
             throw new IllegalArgumentException("Number of followers must be non-negative");
