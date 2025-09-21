@@ -15,7 +15,7 @@ import frc.lib.io.motor.MotorOutputs;
  * A class that represents a {@link TalonFXS}
  */
 public class TalonFXSIO extends MotorIO {
-    protected TalonFXS[] motors;
+    protected final TalonFXS[] motors;
     private PositionVoltage positionRequest;
     private VelocityVoltage velocityRequest;
     private MotionMagicVoltage profiledPositionRequest;

@@ -33,7 +33,7 @@ public class TalonFXSIOSim extends TalonFXSIO {
         for (TalonFXS motor : motors) {
             TalonFXSSimState simState = motor.getSimState();
             simState.setRawRotorPosition(Units.rotationsToRadians(sim.getPosition()));
-            simState.setRawRotorPosition(Units.rotationsToRadians(sim.getVelocity()));
+            simState.setRotorVelocity(Units.rotationsToRadians(sim.getVelocity()));
         }
         super.updateOutputs(outputs);
     }
