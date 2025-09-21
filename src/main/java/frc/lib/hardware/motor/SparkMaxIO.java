@@ -14,6 +14,11 @@ import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
 public class SparkMaxIO extends MotorIO {
+    /**
+     * Inner class for exploding a Spark Max motor controller
+     * Basically, I don't want to have to call a method to get the PID controller
+     * or the relative encoder every single time I want to get them
+     */
     private static class Exploded {
         public final SparkMax motor;
         public final SparkClosedLoopController controller;
@@ -48,6 +53,11 @@ public class SparkMaxIO extends MotorIO {
         }
     }
 
+    /**
+     * helper method for loading the data from a motor into the outputs
+     * @param controller
+     * @param outputs
+     */
     private static void loadOutputs(Exploded controller, MotorOutputs outputs) {
         double output = controller.motor.getAppliedOutput();
 
