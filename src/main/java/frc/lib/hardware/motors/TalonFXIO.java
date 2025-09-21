@@ -2,6 +2,7 @@ package frc.lib.hardware.motors;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,6 +15,7 @@ public class TalonFXIO extends MotorIO {
     private PositionVoltage positionRequest;
     private VelocityVoltage velocityRequest;
     private MotionMagicVoltage motionMagicRequest;
+    private NeutralOut neutralRequest;
 
     public TalonFXIO(CANBus canbus, int leaderID, int... followerIds) {
         super(followerIds.length);
@@ -22,19 +24,20 @@ public class TalonFXIO extends MotorIO {
         for (int i = 1; i < followerIds.length + 1; i++) {
             motors[i] = new TalonFX(followerIds[i], canbus);
         }
+        positionRequest = new PositionVoltage(0);
+        velocityRequest = new VelocityVoltage(0);
+        motionMagicRequest = new MotionMagicVoltage(0);
     }
 
     @Override
     protected void updateOutputs(MotorOutputs[] outputs) {
         for (int i = 0; i < outputs.length; i++) {
-            outputs[i] = new MotorOutputs(
-                motors[i].getPosition().getValueAsDouble(), 
-                motors[i].getVelocity().getValueAsDouble(), 
-                motors[i].getMotorVoltage().getValueAsDouble(), 
-                motors[i].getStatorCurrent().getValueAsDouble(), 
-                motors[i].getSupplyCurrent().getValueAsDouble(), 
-                motors[i].getDeviceTemp().getValueAsDouble()
-            );
+                outputs[i].position = motors[i].getPosition().getValueAsDouble();
+                outputs[i].velocity = motors[i].getVelocity().getValueAsDouble();
+                outputs[i].voltage = motors[i].getMotorVoltage().getValueAsDouble();
+                outputs[i].statorCurrent = motors[i].getStatorCurrent().getValueAsDouble();
+                outputs[i].supplyCurrent = motors[i].getSupplyCurrent().getValueAsDouble();
+                outputs[i].temperatureCelsius = motors[i].getDeviceTemp().getValueAsDouble();
         }
     }
 
@@ -70,6 +73,6 @@ public class TalonFXIO extends MotorIO {
 
     @Override
     protected void setIdle() {
-        motors[0].setVoltage(0);
+        motors[0].setControl(neutralRequest);
     }
 }
