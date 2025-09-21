@@ -27,7 +27,7 @@ public class TalonFXSIOSim extends TalonFXSIO {
     }
 
     @Override
-    protected void updateOutputs(MotorOutputs[] outputs) {
+    public void periodic() {
         sim.setVoltage(motors[0].getMotorVoltage().getValueAsDouble());
         sim.update();
         for (TalonFXS motor : motors) {
@@ -35,6 +35,6 @@ public class TalonFXSIOSim extends TalonFXSIO {
             simState.setRawRotorPosition(Units.rotationsToRadians(sim.getPosition()));
             simState.setRotorVelocity(Units.rotationsToRadians(sim.getVelocity()));
         }
-        super.updateOutputs(outputs);
+        super.periodic();
     }
 }
