@@ -1,4 +1,4 @@
-package frc.lib.hardware.motors;
+package frc.lib.hardware.motor;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -25,6 +25,7 @@ public class TalonFXIOSim extends TalonFXIO {
      */
     public TalonFXIOSim(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion, SimObject simObject, double conversionFactor) {
         super(canbus, leaderID, followerIds, followerInversion);
+        this.conversionFactor = conversionFactor;
     }
 
     @Override
