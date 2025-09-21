@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.util.Units;
-import frc.lib.io.motor.MotorOutputs;
 import frc.lib.sim.SimObject;
 
 /**
@@ -27,7 +26,7 @@ public class TalonFXIOSim extends TalonFXIO {
     }
 
     @Override
-    protected void updateOutputs(MotorOutputs[] outputs) {
+    public void periodic() {
         sim.setVoltage(motors[0].getMotorVoltage().getValueAsDouble());
         sim.update();
         for (TalonFX motor : motors) {
@@ -35,6 +34,6 @@ public class TalonFXIOSim extends TalonFXIO {
             simState.setRawRotorPosition(Units.rotationsToRadians(sim.getPosition()));
             simState.setRotorVelocity(Units.rotationsToRadians(sim.getVelocity()));
         }
-        super.updateOutputs(outputs);
+        super.periodic();
     }
 }
