@@ -1,4 +1,4 @@
-package frc.lib.hardware.motors;
+package frc.lib.hardware.motor;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFXS;
