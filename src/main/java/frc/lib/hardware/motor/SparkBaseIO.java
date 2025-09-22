@@ -1,39 +1,31 @@
 package frc.lib.hardware.motor;
 
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkSim;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.sim.SparkMaxSim;
-
-import static com.revrobotics.spark.SparkBase.ControlType.*;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.lib.sim.SimObject;
-import frc.robot.Robot;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
+import static com.revrobotics.spark.SparkBase.ControlType.*;
 
-public abstract class SparkPackageIO extends MotorIO {
-    private SparkSim simMotor;
-    private SimObject simObject;
+public class SparkBaseIO extends MotorIO {
+    /**
+     * Identifier enum for whether a motor controller is a spark base or spark max.
+     */
     public static enum REVControllerType{
         CANSparkMax,
         CANSparkFlex
     }
-        /**
-     * Inner class for exploding a Spark Max motor controller (works since both SparkMax and SparkFlex extend the same type)
+    /**
+     * Inner class for exploding a generic Spark motor controller (works since both SparkMax and SparkFlex extend the same type)
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
      * @param motor Either the Spark Max or the Spark Flex
@@ -68,15 +60,17 @@ public abstract class SparkPackageIO extends MotorIO {
     
     protected final Exploded main;
     protected final Exploded[] followers;
-
-    protected SparkPackageIO(
-    SimObject simObject, 
-    DCMotor motor, 
-    REVControllerType sparkType, 
-    MotorType type, 
-    int mainMotor, 
-    int... followers) {
-         super(followers.length);
+    /**
+     * Creates a sparkBaseIO
+     * @param type Whether the motor is brushed or brushless.
+     * @see com.revrobotics.spark.SparkLowLevel.MotorType
+     * @param controlledMotor The motor(s) being controlled
+     * @param sparkType Enum that indicates whether the motor controller is a spark max or a spark flex
+     * @param mainMotor The id of the main motor
+     * @param followers The id of any following motors
+     */
+    protected SparkBaseIO(MotorType type, DCMotor controlledMotor, REVControllerType sparkType, int mainMotor, int... followers) {
+        super(followers.length);
         
         main = new Exploded(mainMotor, type, sparkType);
 
@@ -99,42 +93,8 @@ public abstract class SparkPackageIO extends MotorIO {
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
-        if (!Robot.isReal()){
-            switch (sparkType) {
-                case CANSparkMax:
-                    this.simMotor = new SparkMaxSim((SparkMax) main.motor, motor);
-                    break;
-                case CANSparkFlex:
-                    this.simMotor = new SparkFlexSim((SparkFlex) main.motor, motor);
-                     break;
-                default:
-                    simMotor = null;
-                    break;
-            }
-            
-            this.simObject = simObject;
-        }
     }
 
-    @Override
-    public void periodic() {
-        MotorOutputs outputs = getOutputs()[0];
-        if (!Robot.isReal()){
-            simObject.setVoltage(outputs.statorVoltage);
-            simObject.update();
-    
-            // Radians per second
-            double velocity = simObject.getVelocity() * distanceFactor;
-    
-    
-            simMotor.iterate(
-                Units.radiansPerSecondToRotationsPerMinute(velocity),
-                RoboRioSim.getVInVoltage(),
-                0.02
-            );
-        }
-
-    }
     /**
      * helper method for loading the data from a motor into the outputs
      * @param controller
@@ -199,5 +159,3 @@ public abstract class SparkPackageIO extends MotorIO {
         setVoltage(0);
     }
 }
-
-
