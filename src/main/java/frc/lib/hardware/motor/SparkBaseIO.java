@@ -14,13 +14,18 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
-import frc.robot.Constants.REVMotorControllerType;
-
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
 public class SparkBaseIO extends MotorIO {
     /**
-     * Inner class for exploding a Spark Max motor controller (works since both SparkMax and SparkFlex extend the same type)
+     * Identifier enum for whether a motor controller is a spark base or spark max.
+     */
+    public static enum REVControllerType{
+        CANSparkMax,
+        CANSparkFlex
+    }
+    /**
+     * Inner class for exploding a generic Spark motor controller (works since both SparkMax and SparkFlex extend the same type)
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
      * @param motor Either the Spark Max or the Spark Flex
@@ -33,7 +38,7 @@ public class SparkBaseIO extends MotorIO {
         public final RelativeEncoder encoder;
 
         public Exploded(
-            int id, MotorType type, REVMotorControllerType sparkType
+            int id, MotorType type, REVControllerType sparkType
         ) {
             switch (sparkType) {
                 case CANSparkFlex:
@@ -64,7 +69,7 @@ public class SparkBaseIO extends MotorIO {
      * @param mainMotor The id of the main motor
      * @param followers The id of any following motors
      */
-    protected SparkBaseIO(MotorType type, DCMotor controlledMotor, REVMotorControllerType sparkType, int mainMotor, int... followers) {
+    protected SparkBaseIO(MotorType type, DCMotor controlledMotor, REVControllerType sparkType, int mainMotor, int... followers) {
         super(followers.length);
         
         main = new Exploded(mainMotor, type, sparkType);

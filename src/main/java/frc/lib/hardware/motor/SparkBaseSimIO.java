@@ -11,13 +11,19 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
-import frc.robot.Constants.REVMotorControllerType;
+
 
 public abstract class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
-    protected SparkBaseSimIO(SimObject simObject, DCMotor motor, REVMotorControllerType motorControllerType, MotorType type, int mainMotor, int... followers) {
+    protected SparkBaseSimIO(
+    SimObject simObject, 
+    DCMotor motor, 
+    REVControllerType motorControllerType, 
+    MotorType type, 
+    int mainMotor, 
+    int... followers) {
         super(type, motor, motorControllerType, mainMotor, followers);
         switch (motorControllerType) {
             case CANSparkMax:
