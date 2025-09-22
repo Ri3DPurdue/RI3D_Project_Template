@@ -11,7 +11,7 @@ public abstract class SimObject {
 
     public abstract double getStatorCurrent();
 
-    public abstract double setVoltage(double volts);
+    public abstract void setVoltage(double volts);
 
     protected abstract void simulate(double deltaSeconds);
 
