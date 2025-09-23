@@ -9,7 +9,11 @@ import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.Setpoint;
 
 public class MotorComponent<M extends MotorIO> implements Component{
-    private M io;
+    private final M io;
+
+    public MotorComponent(M motorIO) {
+        io = motorIO;
+    }
 
     @Override
     public void periodic() {
