@@ -26,9 +26,10 @@ many plug-and-play built-ins
 ## Units
 We don't want to use the built in Units library to WPILib because we don't want to
 deal with all of the allocations bogging down our RIO.<br>
-So, we always return a ```double``` For our units<br>
+So, we always* return a ```double``` For our units<br>
 This also means we need to be careful in how we name/document our code.<br>
 This is intended to be a step in the right direction<br>
+*We are going to be using a ```Rotation2d``` for angles for the time being<br>
 
 ### WPILib Units
 For the most part, we are going to stay away from these<br>
@@ -44,7 +45,7 @@ Unless explicitly stated otherwise, all angles are stored in Rotation2d objects,
 
 ### Velocities
 Unless explicity stated otherwise, all velocities are stored in doubles and measured in meters per second.<br>
-And conversions from a different unit should be handled by the WPILib conversion set<br>
+Any conversions from a different unit should be handled by the WPILib conversion set<br>
 
 ### Angular Velocities
 Unless explicitly stated otherwise, all angular velocities are stored in doubles and measured in radians per second with
@@ -65,6 +66,14 @@ This means that the blue driverstation is on the left, and the red driverstation
 of you<br>
 To your right is 0 degrees, and ahead of you is 90 degrees<br>
 The corner created from the alliance wall on the blue side and the field wall parallel to 0 degrees and closest to you is 0, 0<br>
+
+### Time
+Unless explicitly stated otherwise, all times are stored in doubles and measured in seconds<br>
+Any conversions from different units should be handled by the WPILib conversion set<br>
+
+### Temperature
+Unless explicitly stated otherwise, all temperatures are stored in doubles and measured in degrees celsius<br>
+Any conversions from different units should be handled by the WPILib conversion set<br>
 
 ### BEANS (Best Empirically Allowed Number)
 No. Not again. It was too confusing, apparently...
