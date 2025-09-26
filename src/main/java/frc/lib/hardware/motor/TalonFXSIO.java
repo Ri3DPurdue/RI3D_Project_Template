@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
+import edu.wpi.first.math.util.Units;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -48,8 +49,8 @@ public class TalonFXSIO extends MotorIO {
     @Override
     protected void updateOutputs(MotorOutputs[] outputs) {
         for (int i = 0; i < outputs.length; i++) {
-                outputs[i].position = motors[i].getPosition().getValueAsDouble();
-                outputs[i].velocity = motors[i].getVelocity().getValueAsDouble();
+                outputs[i].position = Units.rotationsToRadians(motors[i].getPosition().getValueAsDouble());
+                outputs[i].velocity = Units.rotationsToRadians(motors[i].getVelocity().getValueAsDouble());
                 outputs[i].statorVoltage = motors[i].getMotorVoltage().getValueAsDouble();
                 outputs[i].supplyVoltage = motors[i].getSupplyVoltage().getValueAsDouble();
                 outputs[i].statorCurrent = motors[i].getStatorCurrent().getValueAsDouble();
@@ -70,17 +71,17 @@ public class TalonFXSIO extends MotorIO {
 
     @Override
     protected void setPosition(double position) {
-        motors[0].setControl(positionRequest.withPosition(position));
+        motors[0].setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
 
     @Override
     protected void setVelocity(double velocity) {
-        motors[0].setControl(velocityRequest.withVelocity(velocity));
+        motors[0].setControl(velocityRequest.withVelocity(Units.radiansToRotations(velocity)));
     }
 
     @Override
     protected void setProfiledPosition(double position) {
-        motors[0].setControl(profiledPositionRequest.withPosition(position));
+        motors[0].setControl(profiledPositionRequest.withPosition(Units.radiansToRotations(position)));
     }
 
     @Override
