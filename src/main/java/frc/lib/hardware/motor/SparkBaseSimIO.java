@@ -1,7 +1,6 @@
 package frc.lib.hardware.motor;
 
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkSim;
 import com.revrobotics.sim.SparkMaxSim;
@@ -17,8 +16,8 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
-    protected SparkBaseSimIO(SimObject simObject, DCMotor motor, REVMotorControllerType motorControllerType, MotorType type, int mainMotor, int... followers) {
-        super(type, motor, motorControllerType, mainMotor, followers);
+    protected SparkBaseSimIO(SimObject simObject, DCMotor motor, REVMotorControllerType motorControllerType, SparkConfig config) {
+        super(config);
         switch (motorControllerType) {
             case CANSparkMax:
                 this.simMotor = new SparkMaxSim((SparkMax) main.motor, motor);
