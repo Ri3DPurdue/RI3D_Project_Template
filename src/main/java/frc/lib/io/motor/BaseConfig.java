@@ -25,5 +25,6 @@ public class BaseConfig {
     public MotorInfo main = new MotorInfo();
     public MotorInfo[] followers = new MotorInfo[0];
 
-    public double kGearRatio = 1.0;
+    public double gearRatio = 1.0;
+    public int currentLimit = 40;
 }
