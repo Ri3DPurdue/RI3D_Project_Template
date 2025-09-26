@@ -29,6 +29,8 @@ deal with all of the allocations bogging down our RIO.<br>
 So, we always* return a ```double``` For our units<br>
 This also means we need to be careful in how we name/document our code.<br>
 This is intended to be a step in the right direction<br>
+For the future, we might write our own units library, but that is still a discussion
+point<br>
 *We are going to be using a ```Rotation2d``` for angles for the time being<br>
 
 ### WPILib Units
