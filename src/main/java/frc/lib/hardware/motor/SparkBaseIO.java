@@ -69,7 +69,7 @@ public class SparkBaseIO extends MotorIO {
      * @param mainMotor The id of the main motor
      * @param followers The id of any following motors
      */
-    protected SparkBaseIO(
+    public SparkBaseIO(
         MotorType motorType,
         int mainID,
         SparkBaseConfig config,

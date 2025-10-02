@@ -14,7 +14,7 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
-    protected SparkBaseSimIO(
+    public SparkBaseSimIO(
         SimObject simObject,
         DCMotor motor,
         MotorType motorType,
