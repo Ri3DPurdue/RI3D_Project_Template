@@ -62,11 +62,11 @@ public class SparkBaseIO extends MotorIO {
     protected final Exploded[] followers;
     /**
      * Creates a sparkBaseIO
-     * @param type Whether the motor is brushed or brushless.
+     * @param motorType Whether the motor is brushed or brushless.
      * @see com.revrobotics.spark.SparkLowLevel.MotorType
-     * @param controlledMotor The motor(s) being controlled
-     * @param sparkType Enum that indicates whether the motor controller is a spark max or a spark flex
-     * @param mainMotor The id of the main motor
+     * @param mainID The id of the main motor
+     * @param config The configuration for the spark base. Note: This has to be
+     * either a spark max or flex config to get the correct motor controller
      * @param followers The id of any following motors
      */
     public SparkBaseIO(
