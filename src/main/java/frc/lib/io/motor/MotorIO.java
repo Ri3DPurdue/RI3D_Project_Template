@@ -13,8 +13,9 @@ public abstract class MotorIO {
      * @throws IllegalArgumentException If numFollowers is less than 0
      * @param numFollowers
      */
-    protected MotorIO(BaseConfig config) {
-        int numFollowers = config.followers.length;
+    protected MotorIO(int numFollowers) {
+        if (numFollowers < 0)
+            throw new IllegalArgumentException("Number of followers cannot be negative");
 
         currentSetpoint = new Setpoint(Type.Idle, 0);
         outputs = new MotorOutputs[numFollowers + 1];

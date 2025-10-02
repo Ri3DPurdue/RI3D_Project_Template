@@ -11,7 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import frc.lib.io.motor.BaseConfig;
+import frc.lib.io.motor.FollowerConfig;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.robot.Constants.REVMotorControllerType;
@@ -19,11 +19,6 @@ import frc.robot.Constants.REVMotorControllerType;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
 public class SparkBaseIO extends MotorIO {
-    public static class SparkConfig extends BaseConfig {
-        public REVMotorControllerType controllerType;
-        public MotorType motorType = MotorType.kBrushless;
-    }
-
     /**
      * Inner class for exploding a Spark Max motor controller (works since both SparkMax and SparkFlex extend the same type)
      * Basically, I don't want to have to call a method to get the PID controller
@@ -69,50 +64,36 @@ public class SparkBaseIO extends MotorIO {
      * @param mainMotor The id of the main motor
      * @param followers The id of any following motors
      */
-    protected SparkBaseIO(SparkConfig config) {
-        super(config);
-        
-        main = new Exploded(config.main.canID, config.motorType, config.controllerType);
+    protected SparkBaseIO(
+        MotorType motorType,
+        int mainID,
+        SparkBaseConfig config,
+        FollowerConfig[] followers
+    ) {
+        super(followers.length);
 
-        SparkBaseConfig sparkConfig = null;
-
-        switch (config.controllerType) {
-            case CANSparkMax:
-                sparkConfig = new SparkMaxConfig();
-                break;
-
-            case CANSparkFlex:
-                sparkConfig = new SparkFlexConfig();
-                break;
+        REVMotorControllerType controllerType = null;
+        if (config instanceof SparkMaxConfig) {
+            controllerType = REVMotorControllerType.CANSparkMax;
+        } else if (config instanceof SparkFlexConfig) {
+            controllerType = REVMotorControllerType.CANSparkFlex;
+        } else {
+            throw new IllegalArgumentException("Passed in config must be either a spark max or spark flex config");
         }
-
-        sparkConfig.closedLoop.pidf(
-            config.pid.p,
-            config.pid.i,
-            config.pid.d,
-            config.pid.f
-        );
-
-        sparkConfig.closedLoop.maxMotion
-            .maxAcceleration(config.pid.profile.maxAcceleration)
-            .maxVelocity(config.pid.profile.maxVelocity);
-
-        sparkConfig.inverted(config.main.inverted);
-
+        
+        main = new Exploded(mainID, motorType, controllerType);
         this.main.motor.configure(
-            sparkConfig,
+            config,
             ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
-        sparkConfig.smartCurrentLimit(config.currentLimit);
-
-        this.followers = new Exploded[config.followers.length];
+        this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
-            this.followers[i] = new Exploded(config.followers[i].canID, config.motorType, config.controllerType);
+            this.followers[i] = new Exploded(followers[i].canID, motorType, controllerType);
             SparkBaseConfig followerConfig = null;
-            switch (config.controllerType) {
+            switch (controllerType) {
                 case CANSparkMax:
                     followerConfig = new SparkMaxConfig();
                     break;
@@ -122,7 +103,7 @@ public class SparkBaseIO extends MotorIO {
                     break;
             }
            
-            followerConfig.follow(main.motor, config.followers[i].inverted);
+            followerConfig.follow(main.motor, followers[i].inverted);
 
             this.followers[i].motor.configure(
                 followerConfig,
