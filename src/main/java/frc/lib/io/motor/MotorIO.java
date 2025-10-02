@@ -138,22 +138,8 @@ public abstract class MotorIO {
     protected abstract void setVoltage(double voltage);
     protected abstract void setCurrent(double current);
 
-    /**
-     * Updates the underlying motor to go to the given position
-     * @param position - Radians for the physical rotor to go to
-     */
     protected abstract void setPosition(double position);
-
-    /**
-     * Updates the underlying motor to run at the given velocity
-     * @param velocity - Radians per second for the physical rotor to rotate at
-     */
     protected abstract void setVelocity(double velocity);
-
-    /**
-     * Updates the underlying motor to go to the given position with motion profiling
-     * @param position - Radians for the physical rotor to go to
-     */
     protected abstract void setProfiledPosition(double position);
 
     protected abstract void setPercentage(double percentage);
