@@ -20,10 +20,11 @@ public class SparkBaseIO extends MotorIO {
     /**
      * Identifier enum for whether a motor controller is a spark base or spark max.
      */
-    public static enum REVControllerType{
+    public static enum REVControllerType {
         CANSparkMax,
         CANSparkFlex
     }
+
     /**
      * Inner class for exploding a generic Spark motor controller (works since both SparkMax and SparkFlex extend the same type)
      * Basically, I don't want to have to call a method to get the PID controller
@@ -60,6 +61,7 @@ public class SparkBaseIO extends MotorIO {
     
     protected final Exploded main;
     protected final Exploded[] followers;
+
     /**
      * Creates a sparkBaseIO
      * @param motorType Whether the motor is brushed or brushless.
