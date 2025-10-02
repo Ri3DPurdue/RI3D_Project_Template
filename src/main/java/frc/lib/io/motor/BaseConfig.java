@@ -7,6 +7,7 @@ public class BaseConfig {
         public double d = 0.0;
         public double f = 0.0;
         public double g = 0.0;
+        public boolean gravityUsingArmCosine = false;
     }
 
     public static class MotorInfo {

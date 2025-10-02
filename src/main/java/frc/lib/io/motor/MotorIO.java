@@ -2,11 +2,14 @@ package frc.lib.io.motor;
 
 import static frc.lib.io.motor.Setpoint.Type;
 
+import java.util.function.UnaryOperator;
+
 public abstract class MotorIO {
     private Setpoint currentSetpoint;
     private boolean enabled;
     private MotorOutputs[] outputs;
     protected final double distanceFactor = 1.0;
+    protected BaseConfig config;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -127,6 +130,20 @@ public abstract class MotorIO {
     public void periodic() {
         updateOutputs(outputs);
     }
+
+    public void changeConfig(UnaryOperator<BaseConfig> configChanger) {
+        applyConfig(configChanger.apply(config));
+    }
+
+    public void applyConfig(BaseConfig newConfiguation) {
+        config = newConfiguation;
+        flashConfig();
+    }
+
+    /**
+     * Flashes the stored configuration
+     */
+    protected abstract void flashConfig();
 
     /**
      * Gets the outputs for the motor

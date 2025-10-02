@@ -195,4 +195,10 @@ public class SparkBaseIO extends MotorIO {
     protected void setIdle() {
         setVoltage(0);
     }
+
+    @Override
+    protected void flashConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'flashConfig'");
+    }
 }
