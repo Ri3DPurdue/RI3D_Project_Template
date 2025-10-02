@@ -94,8 +94,8 @@ public class SparkBaseIO extends MotorIO {
         );
 
         sparkConfig.closedLoop.maxMotion
-            .maxAcceleration(config.profile.maxAcceleration)
-            .maxVelocity(config.profile.maxVelocity);
+            .maxAcceleration(config.pid.profile.maxAcceleration)
+            .maxVelocity(config.pid.profile.maxVelocity);
 
         sparkConfig.inverted(config.main.inverted);
 
