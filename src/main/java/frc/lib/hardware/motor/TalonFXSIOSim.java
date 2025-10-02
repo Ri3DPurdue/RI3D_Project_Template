@@ -19,7 +19,7 @@ public class TalonFXSIOSim extends TalonFXSIO {
      * Constructs a {@link TalonFXSIOSim}
      * @param leaderID The can ID of the leader motor
      * @param canbus The canbus the motor's and its followers are on
-     * @param config The {@link TalonFXConfiguration} to apply to the leader motor
+     * @param config The {@link TalonFXSConfiguration} to apply to the leader motor
      * @param simObject The object which will simulate the physics for this group of motors
      * @param conversionFactor This multiplied by mechanims units should yield rotations of the motor. So if you have a flywheel
      * with a five to one gear reduction, this would be 5/2pi, since if the flywheel rotates 1 radian, the motor rotated 5/2pi rotations

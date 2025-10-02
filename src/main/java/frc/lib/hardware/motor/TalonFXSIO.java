@@ -2,7 +2,6 @@ package frc.lib.hardware.motor;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -30,7 +29,7 @@ public class TalonFXSIO extends MotorIO {
      * Constructs a {@link TalonFXSIO}
      * @param leaderID The can ID of the leader motor
      * @param canbus The canbus the motor's and its followers are on
-     * @param config The {@link TalonFXConfiguration} to apply to the leader motor
+     * @param config The {@link TalonFXSConfiguration} to apply to the leader motor
      * @param followers An array of {@link FollowerConfig}s which configure the followers of this motor
      */
     public TalonFXSIO(int leaderID, CANBus canbus, TalonFXSConfiguration config, FollowerConfig... followers) {
