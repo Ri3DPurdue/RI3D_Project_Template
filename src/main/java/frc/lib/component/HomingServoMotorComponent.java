@@ -36,39 +36,38 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     @Override
     public void periodic() {
         super.periodic();
-        if (needsToHome && setpointNearHome() && isNearHome()) {
-            beginHomingSequence();
+        if (needsToHome && setpointNearHome() && isNearHome()) { // If homing is needed, targeting the homing location, and almost there
+            beginHomingSequence(); // Start the homing sequence
         }
-        if (homing && DriverStation.isEnabled()) {
-            if (homingDebouncer.calculate(Math.abs(getVelocity()) >= homingConfig.homingVelocity)) {
-                zeroPosition(homingConfig.homePosition);
-                applySetpoint(new Setpoint(Type.ProfiledPosition, homingConfig.homePosition));
-                endHomingSequence();
+        if (homing && DriverStation.isEnabled()) { // If homing (and enabled so the voltage is ACTUALLY being applied)
+            if (homingDebouncer.calculate(Math.abs(getVelocity()) <= homingConfig.homingVelocity)) { // If you've been under the homing velocity threshold for the debounce (if you've stopped)
+                zeroPosition(homingConfig.homePosition); // You know you're at the home position so reset it
+                applySetpoint(new Setpoint(Type.ProfiledPosition, homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
             }
         }
     }
 
     @Override
     public void applySetpoint(Setpoint setpoint) {
-        super.applySetpoint(setpoint);
-        if(homing) {
-            endHomingSequence();
+        super.applySetpoint(setpoint); // Apply your setpoint
+        if (homing) { // If you were in the middle of homing
+            endHomingSequence(); // Cancel homing
         }
-        if(!setpointNearHome()) {
-            needsToHome = true;
+        if (!setpointNearHome()) { // If you're leaving your home position
+            needsToHome = true; // You now need to rezero
         }
     }
 
     public void beginHomingSequence() {
-        homing = true;
-        useSoftLimits(false);
-        super.applySetpoint(new Setpoint(Type.Voltage, homingConfig.homingVoltage));
-        homingDebouncer.calculate(false);
+        homing = true; // Save that you are currently homing
+        useSoftLimits(false); // Disable soft limits so you can physically hit the hardstop
+        super.applySetpoint(new Setpoint(Type.Voltage, homingConfig.homingVoltage)); // Go at your homing voltage (but don't apply setpoint normally so homing isn't canceled)
+        homingDebouncer.calculate(false); // Reset the debouncer
     }
 
     public void endHomingSequence() {
-        homing = false;
-        useSoftLimits(true);
+        homing = false; // Save that you're done homing
+        useSoftLimits(true); // Turn soft limits back on
     }
 
 
