@@ -68,7 +68,7 @@ public class SparkBaseIO extends MotorIO {
         MotorType motorType,
         int mainID,
         SparkBaseConfig config,
-        FollowerConfig[] followers
+        FollowerConfig... followers
     ) {
         super(followers.length);
 
