@@ -15,19 +15,23 @@ public abstract class SimObject {
     /**
      * Get the velocity of the simulation. Updates when {@link #update()} is called.
      * 
-     * @return Velocity of the simulation in radians per second if an angular system or meters per second if a linear system. 
+     * @return Velocity of the simulation in radians per second if an angular system or meters per second if 
+     * a linear system. 
      */
     public abstract double getVelocity();
 
     /**
-     * Get the current stator current of the simulation. Motor controller simulation stator currents should be used instead whenever possible. This should only be used if motor controller does not have a feature to get simulated stator current draw. Updates when {@link #update()} is called.
+     * Get the current stator current of the simulation. Motor controller simulation stator currents should be 
+     * used instead whenever possible. This should only be used if motor controller does not have a feature to 
+     * get simulated stator current draw. Updates when {@link #update()} is called.
      * 
      * @return Stator current of the simulation in amps.
      */
     public abstract double getStatorCurrent();
 
     /**
-     * Set the input voltage of the simulation. Should be updated based on simulated motor output before updating sim with {@link #update()}.
+     * Set the input voltage of the simulation. Should be updated based on simulated motor output before updating 
+     * sim with {@link #update()}.
      * 
      * @param volts Motor voltage in volts.
      */
