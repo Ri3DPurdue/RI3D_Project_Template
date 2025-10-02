@@ -1,11 +1,7 @@
 package frc.lib.hardware.motor;
 
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkSim;
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -25,18 +21,7 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
     int mainMotor, 
     int... followers) {
         super(type, motor, motorControllerType, mainMotor, followers);
-        switch (motorControllerType) {
-            case CANSparkMax:
-                this.simMotor = new SparkMaxSim((SparkMax) main.motor, motor);
-                break;
-            case CANSparkFlex:
-                this.simMotor = new SparkFlexSim((SparkFlex) main.motor, motor);
-                 break;
-            default:
-                simMotor = null;
-                break;
-        }
-
+        this.simMotor = new SparkSim(main.motor, motor);
 
         this.simObject = simObject;
     }
