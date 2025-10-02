@@ -1,9 +1,12 @@
 package frc.lib.hardware.motor;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
 
+import frc.lib.io.motor.BaseConfig;
 import frc.lib.sim.SimObject;
 
 /**
@@ -23,8 +26,8 @@ public class TalonFXSIOSim extends TalonFXSIO {
      * @param conversionFactor This multiplied by mechanims units should yield rotations of the motor. So if you have a flywheel
      * with a five to one gear reduction, this would be 5/2pi, since if the flywheel rotates 1 radian, the motor rotated 5/2pi rotations
      */
-    public TalonFXSIOSim(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion, SimObject simObject, double conversionFactor) {
-        super(canbus, leaderID, followerIds, followerInversion);
+    public TalonFXSIOSim(CANBus canbus, BaseConfig config, SimObject simObject) {
+        super(canbus, config);
         this.conversionFactor = conversionFactor;
     }
 

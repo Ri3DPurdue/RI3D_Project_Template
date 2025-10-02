@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.util.Units;
+import frc.lib.io.motor.BaseConfig;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -29,16 +30,13 @@ public class TalonFXSIO extends MotorIO {
      * @param followerIds The canID of the follower motors
      * @param followerInversion Whether each follower is inverted with respect to the leader or not
      */
-    public TalonFXSIO(CANBus canbus, int leaderID, int[] followerIds, boolean[] followerInversion) {
-        super(followerIds.length);
-        if (followerIds.length != followerInversion.length) {
-            throw new IllegalArgumentException("Number of followers and followerInversion length must be equal");
-        }
-        motors = new TalonFXS[followerIds.length + 1];
-        motors[0] = new TalonFXS(leaderID, canbus);
-        for (int i = 1; i < followerIds.length + 1; i++) {
-            motors[i] = new TalonFXS(followerIds[i], canbus);
-            motors[i].setControl(new Follower(leaderID, followerInversion[i]));
+    public TalonFXSIO(CANBus canbus, BaseConfig config) {
+        super(config);
+        motors = new TalonFXS[config.followers.length + 1];
+        motors[0] = new TalonFXS(config.main.canID, canbus);
+        for (int i = 1; i <= config.followers.length; i++) {
+            motors[i] = new TalonFXS(config.followers[i].canID, canbus);
+            motors[i].setControl(new Follower(config.main.canID, config.followers[i].inverted));
         }
         positionRequest = new PositionVoltage(0);
         velocityRequest = new VelocityVoltage(0);
