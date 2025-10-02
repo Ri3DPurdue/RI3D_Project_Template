@@ -108,6 +108,14 @@ public class MotorComponent<M extends MotorIO> implements Component{
         return io.getCurrentSetpoint();
     }
 
+    public void useSoftLimits(boolean use) {
+        io.useSoftLimits(use);
+    }
+
+    public void zeroPosition(double position) {
+        io.zeroPositon(position);
+    }
+
     public void applySetpoint(Setpoint setpoint) {
         io.applySetpoint(setpoint);
     }
