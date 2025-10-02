@@ -1,4 +1,4 @@
-package frc.lib.io.motor;
+package frc.lib.io.sensor;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;

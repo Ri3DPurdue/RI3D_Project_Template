@@ -1,11 +1,11 @@
-package frc.lib.io.motor;
+package frc.lib.io.sensor;
 
 import java.util.function.BooleanSupplier;
 
-public class BooleanSupplierIO extends DigitalIO {
+public class DigitalBooleanSupplierIO extends DigitalIO {
     private final BooleanSupplier input;
 
-    public BooleanSupplierIO(double debounceSeconds, BooleanSupplier supplier) {
+    public DigitalBooleanSupplierIO(double debounceSeconds, BooleanSupplier supplier) {
         super(debounceSeconds);
         input = supplier;
     }
