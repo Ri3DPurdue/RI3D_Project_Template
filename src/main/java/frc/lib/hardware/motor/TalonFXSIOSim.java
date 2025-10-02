@@ -3,10 +3,8 @@ package frc.lib.hardware.motor;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
 
-import frc.lib.io.motor.BaseConfig;
 import frc.lib.sim.SimObject;
 
 /**
@@ -18,16 +16,16 @@ public class TalonFXSIOSim extends TalonFXSIO {
 
     /**
      * Constructs a {@link TalonFXSIOSim}
-     * @param canbus The canbus the motor's and its followers are on
      * @param leaderID The can ID of the leader motor
-     * @param followerIds The canID of the follower motors
-     * @param followerInversion Whether each follower is inverted with respect to the leader or not
+     * @param canbus The canbus the motor's and its followers are on
+     * @param config The {@link TalonFXConfiguration} to apply to the leader motor
      * @param simObject The object which will simulate the physics for this group of motors
      * @param conversionFactor This multiplied by mechanims units should yield rotations of the motor. So if you have a flywheel
      * with a five to one gear reduction, this would be 5/2pi, since if the flywheel rotates 1 radian, the motor rotated 5/2pi rotations
+     * @param followers An array of {@link TalonFXSFollowerConfig}s which configure the followers of this motor
      */
-    public TalonFXSIOSim(CANBus canbus, BaseConfig config, SimObject simObject) {
-        super(canbus, config);
+    public TalonFXSIOSim(int leaderID, CANBus canbus, TalonFXSConfiguration config, SimObject simObject, double conversionFactor, TalonFXSFollowerConfig... followers ) {
+        super(leaderID, canbus, config, followers);
         this.conversionFactor = conversionFactor;
     }
 

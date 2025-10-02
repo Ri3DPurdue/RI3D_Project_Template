@@ -1,6 +1,8 @@
 package frc.lib.hardware.motor;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -9,7 +11,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.util.Units;
-import frc.lib.io.motor.BaseConfig;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -23,6 +24,12 @@ public class TalonFXSIO extends MotorIO {
     private MotionMagicVoltage profiledPositionRequest;
     private NeutralOut idleRequest;
 
+    public static record TalonFXSFollowerConfig(
+        int canID,
+        boolean opposesLeader,
+        TalonFXSConfiguration config
+    ) {}
+
     /**
      * Constructs a {@link TalonFXSIO}
      * @param canbus The canbus the motor's and its followers are on
@@ -30,13 +37,17 @@ public class TalonFXSIO extends MotorIO {
      * @param followerIds The canID of the follower motors
      * @param followerInversion Whether each follower is inverted with respect to the leader or not
      */
-    public TalonFXSIO(CANBus canbus, BaseConfig config) {
-        super(config);
-        motors = new TalonFXS[config.followers.length + 1];
-        motors[0] = new TalonFXS(config.main.canID, canbus);
-        for (int i = 1; i <= config.followers.length; i++) {
-            motors[i] = new TalonFXS(config.followers[i].canID, canbus);
-            motors[i].setControl(new Follower(config.main.canID, config.followers[i].inverted));
+    public TalonFXSIO(int leaderID, CANBus canbus, TalonFXSConfiguration config, TalonFXSFollowerConfig... followers) {
+        super(followers.length);
+        motors = new TalonFXS[followers.length + 1];
+        motors[0] = new TalonFXS(leaderID, canbus);
+        StatusCode status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+            status = motors[0].getConfigurator().apply(config);
+        }
+        for (int i = 1; i <= followers.length; i++) {
+            motors[i] = new TalonFXS(followers[i].canID, canbus);
+            motors[i].setControl(new Follower(leaderID, followers[i].opposesLeader));
         }
         positionRequest = new PositionVoltage(0);
         velocityRequest = new VelocityVoltage(0);

@@ -14,7 +14,11 @@ public abstract class MotorIO {
      * @param numFollowers
      */
     protected MotorIO(BaseConfig config) {
-        int numFollowers = config.followers.length;
+        this(config.followers.length);
+    }
+
+    protected MotorIO(int followerCount) {
+        int numFollowers = followerCount;
 
         currentSetpoint = new Setpoint(Type.Idle, 0);
         outputs = new MotorOutputs[numFollowers + 1];
