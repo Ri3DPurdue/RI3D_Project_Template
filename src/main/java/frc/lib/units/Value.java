@@ -1,6 +1,6 @@
 package frc.lib.units;
 
-public class Value<U extends Unit> {
+public abstract class Value<U extends Unit, V extends Value<U, V>> {
     private double baseValue;
 
     public Value(double val, U unit) {
@@ -11,23 +11,30 @@ public class Value<U extends Unit> {
         baseValue = baseUnitsValue;
     }
 
+    public abstract V make(double baseUnitsValue);
+    
+
     public double getBaseValue() {
         return baseValue;
     }
 
-    public Value<U> plus(Value<U> other) {
-        return new Value<>(baseValue + other.baseValue);
+    public double in(U u) {
+        return baseValue / u.multiplierToBase;
     }
 
-    public Value<U> minus(Value<U> other) {
-        return new Value<>(baseValue - other.baseValue);
+    public V plus(V other) {
+        return make(baseValue + other.getBaseValue());
     }
 
-    public Value<U> times(double scalar) {
-        return new Value<>(baseValue * scalar);
+    public V minus(V other) {
+        return make(baseValue - other.getBaseValue());
     }
 
-    public Value<U> divide(double divisor) {
-        return new Value<>(baseValue / divisor);
+    public V times(double scalar) {
+        return make(baseValue * scalar);
+    }
+
+    public V divide(double divisor) {
+        return make(baseValue / divisor);
     }
 }
