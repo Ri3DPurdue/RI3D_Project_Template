@@ -19,4 +19,8 @@ public class Angle extends Value<AngleUnit, Angle>{
     public AngularVelocity per(Time time) {
         return new AngularVelocity(getBaseValue() / time.getBaseValue());
     }
+
+    public Distance withRadius(Distance radius) {
+        return new Distance(radius.getBaseValue() * in(AngleUnit.radians));
+    }
 }
