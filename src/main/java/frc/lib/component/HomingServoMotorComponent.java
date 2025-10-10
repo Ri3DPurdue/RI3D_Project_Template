@@ -71,7 +71,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     }
 
 
-    public class HomingConfig {
+    public static class HomingConfig {
         public double homePosition = 0.0; // Mechanims radians or meters
         public double homingVelocity = 0.0; // Mechanism radians or meters per second
         public double homingVoltage = 0.0; // Volts
