@@ -146,5 +146,5 @@ public abstract class MotorIO {
     protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
     public abstract void useSoftLimits(boolean use);
-    public abstract void zeroPositon(double position);
+    public abstract void resetPosition(double position);
 }

@@ -113,7 +113,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
     }
 
     public void zeroPosition(double position) {
-        io.zeroPositon(position);
+        io.resetPosition(position);
     }
 
     public void applySetpoint(Setpoint setpoint) {
