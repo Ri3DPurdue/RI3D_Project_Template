@@ -1,5 +1,8 @@
 package frc.lib.io.motor;
 
+import org.littletonrobotics.junction.AutoLog;
+
+@AutoLog
 public class MotorOutputs {
     public double position;
     public double velocity;

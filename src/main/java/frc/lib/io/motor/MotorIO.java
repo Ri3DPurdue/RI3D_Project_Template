@@ -5,7 +5,7 @@ import static frc.lib.io.motor.Setpoint.Type;
 public abstract class MotorIO {
     private Setpoint currentSetpoint;
     private boolean enabled;
-    private MotorOutputs[] outputs;
+    private MotorOutputsAutoLogged[] outputs;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -18,9 +18,9 @@ public abstract class MotorIO {
         }
 
         currentSetpoint = new Setpoint(Type.Idle, 0);
-        outputs = new MotorOutputs[numFollowers + 1];
+        outputs = new MotorOutputsAutoLogged[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
-            outputs[i] = new MotorOutputs();
+            outputs[i] = new MotorOutputsAutoLogged();
         }
 
         enabled = true;
