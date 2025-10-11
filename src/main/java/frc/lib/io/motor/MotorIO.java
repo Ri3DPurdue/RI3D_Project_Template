@@ -1,6 +1,6 @@
 package frc.lib.io.motor;
 
-import static frc.lib.io.motor.Setpoint.Type;
+import edu.wpi.first.units.measure.Angle;
 
 public abstract class MotorIO {
     private Setpoint currentSetpoint;
@@ -17,7 +17,7 @@ public abstract class MotorIO {
             throw new IllegalArgumentException("Number of followers must be non-negative");
         }
 
-        currentSetpoint = new Setpoint(Type.Idle, 0);
+        currentSetpoint = Setpoint.idleSetpoint();
         outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
             outputs[i] = new MotorOutputs();
@@ -146,5 +146,5 @@ public abstract class MotorIO {
     protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
     public abstract void useSoftLimits(boolean use);
-    public abstract void resetPosition(double position);
+    public abstract void resetPosition(Angle position);
 }
