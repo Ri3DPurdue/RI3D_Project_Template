@@ -112,7 +112,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
         io.useSoftLimits(use);
     }
 
-    public void zeroPosition(double position) {
+    public void resetPosition(double position) {
         io.resetPosition(position);
     }
 

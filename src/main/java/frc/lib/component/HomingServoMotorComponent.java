@@ -41,7 +41,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
         }
         if (homing && DriverStation.isEnabled()) { // If homing (and enabled so the voltage is ACTUALLY being applied)
             if (homingDebouncer.calculate(Math.abs(getVelocity()) <= homingConfig.homingVelocity)) { // If you've been under the homing velocity threshold for the debounce (if you've stopped)
-                zeroPosition(homingConfig.homePosition); // You know you're at the home position so reset it
+                resetPosition(homingConfig.homePosition); // You know you're at the home position so reset it
                 applySetpoint(new Setpoint(Type.ProfiledPosition, homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
             }
         }
