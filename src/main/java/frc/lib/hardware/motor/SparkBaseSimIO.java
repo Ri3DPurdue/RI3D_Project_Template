@@ -35,7 +35,7 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
         simObject.update();
 
         // Radians per second
-        double velocity = simObject.getVelocity() * distanceFactor;
+        double velocity = simObject.getVelocity();
 
 
         simMotor.iterate(
