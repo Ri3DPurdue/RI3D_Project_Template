@@ -2,7 +2,11 @@ package frc.lib.io.motor;
 
 import static frc.lib.io.motor.Setpoint.Type;
 
-public abstract class MotorIO {
+import org.littletonrobotics.junction.Logger;
+
+import frc.lib.io.logging.Loggable;
+
+public abstract class MotorIO implements Loggable {
     private Setpoint currentSetpoint;
     private boolean enabled;
     private MotorOutputsAutoLogged[] outputs;
@@ -127,6 +131,17 @@ public abstract class MotorIO {
      */
     public void periodic() {
         updateOutputs(outputs);
+    }
+
+    @Override
+    public void log(String subdirectory, String name) {
+        String dir = subdirectory + "/" + name;
+
+        Logger.processInputs(dir, outputs[0]);
+
+        for (int i = 1; i < outputs.length; i++) {
+            Logger.processInputs(dir + "/Followers/" + i, outputs[i]);
+        }
     }
 
     /**
