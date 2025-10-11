@@ -35,6 +35,9 @@ public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M>
      * @return A command which applies a posiiton setpoint and waits for it to be reached. 
      */
     public Command applyVelocitySetpointCommandWithWait(Setpoint setpoint) {
+        if (!setpoint.outputType.isVelocityControl()) {
+            throw new IllegalArgumentException("applyVelocitySetpointCommandWithWait requires a velocity setpoint");
+        }
         return waitForVelocityCommand(setpoint.value).deadlineFor(applySetpointCommand(setpoint));
     }
     

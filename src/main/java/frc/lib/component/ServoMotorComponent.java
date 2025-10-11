@@ -35,6 +35,9 @@ public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
      * @return A command which applies a posiiton setpoint and waits for it to be reached. 
      */
     public Command applyPositionSetpointCommandWithWait(Setpoint setpoint) {
+        if (!setpoint.outputType.isPositionControl()) {
+            throw new IllegalArgumentException("applyPositionSetpointCommandWithWait requires a position setpoint");
+        }
         return waitForPositionCommand(setpoint.value).deadlineFor(applySetpointCommand(setpoint));
     }
     
