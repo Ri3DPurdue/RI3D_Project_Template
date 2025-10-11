@@ -51,7 +51,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * @return 
      */
     public double getPosition() {
-        return getMotorOutputs()[0].position();
+        return getMotorOutputs()[0].position;
     }
 
     /**
@@ -60,7 +60,16 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * @return 
      */
     public double getVelocity() {
-        return getMotorOutputs()[0].velocity();
+        return getMotorOutputs()[0].velocity;
+    }
+
+    /**
+     * Get the stator voltage of the main motor.
+     * 
+     * @return 
+     */
+    public double getStatorVoltage() {
+        return getMotorOutputs()[0].statorVoltage;
     }
 
     /**
@@ -68,8 +77,8 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * 
      * @return 
      */
-    public double getVoltage() {
-        return getMotorOutputs()[0].voltage();
+    public double getSupplyVoltage() {
+        return getMotorOutputs()[0].supplyVoltage;
     }
 
     /**
@@ -78,7 +87,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * @return 
      */
     public double getStatorCurrent() {
-        return getMotorOutputs()[0].statorCurrent();
+        return getMotorOutputs()[0].statorCurrent;
     }
 
     /**
@@ -87,7 +96,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * @return 
      */
     public double getSupplyCurrent() {
-        return getMotorOutputs()[0].supplyCurrent();
+        return getMotorOutputs()[0].supplyCurrent;
     }
 
     /**
@@ -96,7 +105,7 @@ public class MotorComponent<M extends MotorIO> implements Component{
      * @return 
      */
     public double getTemperature() {
-        return getMotorOutputs()[0].temperatureCelsius();
+        return getMotorOutputs()[0].temperatureCelsius;
     }
 
     /**
