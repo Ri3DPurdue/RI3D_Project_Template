@@ -1,10 +1,10 @@
 package frc.lib.component;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.Setpoint;
-import frc.lib.util.Util;
 
 public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected double epsilonThreshold;
@@ -15,7 +15,7 @@ public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M>
     }
 
     public boolean nearVelocity(double velocity) {
-        return Util.epsilonEquals(getVelocity(), velocity, epsilonThreshold);
+        return MathUtil.isNear(velocity, getVelocity(), epsilonThreshold);
     }
 
     /**

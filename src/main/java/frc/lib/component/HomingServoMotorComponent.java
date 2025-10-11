@@ -1,12 +1,12 @@
 package frc.lib.component;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.Setpoint;
 import frc.lib.io.motor.Setpoint.Type;
-import frc.lib.util.Util;
 
 public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComponent<M> {
     private boolean homing = false;
@@ -26,7 +26,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     }
 
     private boolean positionNearHome(double position) {
-        return Util.epsilonEquals(position, homingConfig.homePosition, epsilonThreshold);
+        return MathUtil.isNear(homingConfig.homePosition, position, epsilonThreshold);
     }
 
     private boolean isNearHome() {
