@@ -1,10 +1,12 @@
 package frc.lib.hardware.motor;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkSim;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -13,14 +15,16 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
+    @SuppressWarnings("unchecked")
     protected SparkBaseSimIO(
-    SimObject simObject, 
-    DCMotor motor, 
-    REVControllerType motorControllerType, 
-    MotorType type, 
-    int mainMotor, 
-    int... followers) {
-        super(type, motor, motorControllerType, mainMotor, followers);
+        SimObject simObject, 
+        DCMotor motor, 
+        MotorType type,
+        SparkBaseConfig mainConfig,
+        int mainMotor, 
+        Pair<Integer, Boolean>... followers
+    ) {
+        super(type, mainConfig, mainMotor, followers);
         this.simMotor = new SparkSim(main.motor, motor);
 
         this.simObject = simObject;
@@ -37,10 +41,9 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
         // Radians per second
         double velocity = simObject.getVelocity();
 
-
         simMotor.iterate(
             Units.radiansPerSecondToRotationsPerMinute(velocity),
-            RoboRioSim.getVInVoltage(),
+            12,
             0.02
         );
     }

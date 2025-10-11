@@ -11,7 +11,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.system.plant.DCMotor;
+
+import edu.wpi.first.math.Pair;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
@@ -20,7 +21,7 @@ public class SparkBaseIO extends MotorIO {
     /**
      * Identifier enum for whether a motor controller is a spark base or spark max.
      */
-    public static enum REVControllerType{
+    public static enum ControllerType {
         CANSparkMax,
         CANSparkFlex
     }
@@ -38,7 +39,7 @@ public class SparkBaseIO extends MotorIO {
         public final RelativeEncoder encoder;
 
         public Exploded(
-            int id, MotorType type, REVControllerType sparkType
+            int id, MotorType type, ControllerType sparkType
         ) {
             switch (sparkType) {
                 case CANSparkFlex:
@@ -64,20 +65,37 @@ public class SparkBaseIO extends MotorIO {
      * Creates a sparkBaseIO
      * @param type Whether the motor is brushed or brushless.
      * @see com.revrobotics.spark.SparkLowLevel.MotorType
-     * @param controlledMotor The motor(s) being controlled
      * @param sparkType Enum that indicates whether the motor controller is a spark max or a spark flex
      * @param mainMotor The id of the main motor
-     * @param followers The id of any following motors
+     * @param followers The id of any following motors, and whether they are inverted
      */
-    protected SparkBaseIO(MotorType type, DCMotor controlledMotor, REVControllerType sparkType, int mainMotor, int... followers) {
+    @SuppressWarnings({ "unchecked" })
+    protected SparkBaseIO(
+        MotorType type,
+        SparkBaseConfig mainConfig,
+        int mainMotor,
+        Pair<Integer, Boolean>... followers
+    ) {
         super(followers.length);
+
+        ControllerType sparkType = null;
+
+        if (mainConfig instanceof SparkMaxConfig) {
+            sparkType = ControllerType.CANSparkMax;
+        } else if (mainConfig instanceof SparkFlexConfig) {
+            sparkType = ControllerType.CANSparkFlex;
+        } else {
+            throw new IllegalArgumentException("Main config must either be a spark max or spark flex config");
+        }
         
         main = new Exploded(mainMotor, type, sparkType);
+        main.motor.configure(mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
-            this.followers[i] = new Exploded(followers[i], type, sparkType);
+            Pair<Integer, Boolean> follower = followers[i];
+            this.followers[i] = new Exploded(follower.getFirst(), type, sparkType);
             SparkBaseConfig config = null;
             switch (sparkType) {
                 case CANSparkMax:
@@ -89,7 +107,7 @@ public class SparkBaseIO extends MotorIO {
                     break;
             }
            
-            config.follow(mainMotor);
+            config.follow(mainMotor, follower.getSecond());
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
