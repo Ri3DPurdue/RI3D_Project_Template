@@ -1,33 +1,59 @@
 package frc.lib.hardware.motor;
 
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.Pair;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
-
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
-public class SparkFlexIO extends MotorIO {
+public class SparkBaseIO extends MotorIO {
     /**
-     * Inner class for exploding a Spark Flex motor controller
+     * Identifier enum for whether a motor controller is a spark base or spark max.
+     */
+    public static enum ControllerType {
+        CANSparkMax,
+        CANSparkFlex
+    }
+    /**
+     * Inner class for exploding a generic Spark motor controller
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
+     * @param motor Either the Spark Max or the Spark Flex
+     * @param SparkClosedLoopController the REV controller to be used
+     * @param RelativeEncoder The encoder of the motor controller
      */
-    private static class Exploded {
-        public final SparkFlex motor;
+    static class Exploded {
+        public final SparkBase motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
 
         public Exploded(
-            int id, MotorType type
+            int id, MotorType type, ControllerType sparkType
         ) {
-            this.motor = new SparkFlex(id, type);
+            switch (sparkType) {
+                case CANSparkFlex:
+                    this.motor = new SparkFlex(id, type); 
+                    break;
+                case CANSparkMax:
+                    this.motor = new SparkMax(id,type);
+                    break;
+
+                default:
+                    motor = null;
+                    break;
+            }
+            
             this.controller = motor.getClosedLoopController();
             this.encoder = motor.getEncoder();
         }
@@ -35,28 +61,62 @@ public class SparkFlexIO extends MotorIO {
     
     protected final Exploded main;
     protected final Exploded[] followers;
-
-    protected SparkFlexIO(MotorType type, int mainMotor, int... followers) {
+    /**
+     * Creates a sparkBaseIO
+     * @param type Whether the motor is brushed or brushless.
+     * @see com.revrobotics.spark.SparkLowLevel.MotorType
+     * @param sparkType Enum that indicates whether the motor controller is a spark max or a spark flex
+     * @param mainMotor The id of the main motor
+     * @param followers The id of any following motors, and whether they are inverted
+     */
+    @SuppressWarnings({ "unchecked" })
+    protected SparkBaseIO(
+        MotorType type,
+        SparkBaseConfig mainConfig,
+        int mainMotor,
+        Pair<Integer, Boolean>... followers
+    ) {
         super(followers.length);
+
+        ControllerType sparkType = null;
+
+        if (mainConfig instanceof SparkMaxConfig) {
+            sparkType = ControllerType.CANSparkMax;
+        } else if (mainConfig instanceof SparkFlexConfig) {
+            sparkType = ControllerType.CANSparkFlex;
+        } else {
+            throw new IllegalArgumentException("Main config must either be a spark max or spark flex config");
+        }
         
-        main = new Exploded(mainMotor, type);
+        main = new Exploded(mainMotor, type, sparkType);
+        main.motor.configure(mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
-            this.followers[i] = new Exploded(followers[i], type);
-
-            SparkFlexConfig config = new SparkFlexConfig();
-            config.follow(mainMotor);
+            Pair<Integer, Boolean> follower = followers[i];
+            this.followers[i] = new Exploded(follower.getFirst(), type, sparkType);
+            SparkBaseConfig config = null;
+            switch (sparkType) {
+                case CANSparkMax:
+                    config = new SparkMaxConfig();
+                    break;
+                case CANSparkFlex:
+                    config = new SparkFlexConfig();
+                default:
+                    break;
+            }
+           
+            config.follow(mainMotor, follower.getSecond());
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 
     /**
-     * Inner class for exploding a Spark Max motor controller
-     * Basically, I don't want to have to call a method to get the PID controller
-     * or the relative encoder every single time I want to get them
+     * helper method for loading the data from a motor into the outputs
+     * @param controller
+     * @param outputs
      */
     private static void loadOutputs(Exploded controller, MotorOutputs outputs) {
         double output = controller.motor.getAppliedOutput();
@@ -69,7 +129,7 @@ public class SparkFlexIO extends MotorIO {
 
         outputs.position = controller.encoder.getPosition();
         outputs.velocity = controller.encoder.getVelocity();
-
+        
         outputs.temperatureCelsius = controller.motor.getMotorTemperature();
     }
 
@@ -117,4 +177,3 @@ public class SparkFlexIO extends MotorIO {
         setVoltage(0);
     }
 }
-
