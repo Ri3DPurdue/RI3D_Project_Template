@@ -26,7 +26,7 @@ public class SparkBaseIO extends MotorIO {
         CANSparkFlex
     }
     /**
-     * Inner class for exploding a generic Spark motor controller (works since both SparkMax and SparkFlex extend the same type)
+     * Inner class for exploding a generic Spark motor controller
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
      * @param motor Either the Spark Max or the Spark Flex
