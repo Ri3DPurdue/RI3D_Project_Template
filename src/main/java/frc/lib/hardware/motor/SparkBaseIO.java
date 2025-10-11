@@ -176,4 +176,16 @@ public class SparkBaseIO extends MotorIO {
     protected void setIdle() {
         setVoltage(0);
     }
+
+	@Override
+	public void useSoftLimits(boolean use) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'useSoftLimits'");
+	}
+
+	@Override
+	public void resetPosition(double position) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'resetPosition'");
+	}
 }
