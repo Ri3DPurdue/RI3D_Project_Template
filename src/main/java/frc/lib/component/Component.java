@@ -1,5 +1,7 @@
 package frc.lib.component;
 
-public interface Component {
+import frc.lib.io.logging.Loggable;
+
+public interface Component extends Loggable {
     public void periodic();
 }
