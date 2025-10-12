@@ -17,7 +17,28 @@ public class Setpoint {
 
         Percentage,
 
-        Idle
+        Idle;
+
+        public boolean isPositionControl() {
+            return switch (this) {
+                case Position, ProfiledPosition -> true;
+                default -> false;
+            };
+        }
+
+        public boolean isVelocityControl() {
+            return switch (this) {
+                case Velocity -> true;
+                default -> false;
+            };
+        }
+
+        public boolean openLoop() {
+            return switch (this) {
+                case Voltage, Percentage, Idle, Current -> true;
+                default -> false;
+            };
+        }
     }
 
     public Type outputType;
