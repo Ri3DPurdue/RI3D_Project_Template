@@ -7,6 +7,9 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 
+import org.littletonrobotics.junction.AutoLog;
+
+@AutoLog
 public class MotorOutputs {
     public Angle position;
     public AngularVelocity velocity;
