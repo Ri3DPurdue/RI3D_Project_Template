@@ -8,7 +8,7 @@ import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.Setpoint;
 
-public class MotorComponent<M extends MotorIO> implements Component{
+public class MotorComponent<M extends MotorIO> implements Component {
     private final M io;
 
     public MotorComponent(M motorIO) {
@@ -18,6 +18,13 @@ public class MotorComponent<M extends MotorIO> implements Component{
     @Override
     public void periodic() {
         io.periodic();
+    }
+
+    @Override
+    public void log(String subdirectory, String name) {
+        String path = subdirectory + "/" + name;
+
+        io.log(path, "Motor");
     }
 
     public void enable() {
