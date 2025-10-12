@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -35,16 +36,14 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("ProjectName", "RI3D Template"); // Set a metadata value
 
         if (isReal()) {
-            Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-            Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            Logger.addDataReceiver(new WPILOGWriter());
         } else {
             setUseTiming(false); // Run as fast as possible
-            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-            Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+            Logger.addDataReceiver(new WPILOGWriter(Filesystem.getDeployDirectory().getPath()));
         }
-
-        Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+        
+        Logger.addDataReceiver(new NT4Publisher());
+        Logger.start();
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our
