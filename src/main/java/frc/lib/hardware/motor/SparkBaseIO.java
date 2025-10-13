@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -37,20 +38,27 @@ public class SparkBaseIO extends MotorIO {
         public final SparkBase motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
+        public final SparkBaseConfigAccessor accessor;
 
         public Exploded(
             int id, MotorType type, ControllerType sparkType
         ) {
             switch (sparkType) {
                 case CANSparkFlex:
-                    this.motor = new SparkFlex(id, type); 
+                    SparkFlex flex = new SparkFlex(id, type);
+                    this.motor = flex;
+                    this.accessor = flex.configAccessor;
                     break;
                 case CANSparkMax:
-                    this.motor = new SparkMax(id,type);
+                    SparkMax max = new SparkMax(id, type);
+                    this.motor = max;
+                    this.accessor = max.configAccessor;
+                    
                     break;
 
                 default:
                     motor = null;
+                    accessor = null;
                     break;
             }
             
@@ -58,11 +66,15 @@ public class SparkBaseIO extends MotorIO {
             this.encoder = motor.getEncoder();
         }
     }
-    
+
     protected final ControllerType type;
     protected final Exploded main;
     private final SparkBaseConfig config;
     protected final Exploded[] followers;
+
+    private boolean forwardLimitEnabled;
+    private boolean reverseLimitEnabled;
+
     /**
      * Creates a sparkBaseIO
      * @param type Whether the motor is brushed or brushless.
@@ -91,8 +103,12 @@ public class SparkBaseIO extends MotorIO {
         }
         
         config.apply(mainConfig);
+        
         main = new Exploded(mainMotor, type, this.type);
         main.motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        forwardLimitEnabled = main.accessor.softLimit.getForwardSoftLimitEnabled();
+        reverseLimitEnabled = main.accessor.softLimit.getReverseSoftLimitEnabled();
 
         this.followers = new Exploded[followers.length];
 
@@ -128,6 +144,9 @@ public class SparkBaseIO extends MotorIO {
         }
 
         main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        forwardLimitEnabled = main.accessor.softLimit.getForwardSoftLimitEnabled();
+        reverseLimitEnabled = main.accessor.softLimit.getReverseSoftLimitEnabled();
     }
 
     /**
@@ -196,8 +215,11 @@ public class SparkBaseIO extends MotorIO {
 
 	@Override
 	public void useSoftLimits(boolean use) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'useSoftLimits'");
+        this.config.softLimit
+            .forwardSoftLimitEnabled(use && forwardLimitEnabled)
+            .reverseSoftLimitEnabled(use && reverseLimitEnabled);
+
+        main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 	}
 
 	@Override
