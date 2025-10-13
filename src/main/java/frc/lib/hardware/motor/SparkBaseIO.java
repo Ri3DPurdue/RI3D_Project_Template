@@ -202,7 +202,6 @@ public class SparkBaseIO extends MotorIO {
 
 	@Override
 	public void resetPosition(double position) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'resetPosition'");
+        main.encoder.setPosition(position);
 	}
 }
