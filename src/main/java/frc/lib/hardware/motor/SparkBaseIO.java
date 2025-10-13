@@ -72,7 +72,7 @@ public class SparkBaseIO extends MotorIO {
      * @param followers The id of any following motors, and whether they are inverted
      */
     @SuppressWarnings({ "unchecked" })
-    protected SparkBaseIO(
+    public SparkBaseIO(
         MotorType type,
         SparkBaseConfig mainConfig,
         int mainMotor,

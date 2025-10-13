@@ -11,12 +11,12 @@ import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
 
 
-public abstract class SparkBaseSimIO extends SparkBaseIO {
+public class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
     @SuppressWarnings("unchecked")
-    protected SparkBaseSimIO(
+    public SparkBaseSimIO(
         SimObject simObject, 
         DCMotor motor, 
         MotorType type,
