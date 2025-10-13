@@ -1,21 +1,23 @@
 package frc.lib.component;
 
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.Setpoint;
 
 public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M> {
-    protected double epsilonThreshold;
+    protected AngularVelocity epsilonThreshold;
 
-    public FlywheelMotorComponent(M motorIO, double epsilon) {
+    public FlywheelMotorComponent(M motorIO, AngularVelocity epsilon) {
         super(motorIO);
         epsilonThreshold = epsilon;
     }
 
-    public boolean nearVelocity(double velocity) {
-        return MathUtil.isNear(velocity, getVelocity(), epsilonThreshold);
+    public boolean nearVelocity(AngularVelocity velocity) {
+        return UnitsUtil.isNear(velocity, getVelocity(), epsilonThreshold);
     }
 
     /**
@@ -24,7 +26,7 @@ public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M>
      * @param velocity Mechanism velocity to wait until reached in radians or meters.
      * @return A command that waits until a given velocity is reached.
      */
-    public Command waitForVelocityCommand(double velocity) {
+    public Command waitForVelocityCommand(AngularVelocity velocity) {
         return Commands.waitUntil(() -> nearVelocity(velocity));
     }
 
@@ -38,7 +40,7 @@ public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M>
         if (!setpoint.outputType.isVelocityControl()) {
             throw new IllegalArgumentException("applyVelocitySetpointCommandWithWait requires a velocity setpoint");
         }
-        return waitForVelocityCommand(setpoint.value).deadlineFor(applySetpointCommand(setpoint));
+        return waitForVelocityCommand(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(setpoint.value)).deadlineFor(applySetpointCommand(setpoint));
     }
     
 }

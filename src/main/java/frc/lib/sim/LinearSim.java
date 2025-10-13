@@ -1,5 +1,8 @@
 package frc.lib.sim;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 public class LinearSim extends SimObject {
@@ -25,13 +28,13 @@ public class LinearSim extends SimObject {
     }
 
     @Override
-    public void setVoltage(double volts) {
-        sim.setInputVoltage(volts);
+    public void setVoltage(Voltage voltage) {
+        sim.setInputVoltage(voltage.in(Units.Volts));
     }
 
     @Override
-    protected void simulate(double deltaSeconds) {
-        sim.update(deltaSeconds);
+    protected void simulate(Time deltaTime) {
+        sim.update(deltaTime.in(Units.Seconds));
     }
     
 }

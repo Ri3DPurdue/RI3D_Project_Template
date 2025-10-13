@@ -1,9 +1,12 @@
 package frc.lib.sim;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 
 public abstract class SimObject {
-    private double lastFPGASeconds;
+    private Time lastFPGASeconds;
 
     /**
      * Get the position of the simulation. Updates when {@link #update()} is called.
@@ -33,23 +36,23 @@ public abstract class SimObject {
      * Set the input voltage of the simulation. Should be updated based on simulated motor output before updating 
      * sim with {@link #update()}.
      * 
-     * @param volts Motor voltage in volts.
+     * @param voltage Motor voltage.
      */
-    public abstract void setVoltage(double volts);
+    public abstract void setVoltage(Voltage voltage);
 
     /**
      * Update the implementation specific internal simulation based on the time passed since the last update.
      * 
      * @param deltaSeconds The amount of time since the last simulation update.
      */
-    protected abstract void simulate(double deltaSeconds);
+    protected abstract void simulate(Time deltaTime);
 
     /**
      * Update the simulation. Needs to be called periodically more frequent calls will result in higher sim resolution.
      */
     public void update() {
-        double currentFPGASeconds = Timer.getFPGATimestamp();
-        simulate(currentFPGASeconds - lastFPGASeconds);
+        Time currentFPGASeconds = Units.Seconds.of(Timer.getFPGATimestamp());
+        simulate(currentFPGASeconds.minus(lastFPGASeconds));
         lastFPGASeconds = currentFPGASeconds;
     }
 
@@ -57,6 +60,6 @@ public abstract class SimObject {
      * Construct a SimObject and set starting timestamp.
      */
     protected SimObject() {
-        lastFPGASeconds = Timer.getFPGATimestamp();
+        lastFPGASeconds = Units.Seconds.of(Timer.getFPGATimestamp());
     }
 }

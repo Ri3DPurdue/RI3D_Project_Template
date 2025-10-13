@@ -14,6 +14,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
@@ -157,16 +159,16 @@ public class SparkBaseIO extends MotorIO {
     private static void loadOutputs(Exploded controller, MotorOutputs outputs) {
         double output = controller.motor.getAppliedOutput();
 
-        outputs.statorCurrent = controller.motor.getOutputCurrent();
-        outputs.supplyCurrent = outputs.statorCurrent * output;
+        outputs.statorCurrent = Units.Amps.of(controller.motor.getOutputCurrent());
+        outputs.supplyCurrent = outputs.statorCurrent.times(output);
 
-        outputs.supplyVoltage = controller.motor.getBusVoltage();
-        outputs.statorVoltage = outputs.supplyVoltage * output;
+        outputs.supplyVoltage = Units.Volts.of(controller.motor.getBusVoltage());
+        outputs.statorVoltage = outputs.supplyVoltage.times(output);
 
-        outputs.position = controller.encoder.getPosition();
-        outputs.velocity = controller.encoder.getVelocity();
+        outputs.position = Units.Rotations.of(controller.encoder.getPosition());
+        outputs.velocity = Units.RPM.of(controller.encoder.getVelocity());
         
-        outputs.temperatureCelsius = controller.motor.getMotorTemperature();
+        outputs.temperatureCelsius = Units.Celsius.of(controller.motor.getMotorTemperature());
     }
 
     @Override
@@ -223,7 +225,7 @@ public class SparkBaseIO extends MotorIO {
 	}
 
 	@Override
-	public void resetPosition(double position) {
-        main.encoder.setPosition(position);
+	public void resetPosition(Angle position) {
+        main.encoder.setPosition(position.in(Units.Rotations));
 	}
 }
