@@ -59,7 +59,9 @@ public class SparkBaseIO extends MotorIO {
         }
     }
     
+    protected final ControllerType type;
     protected final Exploded main;
+    private final SparkBaseConfig config;
     protected final Exploded[] followers;
     /**
      * Creates a sparkBaseIO
@@ -78,26 +80,27 @@ public class SparkBaseIO extends MotorIO {
     ) {
         super(followers.length);
 
-        ControllerType sparkType = null;
-
         if (mainConfig instanceof SparkMaxConfig) {
-            sparkType = ControllerType.CANSparkMax;
+            this.type = ControllerType.CANSparkMax;
+            config = new SparkMaxConfig();
         } else if (mainConfig instanceof SparkFlexConfig) {
-            sparkType = ControllerType.CANSparkFlex;
+            this.type = ControllerType.CANSparkFlex;
+            config = new SparkFlexConfig();
         } else {
             throw new IllegalArgumentException("Main config must either be a spark max or spark flex config");
         }
         
-        main = new Exploded(mainMotor, type, sparkType);
-        main.motor.configure(mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config.apply(mainConfig);
+        main = new Exploded(mainMotor, type, this.type);
+        main.motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
             Pair<Integer, Boolean> follower = followers[i];
-            this.followers[i] = new Exploded(follower.getFirst(), type, sparkType);
+            this.followers[i] = new Exploded(follower.getFirst(), type, this.type);
             SparkBaseConfig config = null;
-            switch (sparkType) {
+            switch (this.type) {
                 case CANSparkMax:
                     config = new SparkMaxConfig();
                     break;
@@ -111,6 +114,20 @@ public class SparkBaseIO extends MotorIO {
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
+    }
+
+    public void reconfigure(SparkBaseConfig config) {
+        if (config == this.config) {
+            // Internal for more easy reconfiguring
+        } if (this.type == ControllerType.CANSparkMax && !(config instanceof SparkMaxConfig)) {
+            throw new IllegalArgumentException("Must configure a spark max with a spark max config");
+        } else if (this.type == ControllerType.CANSparkFlex && !(config instanceof SparkFlexConfig)) {
+            throw new IllegalArgumentException("Must configure a spark flex with a spark flex config");
+        } else {
+            this.config.apply(config);
+        }
+
+        main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     /**
