@@ -1,9 +1,8 @@
 package frc.lib.io.motor;
 
-import static frc.lib.io.motor.Setpoint.Type;
-
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.units.measure.Angle;
 import frc.lib.io.logging.Loggable;
 
 public abstract class MotorIO implements Loggable {
@@ -21,7 +20,7 @@ public abstract class MotorIO implements Loggable {
             throw new IllegalArgumentException("Number of followers must be non-negative");
         }
 
-        currentSetpoint = new Setpoint(Type.Idle, 0);
+        currentSetpoint = Setpoint.idleSetpoint();
         outputs = new MotorOutputsAutoLogged[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
             outputs[i] = new MotorOutputsAutoLogged();
@@ -161,5 +160,5 @@ public abstract class MotorIO implements Loggable {
     protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
     public abstract void useSoftLimits(boolean use);
-    public abstract void resetPosition(double position);
+    public abstract void resetPosition(Angle position);
 }

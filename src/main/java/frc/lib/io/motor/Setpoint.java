@@ -1,5 +1,11 @@
 package frc.lib.io.motor;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Voltage;
+
 /**
  * Class that defines a setpoint to a MotorIO
  * Holds what kind of setpoint it is (Motor output type) and what value it takes
@@ -52,9 +58,37 @@ public class Setpoint {
         this.value = 0;
     }
 
-    public Setpoint(Type outputType, double value) {
+    private Setpoint(Type outputType, double value) {
         this.outputType = outputType;
         this.value = value;
+    }
+
+    public static Setpoint voltageSetpoint(Voltage voltage) {
+        return new Setpoint(Type.Voltage, voltage.baseUnitMagnitude());
+    }
+
+    public static Setpoint currentSetpoint(Current current) {
+        return new Setpoint(Type.Current, current.baseUnitMagnitude());
+    }
+
+    public static Setpoint velocitySetpoint(AngularVelocity velocity) {
+        return new Setpoint(Type.Velocity, velocity.baseUnitMagnitude());
+    }
+
+    public static Setpoint positionSetpoint(Angle angle) {
+        return new Setpoint(Type.Position, angle.baseUnitMagnitude());
+    }
+
+    public static Setpoint profiledPositionSetpoint(Angle angle) {
+        return new Setpoint(Type.ProfiledPosition, angle.baseUnitMagnitude());
+    }
+
+    public static Setpoint percentSetpoint(Dimensionless percent) {
+        return new Setpoint(Type.Percentage, percent.baseUnitMagnitude());
+    }
+
+    public static Setpoint idleSetpoint() {
+        return new Setpoint(Type.Idle, 0.0);
     }
 
     /**

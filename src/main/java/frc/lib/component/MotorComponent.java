@@ -2,6 +2,11 @@ package frc.lib.component;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
@@ -57,7 +62,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getPosition() {
+    public Angle getPosition() {
         return getMotorOutputs()[0].position;
     }
 
@@ -66,7 +71,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getVelocity() {
+    public AngularVelocity getVelocity() {
         return getMotorOutputs()[0].velocity;
     }
 
@@ -75,7 +80,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getStatorVoltage() {
+    public Voltage getStatorVoltage() {
         return getMotorOutputs()[0].statorVoltage;
     }
 
@@ -84,7 +89,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getSupplyVoltage() {
+    public Voltage getSupplyVoltage() {
         return getMotorOutputs()[0].supplyVoltage;
     }
 
@@ -93,7 +98,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getStatorCurrent() {
+    public Current getStatorCurrent() {
         return getMotorOutputs()[0].statorCurrent;
     }
 
@@ -102,7 +107,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getSupplyCurrent() {
+    public Current getSupplyCurrent() {
         return getMotorOutputs()[0].supplyCurrent;
     }
 
@@ -111,7 +116,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public double getTemperature() {
+    public Temperature getTemperature() {
         return getMotorOutputs()[0].temperatureCelsius;
     }
 
@@ -128,7 +133,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
         io.useSoftLimits(use);
     }
 
-    public void resetPosition(double position) {
+    public void resetPosition(Angle position) {
         io.resetPosition(position);
     }
 

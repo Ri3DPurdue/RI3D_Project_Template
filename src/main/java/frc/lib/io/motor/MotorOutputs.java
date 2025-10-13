@@ -1,31 +1,45 @@
 package frc.lib.io.motor;
 
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
+
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog
 public class MotorOutputs {
-    public double position;
-    public double velocity;
+    public Angle position;
+    public AngularVelocity velocity;
 
-    public double supplyVoltage;
-    public double statorVoltage;
+    public Voltage supplyVoltage;
+    public Voltage statorVoltage;
     
-    public double statorCurrent;
-    public double supplyCurrent;
-    public double temperatureCelsius;
+    public Current statorCurrent;
+    public Current supplyCurrent;
+    public Temperature temperatureCelsius;
 
     public MotorOutputs() {
-        this(0, 0, 0, 0, 0, 0, 0);
+        this(BaseUnits.AngleUnit.zero(), 
+        BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).zero(), 
+        BaseUnits.VoltageUnit.zero(), 
+        BaseUnits.VoltageUnit.zero(), 
+        BaseUnits.CurrentUnit.zero(), 
+        BaseUnits.CurrentUnit.zero(), 
+        BaseUnits.TemperatureUnit.zero() 
+        );
     }
 
     public MotorOutputs(
-        double position,
-        double velocity,
-        double supplyVoltage,
-        double statorVoltage,
-        double statorCurrent,
-        double supplyCurrent,
-        double temperatureCelsius
+        Angle position,
+        AngularVelocity velocity,
+        Voltage supplyVoltage,
+        Voltage statorVoltage,
+        Current statorCurrent,
+        Current supplyCurrent,
+        Temperature temperatureCelsius
     ) {
         this.position = position;
         this.velocity = velocity;
