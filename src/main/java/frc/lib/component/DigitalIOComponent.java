@@ -16,6 +16,11 @@ public class DigitalIOComponent implements Component {
         io.update();
     }
 
+    @Override
+    public void log(String subdirectory, String name) {
+        io.log(subdirectory, name);
+    }
+
     public boolean get() {
         return io.get();
     }
