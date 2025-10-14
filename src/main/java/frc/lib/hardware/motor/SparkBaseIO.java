@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -39,20 +40,27 @@ public class SparkBaseIO extends MotorIO {
         public final SparkBase motor;
         public final SparkClosedLoopController controller;
         public final RelativeEncoder encoder;
+        public final SparkBaseConfigAccessor accessor;
 
         public Exploded(
             int id, MotorType type, ControllerType sparkType
         ) {
             switch (sparkType) {
                 case CANSparkFlex:
-                    this.motor = new SparkFlex(id, type); 
+                    SparkFlex flex = new SparkFlex(id, type);
+                    this.motor = flex;
+                    this.accessor = flex.configAccessor;
                     break;
                 case CANSparkMax:
-                    this.motor = new SparkMax(id,type);
+                    SparkMax max = new SparkMax(id, type);
+                    this.motor = max;
+                    this.accessor = max.configAccessor;
+                    
                     break;
 
                 default:
                     motor = null;
+                    accessor = null;
                     break;
             }
             
@@ -60,9 +68,15 @@ public class SparkBaseIO extends MotorIO {
             this.encoder = motor.getEncoder();
         }
     }
-    
+
+    protected final ControllerType type;
     protected final Exploded main;
+    private final SparkBaseConfig config;
     protected final Exploded[] followers;
+
+    private boolean forwardLimitEnabled;
+    private boolean reverseLimitEnabled;
+
     /**
      * Creates a sparkBaseIO
      * @param type Whether the motor is brushed or brushless.
@@ -80,26 +94,31 @@ public class SparkBaseIO extends MotorIO {
     ) {
         super(followers.length);
 
-        ControllerType sparkType = null;
-
         if (mainConfig instanceof SparkMaxConfig) {
-            sparkType = ControllerType.CANSparkMax;
+            this.type = ControllerType.CANSparkMax;
+            config = new SparkMaxConfig();
         } else if (mainConfig instanceof SparkFlexConfig) {
-            sparkType = ControllerType.CANSparkFlex;
+            this.type = ControllerType.CANSparkFlex;
+            config = new SparkFlexConfig();
         } else {
             throw new IllegalArgumentException("Main config must either be a spark max or spark flex config");
         }
         
-        main = new Exploded(mainMotor, type, sparkType);
-        main.motor.configure(mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config.apply(mainConfig);
+        
+        main = new Exploded(mainMotor, type, this.type);
+        main.motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        forwardLimitEnabled = main.accessor.softLimit.getForwardSoftLimitEnabled();
+        reverseLimitEnabled = main.accessor.softLimit.getReverseSoftLimitEnabled();
 
         this.followers = new Exploded[followers.length];
 
         for (int i = 0; i < followers.length; i++) {
             Pair<Integer, Boolean> follower = followers[i];
-            this.followers[i] = new Exploded(follower.getFirst(), type, sparkType);
+            this.followers[i] = new Exploded(follower.getFirst(), type, this.type);
             SparkBaseConfig config = null;
-            switch (sparkType) {
+            switch (this.type) {
                 case CANSparkMax:
                     config = new SparkMaxConfig();
                     break;
@@ -113,6 +132,23 @@ public class SparkBaseIO extends MotorIO {
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
+    }
+
+    public void reconfigure(SparkBaseConfig config) {
+        if (config == this.config) {
+            // Internal for more easy reconfiguring
+        } if (this.type == ControllerType.CANSparkMax && !(config instanceof SparkMaxConfig)) {
+            throw new IllegalArgumentException("Must configure a spark max with a spark max config");
+        } else if (this.type == ControllerType.CANSparkFlex && !(config instanceof SparkFlexConfig)) {
+            throw new IllegalArgumentException("Must configure a spark flex with a spark flex config");
+        } else {
+            this.config.apply(config);
+        }
+
+        main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        forwardLimitEnabled = main.accessor.softLimit.getForwardSoftLimitEnabled();
+        reverseLimitEnabled = main.accessor.softLimit.getReverseSoftLimitEnabled();
     }
 
     /**
@@ -181,13 +217,15 @@ public class SparkBaseIO extends MotorIO {
 
 	@Override
 	public void useSoftLimits(boolean use) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'useSoftLimits'");
+        this.config.softLimit
+            .forwardSoftLimitEnabled(use && forwardLimitEnabled)
+            .reverseSoftLimitEnabled(use && reverseLimitEnabled);
+
+        main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 	}
 
 	@Override
 	public void resetPosition(Angle position) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'resetPosition'");
+        main.encoder.setPosition(position.in(Units.Rotations));
 	}
 }
