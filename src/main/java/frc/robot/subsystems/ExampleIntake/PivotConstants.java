@@ -30,9 +30,9 @@ public class PivotConstants {
     public static final Angle stowAngle = Units.Degrees.of(110.0);
     public static final Angle unjamAngle = Units.Degrees.of(70.0);
 
-    public static final Setpoint deploySetpoint = Setpoint.profiledPositionSetpoint(deployAngle);
-    public static final Setpoint stowSetpoint = Setpoint.profiledPositionSetpoint(stowAngle);
-    public static final Setpoint unjamSetpoint = Setpoint.profiledPositionSetpoint(unjamAngle);
+    public static final Setpoint deploySetpoint = Setpoint.positionSetpoint(deployAngle);
+    public static final Setpoint stowSetpoint = Setpoint.positionSetpoint(stowAngle);
+    public static final Setpoint unjamSetpoint =Setpoint.positionSetpoint(unjamAngle);
 
     public static final ServoMotorComponent<SparkBaseIO> getPivot() {
         return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold);
@@ -60,7 +60,7 @@ public class PivotConstants {
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .p(100.0)
+            .p(1.0)
             .d(0.0);
         return config;    
     }
@@ -70,8 +70,8 @@ public class PivotConstants {
             new SingleJointedArmSim(
                 motor, 
                 gearing, 
-                0.1, 
-                0.1, 
+                1.0, 
+                1.0, 
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 
                 false, 
