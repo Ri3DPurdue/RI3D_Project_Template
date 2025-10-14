@@ -136,6 +136,9 @@ public abstract class MotorIO implements Loggable {
     public void log(String subdirectory, String name) {
         String dir = subdirectory + "/" + name;
 
+        Logger.recordOutput(dir + "/Setpoint Base Units Value", getCurrentSetpoint().value); // TODO make log in the same place as MotorOutputs
+        Logger.recordOutput(dir + "/Setpoint Output Type", getCurrentSetpoint().outputType); // TODO make log in the same place as MotorOutputs
+
         Logger.processInputs(dir, outputs[0]);
 
         for (int i = 1; i < outputs.length; i++) {

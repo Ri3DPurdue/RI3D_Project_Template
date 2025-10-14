@@ -18,7 +18,10 @@ public class ExampleIntake extends ComponentSubsystem {
 
     public Command intake() {
         return sequence(
-            pivot.applyPositionSetpointCommandWithWait(PivotConstants.deploySetpoint),
+            parallel(
+                pivot.applyPositionSetpointCommandWithWait(PivotConstants.deploySetpoint),
+                rollers.applySetpointCommand(RollerConstants.idleSetpoint)
+            ),
             rollers.applySetpointCommand(RollerConstants.inwardsSetpoint)
         );
     }
