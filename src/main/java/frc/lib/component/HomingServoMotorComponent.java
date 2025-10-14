@@ -20,8 +20,8 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     private Debouncer homingDebouncer;
 
 
-    public HomingServoMotorComponent(M motorIO, Angle epsilon, HomingConfig config) {
-        super(motorIO, epsilon);
+    public HomingServoMotorComponent(M motorIO, Angle epsilon, Angle startAngle, HomingConfig config) {
+        super(motorIO, epsilon, startAngle);
         homingConfig = config;
         homingDebouncer = new Debouncer(config.homingDebouce.in(Units.Seconds), DebounceType.kRising);
     }
