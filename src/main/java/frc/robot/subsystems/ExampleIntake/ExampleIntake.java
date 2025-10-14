@@ -19,11 +19,4 @@ public class ExampleIntake extends ComponentSubsystem {
     public Command intake() {
         return pivot.applySetpointCommand(Setpoint.voltageSetpoint(Units.Volts.of(12.0)));
     }
-
-    @Override
-    public void periodic() {
-        // TODO Auto-generated method stub
-        super.periodic();
-        SmartDashboard.putNumber("TEST", Timer.getFPGATimestamp());
-    }
 }
