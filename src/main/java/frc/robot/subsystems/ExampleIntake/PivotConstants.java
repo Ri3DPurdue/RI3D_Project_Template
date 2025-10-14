@@ -23,19 +23,19 @@ public class PivotConstants {
     public static final double gearing = 1.0;
     public static final DCMotor motor = DCMotor.getNeo550(2);
 
-    public static final Angle minAngle = Units.Degrees.of(0.0);
-    public static final Angle maxAngle = Units.Degrees.of(110.0);
+    public static final Angle minAngle = Units.Radians.of(0.0);
+    public static final Angle maxAngle = Units.Radians.of(110.0);
 
-    public static final Angle deployAngle = Units.Degrees.of(10.0);
-    public static final Angle stowAngle = Units.Degrees.of(110.0);
-    public static final Angle unjamAngle = Units.Degrees.of(70.0);
+    public static final Angle deployAngle = Units.Radians.of(10.0);
+    public static final Angle stowAngle = Units.Radians.of(110.0);
+    public static final Angle unjamAngle = Units.Radians.of(70.0);
 
     public static final Setpoint deploySetpoint = Setpoint.positionSetpoint(deployAngle);
     public static final Setpoint stowSetpoint = Setpoint.positionSetpoint(stowAngle);
     public static final Setpoint unjamSetpoint =Setpoint.positionSetpoint(unjamAngle);
 
     public static final ServoMotorComponent<SparkBaseIO> getPivot() {
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold);
+        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, minAngle);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,8 +60,8 @@ public class PivotConstants {
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .p(1.0)
-            .d(0.0);
+            .p(0.1)
+            .d(0.1);
         return config;    
     }
 
@@ -74,7 +74,7 @@ public class PivotConstants {
                 1.0, 
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 
-                false, 
+                false,
                 minAngle.in(Units.Radians), 
                 0.0, 0.0);
         return new PivotSim(system);

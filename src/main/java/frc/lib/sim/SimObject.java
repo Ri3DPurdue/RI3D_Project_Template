@@ -52,10 +52,12 @@ public abstract class SimObject {
     /**
      * Update the simulation. Needs to be called periodically more frequent calls will result in higher sim resolution.
      */
-    public void update() {
+    public Time update() {
         Time currentFPGASeconds = Units.Seconds.of(Timer.getFPGATimestamp());
-        simulate(currentFPGASeconds.minus(lastFPGASeconds));
+        Time deltaTime = currentFPGASeconds.minus(lastFPGASeconds);
+        simulate(deltaTime);
         lastFPGASeconds = currentFPGASeconds;
+        return deltaTime;
     }
 
     /**

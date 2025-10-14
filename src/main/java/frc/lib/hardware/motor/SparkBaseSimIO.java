@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkSim;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
 import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -36,12 +37,12 @@ public class SparkBaseSimIO extends SparkBaseIO {
         MotorOutputs outputs = getOutputs()[0];
         
         simObject.setVoltage(outputs.statorVoltage);
-        simObject.update();
+        Time deltaTime = simObject.update();
 
         simMotor.iterate(
             simObject.getVelocity().in(Units.RadiansPerSecond),
             12,
-            0.02
+            deltaTime.in(Units.Seconds)
         );
     }
 }
