@@ -181,28 +181,28 @@ public class SparkBaseIO extends MotorIO {
     }
 
     @Override
-    protected void setVoltage(double voltage) {
-        main.controller.setReference(voltage, kVoltage);
+    protected void setVoltage(double volts) {
+        main.controller.setReference(volts, kVoltage);
     }
 
     @Override
-    protected void setCurrent(double current) {
-        main.controller.setReference(current, kCurrent);
+    protected void setCurrent(double amps) {
+        main.controller.setReference(amps, kCurrent);
     }
 
     @Override
-    protected void setPosition(double position) {
-        main.controller.setReference(position, kPosition);
+    protected void setPosition(double rads) {
+        main.controller.setReference(edu.wpi.first.math.util.Units.radiansToRotations(rads), kPosition);
     }
 
     @Override
-    protected void setVelocity(double velocity) {
-        main.controller.setReference(velocity, kVelocity);
+    protected void setVelocity(double radsPerSecond) {
+        main.controller.setReference(edu.wpi.first.math.util.Units.radiansPerSecondToRotationsPerMinute(radsPerSecond), kVelocity);
     }
     
     @Override
-    protected void setProfiledPosition(double position) {
-        main.controller.setReference(position, kMAXMotionPositionControl);
+    protected void setProfiledPosition(double rads) {
+        main.controller.setReference(edu.wpi.first.math.util.Units.radiansToRotations(rads), kMAXMotionPositionControl);
     }
 
     @Override

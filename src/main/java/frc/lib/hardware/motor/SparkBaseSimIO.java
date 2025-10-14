@@ -40,7 +40,7 @@ public class SparkBaseSimIO extends SparkBaseIO {
         Time deltaTime = simObject.update();
 
         simMotor.iterate(
-            simObject.getVelocity().in(Units.RadiansPerSecond),
+            simObject.getVelocity().in(Units.RPM),
             12,
             deltaTime.in(Units.Seconds)
         );
