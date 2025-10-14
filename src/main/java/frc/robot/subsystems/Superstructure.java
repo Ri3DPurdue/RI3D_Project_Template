@@ -8,7 +8,15 @@ public class Superstructure implements Loggable {
     public final ExampleIntake intake = new ExampleIntake();
 
     public Command intake() {
-        return intake.intake();
+        return intake.intake().withName("Intake");
+    }
+
+    public Command spit() {
+        return intake.spit().withName("Spit");
+    }
+
+    public Command stow() {
+        return intake.stow().withName("Stow");
     }
 
     @Override
