@@ -1,6 +1,10 @@
 package frc.lib.sim;
 
+import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -13,18 +17,18 @@ public class RollerSim extends SimObject{
     }
 
     @Override
-    public double getPosition() {
-        return Double.NaN; // Rollers do not care about position. (Replace with 0 if NaN causes issues)
+    public Angle getPosition() {
+        return BaseUnits.AngleUnit.zero(); // Rollers do not care about position and no simulated value exists so just return 0
     }
 
     @Override
-    public double getVelocity() {
-        return sim.getAngularVelocityRadPerSec();
+    public AngularVelocity getVelocity() {
+        return Units.RadiansPerSecond.of(sim.getAngularVelocityRadPerSec());
     }
 
     @Override
-    public double getStatorCurrent() {
-        return sim.getCurrentDrawAmps();
+    public Current getStatorCurrent() {
+        return Units.Amps.of(sim.getCurrentDrawAmps());
     }
 
     @Override
