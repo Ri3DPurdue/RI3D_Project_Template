@@ -13,7 +13,7 @@ public class ExampleIntake extends ComponentSubsystem {
     private final ServoMotorComponent<SparkBaseIO> pivot;
 
     public ExampleIntake() {
-        pivot = registerComponent(ExampleIntakeConstants.Pivot.getPivot());
+        pivot = registerComponent(ExampleIntakeConstants.Pivot.getPivot(), "Pivot");
     }
 
     public Command intake() {

@@ -62,8 +62,6 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putNumber("TEST2", Timer.getFPGATimestamp());
-
         // Runs the Scheduler. This is responsible for polling buttons, adding
         // newly-scheduled
         // commands, running already-scheduled commands, removing finished or
@@ -72,7 +70,7 @@ public class Robot extends LoggedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        SmartDashboard.putNumber("TEST3", Timer.getFPGATimestamp());
+        superstructure.log("Robot", "Superstructure");
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
