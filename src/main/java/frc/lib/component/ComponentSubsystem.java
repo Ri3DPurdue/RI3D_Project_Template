@@ -24,9 +24,9 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
 
     @Override
     public void log(String subdirectory, String name) {
-        for (String componentName : namedComponents.keySet()) {
-            namedComponents.get(componentName).log(subdirectory + "/" + name, componentName);
-        }
+        for (Map.Entry<String, Component> namedComponent : namedComponents.entrySet()) {
+            namedComponent.getValue().log(subdirectory + "/" + name, namedComponent.getKey());
+          }
     }
 
     protected Command sequence(Command... commands) {
