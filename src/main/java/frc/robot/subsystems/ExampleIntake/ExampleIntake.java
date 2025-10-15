@@ -1,8 +1,8 @@
 package frc.robot.subsystems.ExampleIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
+import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.hardware.motor.SparkBaseIO;
@@ -10,19 +10,29 @@ import frc.lib.hardware.motor.SparkBaseIO;
 public class ExampleIntake extends ComponentSubsystem {
     private final ServoMotorComponent<SparkBaseIO> pivot;
     private final MotorComponent<SparkBaseIO> rollers;
+    private final FlywheelMotorComponent<SparkBaseIO> indexer;
 
     public ExampleIntake() {
         pivot = registerComponent("Pivot", PivotConstants.getPivot());
         rollers = registerComponent("Rollers", RollerConstants.getRoller());
+        indexer = registerComponent("Indexer", IndexerConstants.getIndexer());
+    }
+
+    public Command idleRollers() {
+        return parallel(
+            rollers.applySetpointCommand(RollerConstants.idleSetpoint),
+            indexer.applySetpointCommand(IndexerConstants.idleSetpoint)
+        );
     }
 
     public Command intake() {
         return sequence(
             parallel(
                 pivot.applyPositionSetpointCommandWithWait(PivotConstants.deploySetpoint),
-                rollers.applySetpointCommand(RollerConstants.idleSetpoint)
+                idleRollers()
             ),
-            rollers.applySetpointCommand(RollerConstants.inwardsSetpoint)
+            rollers.applySetpointCommand(RollerConstants.inwardsSetpoint),
+            indexer.applySetpointCommand(IndexerConstants.feedSetpoint)
         );
     }
 
@@ -30,15 +40,14 @@ public class ExampleIntake extends ComponentSubsystem {
         return parallel(
             pivot.applySetpointCommand(PivotConstants.unjamSetpoint),
             rollers.applySetpointCommand(RollerConstants.spitSetpoint),
-            Commands.waitSeconds(0.1) // TODO REMOVE (temporary so it shows up on commandscheduler log for debugging)
+            indexer.applySetpointCommand(IndexerConstants.spitSetpoint)
         );
     }
 
     public Command stow() {
         return parallel(
             pivot.applySetpointCommand(PivotConstants.stowSetpoint),
-            rollers.applySetpointCommand(RollerConstants.idleSetpoint),
-            Commands.waitSeconds(0.1) // TODO REMOVE (temporary so it shows up on commandscheduler log for debugging)
+            idleRollers()
         );
     }
 }
