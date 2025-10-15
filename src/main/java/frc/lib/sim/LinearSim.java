@@ -1,30 +1,36 @@
 package frc.lib.sim;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.lib.Util.UnitsUtil.DistanceAngleConverter;
 
 public class LinearSim extends SimObject {
     private final ElevatorSim sim;
+    private final DistanceAngleConverter converter;
 
-    public LinearSim(ElevatorSim system) {
+    public LinearSim(ElevatorSim system, DistanceAngleConverter distanceAngleConverter) {
         sim = system;
+        converter = distanceAngleConverter;
     }
     
     @Override
-    public double getPosition() {
-        return sim.getPositionMeters();
+    public Angle getPosition() {
+        return converter.toAngle(Units.Meters.of(sim.getPositionMeters()));
     }
 
     @Override
-    public double getVelocity() {
-        return sim.getVelocityMetersPerSecond();
+    public AngularVelocity getVelocity() {
+        return converter.toAngle(Units.MetersPerSecond.of(sim.getVelocityMetersPerSecond()));
     }
 
     @Override
-    public double getStatorCurrent() {
-        return sim.getCurrentDrawAmps();
+    public Current getStatorCurrent() {
+        return Units.Amps.of(sim.getCurrentDrawAmps());
     }
 
     @Override

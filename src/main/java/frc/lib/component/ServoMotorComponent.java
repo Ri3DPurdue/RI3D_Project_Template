@@ -11,9 +11,10 @@ import frc.lib.io.motor.Setpoint;
 public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected Angle epsilonThreshold;
 
-    public ServoMotorComponent(M motorIO, Angle epsilon) {
+    public ServoMotorComponent(M motorIO, Angle epsilon, Angle startAngle) {
         super(motorIO);
         epsilonThreshold = epsilon;
+        resetPosition(startAngle);
     }
 
     public boolean nearPosition(Angle position) {
