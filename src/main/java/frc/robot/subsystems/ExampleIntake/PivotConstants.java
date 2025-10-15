@@ -60,8 +60,8 @@ public class PivotConstants {
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .p(1.0)
-            .d(0.1);
+            .p(0.15)
+            .d(0.15);
         return config;    
     }
 
@@ -70,7 +70,7 @@ public class PivotConstants {
             new SingleJointedArmSim(
                 motor, 
                 gearing, 
-                0.1, 
+                0.01, 
                 0.2, 
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 
