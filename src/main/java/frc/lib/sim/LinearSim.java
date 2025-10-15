@@ -25,7 +25,7 @@ public class LinearSim extends SimObject {
 
     @Override
     public AngularVelocity getVelocity() {
-        return converter.toAngle(Units.Meters.of(sim.getVelocityMetersPerSecond())).div(Units.Seconds.of(1.0));
+        return converter.toAngle(Units.MetersPerSecond.of(sim.getVelocityMetersPerSecond()));
     }
 
     @Override

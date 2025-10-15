@@ -8,7 +8,11 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
 
 public class UnitsUtil {
     public static <M extends Measure<U>, U extends Unit> boolean isNear(M expected, M actual, M tolerance) {
@@ -26,23 +30,63 @@ public class UnitsUtil {
 		}
 
 		/**
-		 * Converts a distance measurement to an equal angle measurement based on radius initialized with.
+		 * Converts a Distance measurement to an equal Angle measurement based on radius initialized with.
 		 *
-		 * @param distance Distance to convert to angle.
-		 * @return Angle distance is equivalent to.
+		 * @param distance Distance to convert to Angle.
+		 * @return Angle the Distance is equivalent to.
 		 */
 		public Angle toAngle(Distance distance) {
-			return Units.Radians.of(distance.in(BaseUnits.DistanceUnit) / radius.baseUnitMagnitude());
+			return Units.Radians.of(distance.baseUnitMagnitude() / radius.baseUnitMagnitude());
 		}
 
 		/**
-		 * Converts an angle measurement to an equal distance measurement based on radius initialized with.
+		 * Converts a Linear Velocity measurement to an equal Angular Velocity measurement based on radius initialized with.
 		 *
-		 * @param distance angle to convert to distance.
-		 * @return Distance agle is equivalent to.
+		 * @param distance Linear Velocity to convert to Angular Velocity.
+		 * @return Angular Velocity the Linear Velocity is equivalent to.
+		 */
+		public AngularVelocity toAngle(LinearVelocity distance) {
+			return toAngle(distance.times(BaseUnits.TimeUnit.one())).per(BaseUnits.TimeUnit);
+		}
+
+		/**
+		 * Converts a Linear Acceleration measurement to an equal Angular Acceleration measurement based on radius initialized with.
+		 *
+		 * @param distance Linear Acceleration to convert to Angular Acceleration.
+		 * @return Angular Acceleration the Linear Acceleration is equivalent to.
+		 */
+		public AngularAcceleration toAngle(LinearAcceleration distance) {
+			return toAngle(distance.times(BaseUnits.TimeUnit.one())).per(BaseUnits.TimeUnit);
+		}
+
+		/**
+		 * Converts an Angle measurement to an equal Distance measurement based on radius initialized with.
+		 *
+		 * @param distance Angle to convert to Distance.
+		 * @return Distance the Angle is equivalent to.
 		 */
 		public Distance toDistance(Angle angle) {
 			return BaseUnits.DistanceUnit.of(angle.in(Units.Radians) * radius.baseUnitMagnitude());
+		}
+
+		/**
+		 * Converts an Angular Velocity measurement to an equal Linear Velocity measurement based on radius initialized with.
+		 *
+		 * @param distance Angular Velocity to convert to Linear Velocity.
+		 * @return Linear Velocity the Angular Velocity is equivalent to.
+		 */
+		public LinearVelocity toDistance(AngularVelocity angle) {
+			return toDistance(angle.times(BaseUnits.TimeUnit.one())).per(BaseUnits.TimeUnit);
+		}
+
+		/**
+		 * Converts an Angular Acceleration measurement to an equal Linear Acceleration measurement based on radius initialized with.
+		 *
+		 * @param distance Angular Acceleration to convert to Linear Acceleration.
+		 * @return Linear Acceleration the Angular Acceleration is equivalent to.
+		 */
+		public LinearAcceleration toDistance(AngularAcceleration angle) {
+			return toDistance(angle.times(BaseUnits.TimeUnit.one())).per(BaseUnits.TimeUnit);
 		}
 
 		/**
