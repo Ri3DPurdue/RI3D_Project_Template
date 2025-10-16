@@ -17,8 +17,8 @@ public class Logger extends DogLog {
     }
 
     public static void log(String key, Loggable[] values) {
-        for (Loggable value : values) {
-            log(key, value);
+        for (int i = 0; i < values.length; i++) {
+            log(key, "" + i, values[i]);
         }
     }
 

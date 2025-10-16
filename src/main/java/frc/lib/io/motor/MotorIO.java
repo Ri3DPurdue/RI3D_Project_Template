@@ -1,5 +1,7 @@
 package frc.lib.io.motor;
 
+import java.util.Arrays;
+
 import edu.wpi.first.units.measure.Angle;
 import frc.lib.Util.logging.Loggable;
 import frc.lib.Util.logging.Logger;
@@ -136,9 +138,7 @@ public abstract class MotorIO implements Loggable {
         Logger.log(path, "Setpoint (Base Units)", getCurrentSetpoint().value);
         Logger.log(path, "Setpoint Type", getCurrentSetpoint().outputType);
         Logger.log(path, outputs[0]);
-        for (int i = 1; i < outputs.length; i++) {
-            Logger.log(path, "Followers/" + i, outputs[i]);
-        }
+        Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
     }
 
     /**
