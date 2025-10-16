@@ -76,6 +76,11 @@ public abstract class MotorIO implements Loggable {
         currentSetpoint = setpoint;
 
         if (enabled) {
+            // Because profiled position setpoint is a subclass of
+            // position setpoint, this check needs to be first.
+            // It is just nicer to not have to explicitly allow both position
+            // and profiled position if they both take an angle.
+            // However, it does enforce some ordering on this side
             if (setpoint instanceof ProfiledPositionSetpoint p) {
                 setProfiledPosition(p.get());
             } else if (setpoint instanceof PositionSetpoint p) {
