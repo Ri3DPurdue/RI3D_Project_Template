@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import frc.lib.io.logging.Loggable;
+import frc.lib.Util.logging.Loggable;
 
 public abstract class DigitalIO implements Loggable {
     @AutoLog
@@ -35,9 +35,7 @@ public abstract class DigitalIO implements Loggable {
 	}
 
     @Override
-    public void log(String subdirectory, String name) {
-        String path = subdirectory + "/" + name;
-
+    public void log(String path) {
         Logger.processInputs(path, outputs);
     }
 }

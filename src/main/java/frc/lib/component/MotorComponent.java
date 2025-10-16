@@ -26,9 +26,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        String path = subdirectory + "/" + name;
-
+    public void log(String path) {
         io.log(path, "Motor");
     }
 

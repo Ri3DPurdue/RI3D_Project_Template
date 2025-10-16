@@ -1,4 +1,4 @@
-package frc.lib.Util;
+package frc.lib.Util.logging;
 
 import dev.doglog.DogLog;
 

@@ -17,8 +17,8 @@ public class DigitalIOComponent implements Component {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        io.log(subdirectory, name);
+    public void log(String path) {
+        io.log(path);
     }
 
     public boolean get() {
