@@ -1,25 +1,22 @@
 package frc.lib.io.sensor;
 
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.lib.Util.logging.Loggable;
 
 public abstract class DigitalIO implements Loggable {
-    @AutoLog
+
     public static class DigitalIOOutputs {
         public boolean raw;
         public boolean debounced;
     }
 
     private final Debouncer debouncer;
-    private final DigitalIOOutputsAutoLogged outputs;
+    private final DigitalIOOutputs outputs;
 
     public DigitalIO(double debounceSeconds) {
 		debouncer = new Debouncer(debounceSeconds, DebounceType.kBoth);
-        outputs = new DigitalIOOutputsAutoLogged();
+        outputs = new DigitalIOOutputs();
         update();
 	}
 
@@ -36,6 +33,7 @@ public abstract class DigitalIO implements Loggable {
 
     @Override
     public void log(String path) {
-        Logger.processInputs(path, outputs);
+        // TODO logging
+        // Logger.processInputs(path, outputs);
     }
 }

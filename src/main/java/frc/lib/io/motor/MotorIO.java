@@ -1,14 +1,12 @@
 package frc.lib.io.motor;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.units.measure.Angle;
 import frc.lib.Util.logging.Loggable;
 
 public abstract class MotorIO implements Loggable {
     private Setpoint currentSetpoint;
     private boolean enabled;
-    private MotorOutputsAutoLogged[] outputs;
+    private MotorOutputs[] outputs;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -21,9 +19,9 @@ public abstract class MotorIO implements Loggable {
         }
 
         currentSetpoint = Setpoint.idleSetpoint();
-        outputs = new MotorOutputsAutoLogged[numFollowers + 1];
+        outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
-            outputs[i] = new MotorOutputsAutoLogged();
+            outputs[i] = new MotorOutputs();
         }
 
         enabled = true;
@@ -134,14 +132,15 @@ public abstract class MotorIO implements Loggable {
 
     @Override
     public void log(String path) {
-        Logger.recordOutput(path + "/Setpoint Base Units Value", getCurrentSetpoint().value); // TODO make log in the same place as MotorOutputs
-        Logger.recordOutput(path + "/Setpoint Output Type", getCurrentSetpoint().outputType); // TODO make log in the same place as MotorOutputs
+        //TODO logging
+        // Logger.recordOutput(path + "/Setpoint Base Units Value", getCurrentSetpoint().value); // TODO make log in the same place as MotorOutputs
+        // Logger.recordOutput(path + "/Setpoint Output Type", getCurrentSetpoint().outputType); // TODO make log in the same place as MotorOutputs
 
-        Logger.processInputs(path, outputs[0]);
+        // Logger.processInputs(path, outputs[0]);
 
-        for (int i = 1; i < outputs.length; i++) {
-            Logger.processInputs(path + "/Followers/" + i, outputs[i]);
-        }
+        // for (int i = 1; i < outputs.length; i++) {
+        //     Logger.processInputs(path + "/Followers/" + i, outputs[i]);
+        // }
     }
 
     /**
