@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.*;
 
 public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComponent<M> {
     private boolean homing = false;
@@ -27,7 +27,11 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     }
 
     private boolean setpointNearHome() {
-        return getSetpoint().outputType.isPositionControl() && positionNearHome(BaseUnits.AngleUnit.of(getSetpoint().value));
+        if (getSetpoint() instanceof PositionSetpoint p) {
+            return positionNearHome(p.get());
+        } else {
+            return false;
+        }
     }
 
     private boolean positionNearHome(Angle position) {
@@ -49,13 +53,13 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
                     getVelocity().abs(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit)) <= 
                     homingConfig.homingVelocity.baseUnitMagnitude())) { // If you've been under the homing velocity threshold for the debounce (if you've stopped)
                 resetPosition(homingConfig.homePosition); // You know you're at the home position so reset it
-                applySetpoint(Setpoint.profiledPositionSetpoint(homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
+                applySetpoint(new ProfiledPositionSetpoint(homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
             }
         }
     }
 
     @Override
-    public void applySetpoint(Setpoint setpoint) {
+    public void applySetpoint(BaseSetpoint<?, ?> setpoint) {
         super.applySetpoint(setpoint); // Apply your setpoint
         if (homing) { // If you were in the middle of homing
             endHomingSequence(); // Cancel homing
@@ -68,7 +72,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     public void beginHomingSequence() {
         homing = true; // Save that you are currently homing
         useSoftLimits(false); // Disable soft limits so you can physically hit the hardstop
-        super.applySetpoint(Setpoint.voltageSetpoint(homingConfig.homingVoltage)); // Go at your homing voltage (but don't apply setpoint normally so homing isn't canceled)
+        super.applySetpoint(new VoltageSetpoint(homingConfig.homingVoltage)); // Go at your homing voltage (but don't apply setpoint normally so homing isn't canceled)
         homingDebouncer.calculate(false); // Reset the debouncer
     }
 
