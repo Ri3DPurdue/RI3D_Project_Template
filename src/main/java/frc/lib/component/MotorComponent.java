@@ -125,7 +125,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public BaseSetpoint<?, ?> getSetpoint() {
+    public BaseSetpoint<?> getSetpoint() {
         return io.getCurrentSetpoint();
     }
 
@@ -137,15 +137,15 @@ public class MotorComponent<M extends MotorIO> implements Component {
         io.resetPosition(position);
     }
 
-    public void applySetpoint(BaseSetpoint<?, ?> setpoint) {
+    public void applySetpoint(BaseSetpoint<?> setpoint) {
         io.applySetpoint(setpoint);
     }
 
-    public Command applySetpointCommand(BaseSetpoint<?, ?> setpoint) {
+    public Command applySetpointCommand(BaseSetpoint<?> setpoint) {
         return Commands.runOnce(() -> applySetpoint(setpoint));
     }
 
-    public Command followSetpointCommand(Supplier<BaseSetpoint<?, ?>> supplier) {
+    public Command followSetpointCommand(Supplier<BaseSetpoint<?>> supplier) {
         return Commands.run(() -> applySetpoint(supplier.get()));
     }
 

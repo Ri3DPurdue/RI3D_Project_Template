@@ -7,7 +7,7 @@ import frc.lib.io.logging.Loggable;
 import frc.lib.io.motor.setpoints.*;
 
 public abstract class MotorIO implements Loggable {
-    private BaseSetpoint<?, ?> currentSetpoint;
+    private BaseSetpoint<?> currentSetpoint;
     private boolean enabled;
     private MotorOutputsAutoLogged[] outputs;
 
@@ -72,7 +72,7 @@ public abstract class MotorIO implements Loggable {
      * </p>
      * @param setpoint
      */
-    public final void applySetpoint(BaseSetpoint<?, ?> setpoint) {
+    public final void applySetpoint(BaseSetpoint<?> setpoint) {
         currentSetpoint = setpoint;
 
         if (enabled) {
@@ -97,7 +97,7 @@ public abstract class MotorIO implements Loggable {
      * @implNote This does get updated even when the motor is disabled
      * @implNote This returns a copy of the current setpoint, so feel free to modify the data
      */
-    public final BaseSetpoint<?, ?> getCurrentSetpoint() {
+    public final BaseSetpoint<?> getCurrentSetpoint() {
         return currentSetpoint;
     }
 

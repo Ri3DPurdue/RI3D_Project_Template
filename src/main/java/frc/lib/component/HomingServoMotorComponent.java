@@ -59,7 +59,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     }
 
     @Override
-    public void applySetpoint(BaseSetpoint<?, ?> setpoint) {
+    public void applySetpoint(BaseSetpoint<?> setpoint) {
         super.applySetpoint(setpoint); // Apply your setpoint
         if (homing) { // If you were in the middle of homing
             endHomingSequence(); // Cancel homing
