@@ -1,35 +1,32 @@
 package frc.lib.hardware.motor;
 
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkSim;
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.sim.SparkFlexSim;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
 import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
-import frc.robot.Constants.REVMotorControllerType;
 
-public abstract class SparkBaseSimIO extends SparkBaseIO {
+
+public class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
 
-    protected SparkBaseSimIO(SimObject simObject, DCMotor motor, REVMotorControllerType motorControllerType, SparkConfig config) {
-        super(config);
-        switch (motorControllerType) {
-            case CANSparkMax:
-                this.simMotor = new SparkMaxSim((SparkMax) main.motor, motor);
-                break;
-            case CANSparkFlex:
-                this.simMotor = new SparkFlexSim((SparkFlex) main.motor, motor);
-                 break;
-            default:
-                simMotor = null;
-                break;
-        }
-
+    @SuppressWarnings("unchecked")
+    public SparkBaseSimIO(
+        SimObject simObject, 
+        DCMotor motor, 
+        MotorType type,
+        SparkBaseConfig mainConfig,
+        int mainMotor, 
+        Pair<Integer, Boolean>... followers
+    ) {
+        super(type, mainConfig, mainMotor, followers);
+        this.simMotor = new SparkSim(main.motor, motor);
 
         this.simObject = simObject;
     }
@@ -40,16 +37,12 @@ public abstract class SparkBaseSimIO extends SparkBaseIO {
         MotorOutputs outputs = getOutputs()[0];
         
         simObject.setVoltage(outputs.statorVoltage);
-        simObject.update();
-
-        // Radians per second
-        double velocity = simObject.getVelocity() * distanceFactor;
-
+        Time deltaTime = simObject.update();
 
         simMotor.iterate(
-            Units.radiansPerSecondToRotationsPerMinute(velocity),
-            RoboRioSim.getVInVoltage(),
-            0.02
+            simObject.getVelocity().in(Units.RPM),
+            12,
+            deltaTime.in(Units.Seconds)
         );
     }
 }

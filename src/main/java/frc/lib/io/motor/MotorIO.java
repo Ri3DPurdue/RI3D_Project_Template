@@ -1,12 +1,14 @@
 package frc.lib.io.motor;
 
-import static frc.lib.io.motor.Setpoint.Type;
+import org.littletonrobotics.junction.Logger;
 
-public abstract class MotorIO {
+import edu.wpi.first.units.measure.Angle;
+import frc.lib.io.logging.Loggable;
+
+public abstract class MotorIO implements Loggable {
     private Setpoint currentSetpoint;
     private boolean enabled;
-    private MotorOutputs[] outputs;
-    protected final double distanceFactor = 1.0;
+    private MotorOutputsAutoLogged[] outputs;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -17,13 +19,10 @@ public abstract class MotorIO {
         this(config.followers.length);
     }
 
-    protected MotorIO(int followerCount) {
-        int numFollowers = followerCount;
-
-        currentSetpoint = new Setpoint(Type.Idle, 0);
-        outputs = new MotorOutputs[numFollowers + 1];
+        currentSetpoint = Setpoint.idleSetpoint();
+        outputs = new MotorOutputsAutoLogged[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
-            outputs[i] = new MotorOutputs();
+            outputs[i] = new MotorOutputsAutoLogged();
         }
 
         enabled = true;
@@ -132,6 +131,20 @@ public abstract class MotorIO {
         updateOutputs(outputs);
     }
 
+    @Override
+    public void log(String subdirectory, String name) {
+        String dir = subdirectory + "/" + name;
+
+        Logger.recordOutput(dir + "/Setpoint Base Units Value", getCurrentSetpoint().value); // TODO make log in the same place as MotorOutputs
+        Logger.recordOutput(dir + "/Setpoint Output Type", getCurrentSetpoint().outputType); // TODO make log in the same place as MotorOutputs
+
+        Logger.processInputs(dir, outputs[0]);
+
+        for (int i = 1; i < outputs.length; i++) {
+            Logger.processInputs(dir + "/Followers/" + i, outputs[i]);
+        }
+    }
+
     /**
      * Gets the outputs for the motor
      * @implNote The first element in the array is where the main motor output is to go
@@ -139,13 +152,15 @@ public abstract class MotorIO {
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
 
-    protected abstract void setVoltage(double voltage);
-    protected abstract void setCurrent(double current);
+    protected abstract void setVoltage(double volts);
+    protected abstract void setCurrent(double amps);
 
-    protected abstract void setPosition(double position);
-    protected abstract void setVelocity(double velocity);
-    protected abstract void setProfiledPosition(double position);
+    protected abstract void setPosition(double rads);
+    protected abstract void setVelocity(double radsPerSecond);
+    protected abstract void setProfiledPosition(double rads);
 
     protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
+    public abstract void useSoftLimits(boolean use);
+    public abstract void resetPosition(Angle position);
 }
