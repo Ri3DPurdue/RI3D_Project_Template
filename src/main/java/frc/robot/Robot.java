@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.Util.logging.Logger;
 import frc.robot.controlBoard.ControlBoard;
 import frc.robot.subsystems.Superstructure;
 
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        superstructure.log("Robot", "Superstructure");
+        Logger.log("Robot", "Superstructure", superstructure);
     }
 
     /** This function is called once each time the robot enters Disabled mode. */

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.Util.logging.Loggable;
+import frc.lib.Util.logging.Logger;
 
 public class ComponentSubsystem extends SubsystemBase implements Loggable {
     private Map<String, Component> namedComponents = new HashMap<>();
@@ -25,7 +26,7 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
     @Override
     public void log(String name) {
         for (Map.Entry<String, Component> namedComponent : namedComponents.entrySet()) {
-            namedComponent.getValue().log(name, namedComponent.getKey());
+            Logger.log(name, namedComponent.getKey(), namedComponent.getValue());
           }
     }
 
