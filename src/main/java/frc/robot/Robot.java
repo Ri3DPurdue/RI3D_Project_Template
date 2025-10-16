@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,8 +33,10 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
+        Logger.setEnabled(true);
+        Logger.setOptions(new DogLogOptions(
+            () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));
         ControlBoard.bindControls(superstructure);
-
         SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
