@@ -2,9 +2,7 @@ package frc.lib.io.motor;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.AngularVelocityUnit;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.*;
 import frc.lib.io.logging.Loggable;
 import frc.lib.io.motor.setpoints.*;
 
@@ -79,15 +77,15 @@ public abstract class MotorIO implements Loggable {
 
         if (enabled) {
             if (setpoint instanceof ProfiledPositionSetpoint p) {
-                setProfiledPosition(p.get().baseUnitMagnitude());
+                setProfiledPosition(p.get());
             } else if (setpoint instanceof PositionSetpoint p) {
-                setPosition(p.get().baseUnitMagnitude());
+                setPosition(p.get());
             } else if (setpoint instanceof VelocitySetpoint v) {
-                setVelocity(v.get().baseUnitMagnitude());
+                setVelocity(v.get());
             } else if (setpoint instanceof VoltageSetpoint v) {
-                setVoltage(v.get().baseUnitMagnitude());
+                setVoltage(v.get());
             } else if (setpoint instanceof CurrentSetpoint c) {
-                setCurrent(c.get().baseUnitMagnitude());
+                setCurrent(c.get());
             } else if (setpoint instanceof IdleSetpoint) {
                 setIdle();
             }
@@ -139,15 +137,15 @@ public abstract class MotorIO implements Loggable {
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
 
-    protected abstract void setVoltage(double volts);
-    protected abstract void setCurrent(double amps);
+    protected abstract void setVoltage(Voltage volts);
+    protected abstract void setCurrent(Current amps);
 
-    protected abstract void setPosition(double rads);
-    protected abstract void setVelocity(double radsPerSecond);
-    protected abstract void setProfiledPosition(double rads);
+    protected abstract void setPosition(Angle angle);
+    protected abstract void setVelocity(AngularVelocity velocity);
+    protected abstract void setProfiledPosition(Angle position);
 
-    protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
+
     public abstract void useSoftLimits(boolean use);
     public abstract void resetPosition(Angle position);
 }
