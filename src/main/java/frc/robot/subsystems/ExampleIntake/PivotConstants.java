@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.hardware.motor.SparkBaseIO;
 import frc.lib.hardware.motor.SparkBaseSimIO;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.*;
 import frc.lib.sim.PivotSim;
 import frc.lib.sim.SimObject;
 import frc.robot.Ports;
@@ -30,9 +30,9 @@ public class PivotConstants {
     public static final Angle stowAngle = Units.Radians.of(110.0);
     public static final Angle unjamAngle = Units.Radians.of(70.0);
 
-    public static final Setpoint deploySetpoint = Setpoint.positionSetpoint(deployAngle);
-    public static final Setpoint stowSetpoint = Setpoint.positionSetpoint(stowAngle);
-    public static final Setpoint unjamSetpoint =Setpoint.positionSetpoint(unjamAngle);
+    public static final PositionSetpoint deploySetpoint = new PositionSetpoint(deployAngle);
+    public static final PositionSetpoint stowSetpoint = new PositionSetpoint(stowAngle);
+    public static final PositionSetpoint unjamSetpoint = new PositionSetpoint(unjamAngle);
 
     public static final ServoMotorComponent<SparkBaseIO> getPivot() {
         return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, unjamAngle);
