@@ -93,6 +93,8 @@ public abstract class MotorIO implements Loggable {
                 setCurrent(c.get());
             } else if (setpoint instanceof IdleSetpoint) {
                 setIdle();
+            } else {
+                throw new RuntimeException("Unknown setpoint type. Please use one of the given setpoint types in frc.lib.motors.setpoints");
             }
         }
     }
