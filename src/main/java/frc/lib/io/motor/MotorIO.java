@@ -15,9 +15,10 @@ public abstract class MotorIO implements Loggable {
      * @throws IllegalArgumentException If numFollowers is less than 0
      * @param numFollowers
      */
-    protected MotorIO(BaseConfig config) {
-        this(config.followers.length);
-    }
+    protected MotorIO(int numFollowers) {
+        if (numFollowers < 0) {
+            throw new IllegalArgumentException("Number of followers must be non-negative");
+        }
 
         currentSetpoint = Setpoint.idleSetpoint();
         outputs = new MotorOutputsAutoLogged[numFollowers + 1];

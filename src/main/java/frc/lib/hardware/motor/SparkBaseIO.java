@@ -21,11 +21,6 @@ import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
 public class SparkBaseIO extends MotorIO {
-    public static class SparkConfig extends BaseConfig {
-        public REVMotorControllerType controllerType;
-        public MotorType motorType = MotorType.kBrushless;
-    }
-
     /**
      * Identifier enum for whether a motor controller is a spark base or spark max.
      */
@@ -119,60 +114,23 @@ public class SparkBaseIO extends MotorIO {
 
         this.followers = new Exploded[followers.length];
 
-        switch (config.controllerType) {
-            case CANSparkMax:
-                sparkConfig = new SparkMaxConfig();
-                break;
-
-            case CANSparkFlex:
-                sparkConfig = new SparkFlexConfig();
-                break;
-        }
-
-        sparkConfig.closedLoop.pidf(
-            config.pid.p,
-            config.pid.i,
-            config.pid.d,
-            config.pid.f
-        );
-
-        sparkConfig.closedLoop.maxMotion
-            .maxAcceleration(config.pid.profile.maxAcceleration)
-            .maxVelocity(config.pid.profile.maxVelocity);
-
-        sparkConfig.inverted(config.main.inverted);
-
-        this.main.motor.configure(
-            sparkConfig,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        );
-
-        sparkConfig.smartCurrentLimit(config.currentLimit);
-
-        this.followers = new Exploded[config.followers.length];
-
         for (int i = 0; i < followers.length; i++) {
             Pair<Integer, Boolean> follower = followers[i];
             this.followers[i] = new Exploded(follower.getFirst(), type, this.type);
             SparkBaseConfig config = null;
             switch (this.type) {
                 case CANSparkMax:
-                    followerConfig = new SparkMaxConfig();
+                    config = new SparkMaxConfig();
                     break;
                 case CANSparkFlex:
-                    followerConfig = new SparkFlexConfig();
+                    config = new SparkFlexConfig();
                 default:
                     break;
             }
            
             config.follow(mainMotor, follower.getSecond());
 
-            this.followers[i].motor.configure(
-                followerConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters
-            );
+            this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 
