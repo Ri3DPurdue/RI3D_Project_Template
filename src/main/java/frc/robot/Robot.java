@@ -4,15 +4,14 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.wpilibj.Filesystem;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.Util.logging.Logger;
 import frc.robot.controlBoard.ControlBoard;
 import frc.robot.subsystems.Superstructure;
 
@@ -23,7 +22,7 @@ import frc.robot.subsystems.Superstructure;
  * package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private Superstructure superstructure = new Superstructure();
@@ -34,20 +33,10 @@ public class Robot extends LoggedRobot {
      * initialization code.
      */
     public Robot() {
-        Logger.recordMetadata("ProjectName", "RI3D Template"); // Set a metadata value
-
-        if (isReal()) {
-            Logger.addDataReceiver(new WPILOGWriter());
-        } else {
-            setUseTiming(false); // Run as fast as possible
-            Logger.addDataReceiver(new WPILOGWriter(Filesystem.getDeployDirectory().getPath()));
-        }
-        
-        Logger.addDataReceiver(new NT4Publisher());
-        Logger.start();
-
+        Logger.setEnabled(true);
+        Logger.setOptions(new DogLogOptions(
+            () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));
         ControlBoard.bindControls(superstructure);
-
         SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
@@ -71,7 +60,7 @@ public class Robot extends LoggedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        superstructure.log("Robot", "Superstructure");
+        Logger.log("Robot", "Superstructure", superstructure);
     }
 
     /** This function is called once each time the robot enters Disabled mode. */

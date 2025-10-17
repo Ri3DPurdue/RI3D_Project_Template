@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.io.logging.Loggable;
+import frc.lib.Util.logging.Loggable;
+import frc.lib.Util.logging.Logger;
 import frc.robot.subsystems.ExampleIntake.ExampleIntake;
 
 public class Superstructure implements Loggable {
@@ -20,7 +21,7 @@ public class Superstructure implements Loggable {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        intake.log(subdirectory + "/" + name, "Intake");
+    public void log(String path) {
+        Logger.log(path, "Intake", intake);
     }
 }

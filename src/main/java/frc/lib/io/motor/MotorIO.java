@@ -1,14 +1,18 @@
 package frc.lib.io.motor;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.Arrays;
 
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.TemperatureUnit;
 import edu.wpi.first.units.measure.Angle;
-import frc.lib.io.logging.Loggable;
+import frc.lib.Util.logging.Loggable;
+import frc.lib.Util.logging.Logger;
 
 public abstract class MotorIO implements Loggable {
     private Setpoint currentSetpoint;
     private boolean enabled;
-    private MotorOutputsAutoLogged[] outputs;
+    private MotorOutputs[] outputs;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -21,9 +25,9 @@ public abstract class MotorIO implements Loggable {
         }
 
         currentSetpoint = Setpoint.idleSetpoint();
-        outputs = new MotorOutputsAutoLogged[numFollowers + 1];
+        outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
-            outputs[i] = new MotorOutputsAutoLogged();
+            outputs[i] = new MotorOutputs();
         }
 
         enabled = true;
@@ -133,16 +137,20 @@ public abstract class MotorIO implements Loggable {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        String dir = subdirectory + "/" + name;
+    public void log(String path) {
+        Logger.log(path, "Setpoint (Base Units)", getCurrentSetpoint().value);
+        Logger.log(path, "Setpoint Type", getCurrentSetpoint().outputType);
+        Logger.log(path, "Main", outputs[0]);
+        Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
+    }
 
-        Logger.recordOutput(dir + "/Setpoint Base Units Value", getCurrentSetpoint().value); // TODO make log in the same place as MotorOutputs
-        Logger.recordOutput(dir + "/Setpoint Output Type", getCurrentSetpoint().outputType); // TODO make log in the same place as MotorOutputs
-
-        Logger.processInputs(dir, outputs[0]);
-
-        for (int i = 1; i < outputs.length; i++) {
-            Logger.processInputs(dir + "/Followers/" + i, outputs[i]);
+    public void overrideLoggedUnits(
+        AngleUnit loggedPositionUnit,
+        AngularVelocityUnit loggedVelocityUnit,
+        TemperatureUnit loggedTemperatureUnit
+    ) {
+        for (MotorOutputs output : outputs) {
+            output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
         }
     }
 

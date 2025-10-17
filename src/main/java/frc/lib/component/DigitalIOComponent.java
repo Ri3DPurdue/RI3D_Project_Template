@@ -2,6 +2,7 @@ package frc.lib.component;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.Util.logging.Logger;
 import frc.lib.io.sensor.DigitalIO;
 
 public class DigitalIOComponent implements Component {
@@ -17,8 +18,8 @@ public class DigitalIOComponent implements Component {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        io.log(subdirectory, name);
+    public void log(String path) {
+        Logger.log(path, io);
     }
 
     public boolean get() {

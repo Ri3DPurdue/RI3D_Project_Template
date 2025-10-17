@@ -168,7 +168,7 @@ public class SparkBaseIO extends MotorIO {
         outputs.position = Units.Rotations.of(controller.encoder.getPosition());
         outputs.velocity = Units.RPM.of(controller.encoder.getVelocity());
         
-        outputs.temperatureCelsius = Units.Celsius.of(controller.motor.getMotorTemperature());
+        outputs.temperature = Units.Celsius.of(controller.motor.getMotorTemperature());
     }
 
     @Override
