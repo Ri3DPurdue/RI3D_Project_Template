@@ -2,6 +2,9 @@ package frc.lib.io.motor;
 
 import java.util.Arrays;
 
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.TemperatureUnit;
 import edu.wpi.first.units.measure.Angle;
 import frc.lib.Util.logging.Loggable;
 import frc.lib.Util.logging.Logger;
@@ -137,8 +140,18 @@ public abstract class MotorIO implements Loggable {
     public void log(String path) {
         Logger.log(path, "Setpoint (Base Units)", getCurrentSetpoint().value);
         Logger.log(path, "Setpoint Type", getCurrentSetpoint().outputType);
-        Logger.log(path, outputs[0]);
+        Logger.log(path, "Main", outputs[0]);
         Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
+    }
+
+    public void overrideLoggedUnits(
+        AngleUnit loggedPositionUnit,
+        AngularVelocityUnit loggedVelocityUnit,
+        TemperatureUnit loggedTemperatureUnit
+    ) {
+        for (MotorOutputs output : outputs) {
+            output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
+        }
     }
 
     /**
