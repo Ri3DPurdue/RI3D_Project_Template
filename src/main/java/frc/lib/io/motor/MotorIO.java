@@ -143,8 +143,8 @@ public abstract class MotorIO implements Loggable {
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
 
-    protected abstract void setVoltage(Voltage volts);
-    protected abstract void setCurrent(Current amps);
+    protected abstract void setVoltage(Voltage voltage);
+    protected abstract void setCurrent(Current current);
 
     protected abstract void setPosition(Angle angle);
     protected abstract void setVelocity(AngularVelocity velocity);

@@ -181,13 +181,13 @@ public class SparkBaseIO extends MotorIO {
     }
 
     @Override
-    protected void setVoltage(Voltage volts) {
-        main.controller.setReference(volts.in(Units.Volts), kVoltage);
+    protected void setVoltage(Voltage voltage) {
+        main.controller.setReference(voltage.in(Units.Volts), kVoltage);
     }
 
     @Override
-    protected void setCurrent(Current amps) {
-        main.controller.setReference(amps.in(Units.Amps), kCurrent);
+    protected void setCurrent(Current current) {
+        main.controller.setReference(current.in(Units.Amps), kCurrent);
     }
 
     @Override
