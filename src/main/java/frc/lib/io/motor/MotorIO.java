@@ -102,7 +102,6 @@ public abstract class MotorIO implements Loggable {
     /**
      * Gets the current setpoint
      * @implNote This does get updated even when the motor is disabled
-     * @implNote This returns a copy of the current setpoint, so feel free to modify the data
      */
     public final BaseSetpoint<?> getCurrentSetpoint() {
         return currentSetpoint;
