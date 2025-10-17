@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.BaseSetpoint;
 
 public class MotorComponent<M extends MotorIO> implements Component {
     private final M io;
@@ -125,7 +125,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      * 
      * @return 
      */
-    public Setpoint getSetpoint() {
+    public BaseSetpoint<?> getSetpoint() {
         return io.getCurrentSetpoint();
     }
 
@@ -137,15 +137,15 @@ public class MotorComponent<M extends MotorIO> implements Component {
         io.resetPosition(position);
     }
 
-    public void applySetpoint(Setpoint setpoint) {
+    public void applySetpoint(BaseSetpoint<?> setpoint) {
         io.applySetpoint(setpoint);
     }
 
-    public Command applySetpointCommand(Setpoint setpoint) {
+    public Command applySetpointCommand(BaseSetpoint<?> setpoint) {
         return Commands.runOnce(() -> applySetpoint(setpoint));
     }
 
-    public Command followSetpointCommand(Supplier<Setpoint> supplier) {
+    public Command followSetpointCommand(Supplier<BaseSetpoint<?>> supplier) {
         return Commands.run(() -> applySetpoint(supplier.get()));
     }
 

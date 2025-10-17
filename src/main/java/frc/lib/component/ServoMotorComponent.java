@@ -1,12 +1,11 @@
 package frc.lib.component;
 
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.PositionSetpoint;
 
 public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected Angle epsilonThreshold;
@@ -37,11 +36,8 @@ public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
      * @param setpoint Position setpoint to target.
      * @return A command which applies a posiiton setpoint and waits for it to be reached. 
      */
-    public Command applyPositionSetpointCommandWithWait(Setpoint setpoint) {
-        if (!setpoint.outputType.isPositionControl()) {
-            throw new IllegalArgumentException("applyPositionSetpointCommandWithWait requires a position setpoint");
-        }
-        return waitForPositionCommand(BaseUnits.AngleUnit.of(setpoint.value)).deadlineFor(applySetpointCommand(setpoint));
+    public Command applyPositionSetpointCommandWithWait(PositionSetpoint setpoint) {
+        return waitForPositionCommand(setpoint.get()).deadlineFor(applySetpointCommand(setpoint));
     }
     
 }

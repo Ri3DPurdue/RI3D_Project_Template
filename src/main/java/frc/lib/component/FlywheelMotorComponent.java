@@ -1,12 +1,11 @@
 package frc.lib.component;
 
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.VelocitySetpoint;
 
 public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected AngularVelocity epsilonThreshold;
@@ -36,11 +35,8 @@ public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M>
      * @param setpoint Velocity setpoint to target.
      * @return A command which applies a posiiton setpoint and waits for it to be reached. 
      */
-    public Command applyVelocitySetpointCommandWithWait(Setpoint setpoint) {
-        if (!setpoint.outputType.isVelocityControl()) {
-            throw new IllegalArgumentException("applyVelocitySetpointCommandWithWait requires a velocity setpoint");
-        }
-        return waitForVelocityCommand(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(setpoint.value)).deadlineFor(applySetpointCommand(setpoint));
+    public Command applyVelocitySetpointCommandWithWait(VelocitySetpoint setpoint) {
+        return waitForVelocityCommand(setpoint.get()).deadlineFor(applySetpointCommand(setpoint));
     }
     
 }

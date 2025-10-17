@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.hardware.motor.SparkBaseIO;
 import frc.lib.hardware.motor.SparkBaseSimIO;
-import frc.lib.io.motor.Setpoint;
+import frc.lib.io.motor.setpoints.*;
 import frc.lib.sim.RollerSim;
 import frc.lib.sim.SimObject;
 import frc.robot.Ports;
@@ -27,9 +27,9 @@ public class IndexerConstants {
     public static final AngularVelocity feedVelocity = Units.RPM.of(2000.0);
     public static final Voltage spitVoltage = Units.Volts.of(-6.0);
 
-    public static final Setpoint feedSetpoint = Setpoint.velocitySetpoint(feedVelocity);
-    public static final Setpoint spitSetpoint = Setpoint.voltageSetpoint(spitVoltage);
-    public static final Setpoint idleSetpoint = Setpoint.idleSetpoint();
+    public static final VelocitySetpoint feedSetpoint = new VelocitySetpoint(feedVelocity);
+    public static final VoltageSetpoint spitSetpoint = new VoltageSetpoint(spitVoltage);
+    public static final IdleSetpoint idleSetpoint = new IdleSetpoint();
 
     public static final FlywheelMotorComponent<SparkBaseIO> getIndexer() {
         return new FlywheelMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold);
