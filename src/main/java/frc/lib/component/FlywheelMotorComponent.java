@@ -4,9 +4,9 @@ import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.Setpoint;
+import frc.lib.util.UnitsUtil;
 
 public class FlywheelMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected AngularVelocity epsilonThreshold;
