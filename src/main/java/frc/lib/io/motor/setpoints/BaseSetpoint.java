@@ -13,4 +13,8 @@ public abstract class BaseSetpoint<M extends Measure<? extends Unit>> {
     public M get() {
         return value;
     }
+
+    public final String getName() {
+        return getClass().getSimpleName();
+    }
 }
