@@ -20,6 +20,8 @@ import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
+import java.util.function.UnaryOperator;
+
 public class SparkBaseIO extends MotorIO {
     /**
      * Identifier enum for whether a motor controller is a spark base or spark max.
@@ -132,6 +134,10 @@ public class SparkBaseIO extends MotorIO {
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
+    }
+
+    public void changeConfig(UnaryOperator<SparkBaseConfig> configChanger) {
+        reconfigure(configChanger.apply(config));
     }
 
     public void reconfigure(SparkBaseConfig config) {
