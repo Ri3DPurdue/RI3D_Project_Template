@@ -29,7 +29,7 @@ public class Logger extends DogLog {
     // Measure
 
     public static <U extends Unit> void log(String key, Measure<U> value, U unit) {
-        log(key + " (" + unit.symbol() + ")", value.in(unit));
+        log(key + " (" + unit.symbol().replace("/", " per ") + ")", value.in(unit));
     }
 
     public static <U extends Unit> void log(String key, Measure<U> value) {
