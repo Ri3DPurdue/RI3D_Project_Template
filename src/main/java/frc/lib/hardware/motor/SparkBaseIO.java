@@ -15,7 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.*;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
@@ -181,38 +181,33 @@ public class SparkBaseIO extends MotorIO {
     }
 
     @Override
-    protected void setVoltage(double volts) {
-        main.controller.setReference(volts, kVoltage);
+    protected void setVoltage(Voltage voltage) {
+        main.controller.setReference(voltage.in(Units.Volts), kVoltage);
     }
 
     @Override
-    protected void setCurrent(double amps) {
-        main.controller.setReference(amps, kCurrent);
+    protected void setCurrent(Current current) {
+        main.controller.setReference(current.in(Units.Amps), kCurrent);
     }
 
     @Override
-    protected void setPosition(double rads) {
-        main.controller.setReference(edu.wpi.first.math.util.Units.radiansToRotations(rads), kPosition);
+    protected void setPosition(Angle position) {
+        main.controller.setReference(position.in(Units.Rotations), kPosition);
     }
 
     @Override
-    protected void setVelocity(double radsPerSecond) {
-        main.controller.setReference(edu.wpi.first.math.util.Units.radiansPerSecondToRotationsPerMinute(radsPerSecond), kVelocity);
+    protected void setVelocity(AngularVelocity velocity) {
+        main.controller.setReference(velocity.in(Units.RPM), kVelocity);
     }
     
     @Override
-    protected void setProfiledPosition(double rads) {
-        main.controller.setReference(edu.wpi.first.math.util.Units.radiansToRotations(rads), kMAXMotionPositionControl);
-    }
-
-    @Override
-    protected void setPercentage(double percentage) {
-        main.controller.setReference(percentage, kDutyCycle);
+    protected void setProfiledPosition(Angle position) {
+        main.controller.setReference(position.in(Units.Rotations), kMAXMotionPositionControl);
     }
 
     @Override
     protected void setIdle() {
-        setVoltage(0);
+        main.controller.setReference(0, kVoltage);
     }
 
 	@Override

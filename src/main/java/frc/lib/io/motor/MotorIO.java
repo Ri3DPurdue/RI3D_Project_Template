@@ -1,7 +1,12 @@
 package frc.lib.io.motor;
 
+import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.Arrays;
 
+import edu.wpi.first.units.measure.*;
+import frc.lib.io.motor.setpoints.*;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.TemperatureUnit;
@@ -10,9 +15,11 @@ import frc.lib.Util.logging.Loggable;
 import frc.lib.Util.logging.Logger;
 
 public abstract class MotorIO implements Loggable {
-    private Setpoint currentSetpoint;
+    private BaseSetpoint<?> currentSetpoint;
     private boolean enabled;
     private MotorOutputs[] outputs;
+    private AngleUnit loggedPositionUnit;
+    private AngularVelocityUnit loggedVelocityUnit;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -24,13 +31,14 @@ public abstract class MotorIO implements Loggable {
             throw new IllegalArgumentException("Number of followers must be non-negative");
         }
 
-        currentSetpoint = Setpoint.idleSetpoint();
+        currentSetpoint = new IdleSetpoint();
         outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
             outputs[i] = new MotorOutputs();
         }
-
         enabled = true;
+        loggedPositionUnit = Radian;
+        loggedVelocityUnit = RadiansPerSecond;
     }
 
     /**
@@ -75,38 +83,29 @@ public abstract class MotorIO implements Loggable {
      * </p>
      * @param setpoint
      */
-    public final void applySetpoint(Setpoint setpoint) {
-        currentSetpoint.set(setpoint);
+    public final void applySetpoint(BaseSetpoint<?> setpoint) {
+        currentSetpoint = setpoint;
 
         if (enabled) {
-            switch (setpoint.outputType) {
-                case Voltage:
-                    setVoltage(setpoint.value);
-                    break;
-
-                case Current:
-                    setCurrent(setpoint.value);
-                    break;
-                
-                case Position:
-                    setPosition(setpoint.value);
-                    break;
-
-                case Velocity:
-                    setVelocity(setpoint.value);
-                    break;
-
-                case ProfiledPosition:
-                    setProfiledPosition(setpoint.value);
-                    break;
-
-                case Percentage:
-                    setPercentage(setpoint.value);
-                    break;
-
-                case Idle:
-                    setIdle();
-                    break;
+            // Because profiled position setpoint is a subclass of
+            // position setpoint, this check needs to be first.
+            // It is just nicer to not have to explicitly allow both position
+            // and profiled position if they both take an angle.
+            // However, it does enforce some ordering on this side
+            if (setpoint instanceof ProfiledPositionSetpoint p) {
+                setProfiledPosition(p.get());
+            } else if (setpoint instanceof PositionSetpoint p) {
+                setPosition(p.get());
+            } else if (setpoint instanceof VelocitySetpoint v) {
+                setVelocity(v.get());
+            } else if (setpoint instanceof VoltageSetpoint v) {
+                setVoltage(v.get());
+            } else if (setpoint instanceof CurrentSetpoint c) {
+                setCurrent(c.get());
+            } else if (setpoint instanceof IdleSetpoint) {
+                setIdle();
+            } else {
+                throw new RuntimeException("Unknown setpoint type. Please use one of the given setpoint types in frc.lib.motors.setpoints");
             }
         }
     }
@@ -114,10 +113,9 @@ public abstract class MotorIO implements Loggable {
     /**
      * Gets the current setpoint
      * @implNote This does get updated even when the motor is disabled
-     * @implNote This returns a copy of the current setpoint, so feel free to modify the data
      */
-    public final Setpoint getCurrentSetpoint() {
-        return currentSetpoint.clone();
+    public final BaseSetpoint<?> getCurrentSetpoint() {
+        return currentSetpoint;
     }
 
     /**
@@ -138,8 +136,15 @@ public abstract class MotorIO implements Loggable {
 
     @Override
     public void log(String path) {
-        Logger.log(path, "Setpoint (Base Units)", getCurrentSetpoint().value);
-        Logger.log(path, "Setpoint Type", getCurrentSetpoint().outputType);
+        BaseSetpoint<?> setpoint = getCurrentSetpoint();
+        if (setpoint instanceof PositionSetpoint p) {
+            Logger.log(path, "Setpoint Value", p.get(), loggedPositionUnit);
+        } else if (setpoint instanceof VelocitySetpoint v) {
+            Logger.log(path, "Setpoint Value", v.get(), loggedVelocityUnit);
+        } else {
+            Logger.log(path, "Setpoint Value", setpoint.get());
+        }
+        Logger.log(path, "Setpoint Type", getCurrentSetpoint().getName());
         Logger.log(path, "Main", outputs[0]);
         Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
     }
@@ -149,6 +154,8 @@ public abstract class MotorIO implements Loggable {
         AngularVelocityUnit loggedVelocityUnit,
         TemperatureUnit loggedTemperatureUnit
     ) {
+        this.loggedPositionUnit = loggedPositionUnit;
+        this.loggedVelocityUnit = loggedVelocityUnit;
         for (MotorOutputs output : outputs) {
             output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
         }
@@ -161,15 +168,15 @@ public abstract class MotorIO implements Loggable {
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
 
-    protected abstract void setVoltage(double volts);
-    protected abstract void setCurrent(double amps);
+    protected abstract void setVoltage(Voltage voltage);
+    protected abstract void setCurrent(Current current);
 
-    protected abstract void setPosition(double rads);
-    protected abstract void setVelocity(double radsPerSecond);
-    protected abstract void setProfiledPosition(double rads);
+    protected abstract void setPosition(Angle angle);
+    protected abstract void setVelocity(AngularVelocity velocity);
+    protected abstract void setProfiledPosition(Angle position);
 
-    protected abstract void setPercentage(double percentage);
     protected abstract void setIdle();
+
     public abstract void useSoftLimits(boolean use);
     public abstract void resetPosition(Angle position);
 }
