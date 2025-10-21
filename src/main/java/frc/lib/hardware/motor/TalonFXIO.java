@@ -1,5 +1,7 @@
 package frc.lib.hardware.motor;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -12,6 +14,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 
@@ -81,33 +86,28 @@ public class TalonFXIO extends MotorIO {
     }
 
     @Override
-    protected void setVoltage(double voltage) {
-        motors[0].setVoltage(voltage);
+    protected void setVoltage(Voltage voltage) {
+        motors[0].setVoltage(voltage.in(Volts));
     }
 
     @Override
-    protected void setCurrent(double current) {
+    protected void setCurrent(Current current) {
         throw new UnsupportedOperationException("TalonFX does not support current control without Phoenix Pro");
     }
 
     @Override
-    protected void setPosition(double position) {
-        motors[0].setControl(positionRequest.withPosition(position));
+    protected void setPosition(Angle angle) {
+        motors[0].setControl(positionRequest.withPosition(angle));
     }
 
     @Override
-    protected void setVelocity(double velocity) {
-        motors[0].setControl(velocityRequest.withVelocity(velocity));
+    protected void setVelocity(AngularVelocity angularVelocity) {
+        motors[0].setControl(velocityRequest.withVelocity(angularVelocity));
     }
 
     @Override
-    protected void setProfiledPosition(double position) {
-        motors[0].setControl(profiledPositionRequest.withPosition(position));
-    }
-
-    @Override
-    protected void setPercentage(double percentage) {
-        motors[0].set(percentage);
+    protected void setProfiledPosition(Angle angle) {
+        motors[0].setControl(profiledPositionRequest.withPosition(angle));
     }
 
     @Override
