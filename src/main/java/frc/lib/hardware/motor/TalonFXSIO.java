@@ -81,7 +81,7 @@ public class TalonFXSIO extends MotorIO {
             outputs[i].supplyVoltage = motors[i].getSupplyVoltage().getValue();
             outputs[i].statorCurrent = motors[i].getStatorCurrent().getValue();
             outputs[i].supplyCurrent = motors[i].getSupplyCurrent().getValue();
-            outputs[i].temperatureCelsius = motors[i].getDeviceTemp().getValue();
+            outputs[i].temperature = motors[i].getDeviceTemp().getValue();
         }
     }
 
