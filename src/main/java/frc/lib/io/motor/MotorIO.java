@@ -1,15 +1,25 @@
 package frc.lib.io.motor;
 
-import org.littletonrobotics.junction.Logger;
+import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import java.util.Arrays;
 
 import edu.wpi.first.units.measure.*;
-import frc.lib.io.logging.Loggable;
 import frc.lib.io.motor.setpoints.*;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.TemperatureUnit;
+import edu.wpi.first.units.measure.Angle;
+import frc.lib.Util.logging.Loggable;
+import frc.lib.Util.logging.Logger;
 
 public abstract class MotorIO implements Loggable {
     private BaseSetpoint<?> currentSetpoint;
     private boolean enabled;
-    private MotorOutputsAutoLogged[] outputs;
+    private MotorOutputs[] outputs;
+    private AngleUnit loggedPositionUnit;
+    private AngularVelocityUnit loggedVelocityUnit;
 
     /**
      * Sets up the internal state for a MotorIO
@@ -22,12 +32,13 @@ public abstract class MotorIO implements Loggable {
         }
 
         currentSetpoint = new IdleSetpoint();
-        outputs = new MotorOutputsAutoLogged[numFollowers + 1];
+        outputs = new MotorOutputs[numFollowers + 1];
         for (int i = 0; i < numFollowers + 1; i++) {
-            outputs[i] = new MotorOutputsAutoLogged();
+            outputs[i] = new MotorOutputs();
         }
-
         enabled = true;
+        loggedPositionUnit = Radian;
+        loggedVelocityUnit = RadiansPerSecond;
     }
 
     /**
@@ -124,16 +135,29 @@ public abstract class MotorIO implements Loggable {
     }
 
     @Override
-    public void log(String subdirectory, String name) {
-        String dir = subdirectory + "/" + name;
+    public void log(String path) {
+        BaseSetpoint<?> setpoint = getCurrentSetpoint();
+        if (setpoint instanceof PositionSetpoint p) {
+            Logger.log(path, "Setpoint Value", p.get(), loggedPositionUnit);
+        } else if (setpoint instanceof VelocitySetpoint v) {
+            Logger.log(path, "Setpoint Value", v.get(), loggedVelocityUnit);
+        } else {
+            Logger.log(path, "Setpoint Value", setpoint.get());
+        }
+        Logger.log(path, "Setpoint Type", getCurrentSetpoint().getName());
+        Logger.log(path, "Main", outputs[0]);
+        Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
+    }
 
-        Logger.recordOutput(dir + "/Setpoint Base Units Value", getCurrentSetpoint().get()); // TODO make log in the same place as MotorOutputs
-        Logger.recordOutput(dir + "/Setpoint Type", getCurrentSetpoint().getName());
-
-        Logger.processInputs(dir, outputs[0]);
-
-        for (int i = 1; i < outputs.length; i++) {
-            Logger.processInputs(dir + "/Followers/" + i, outputs[i]);
+    public void overrideLoggedUnits(
+        AngleUnit loggedPositionUnit,
+        AngularVelocityUnit loggedVelocityUnit,
+        TemperatureUnit loggedTemperatureUnit
+    ) {
+        this.loggedPositionUnit = loggedPositionUnit;
+        this.loggedVelocityUnit = loggedVelocityUnit;
+        for (MotorOutputs output : outputs) {
+            output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
         }
     }
 
