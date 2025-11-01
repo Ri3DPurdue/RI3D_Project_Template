@@ -138,11 +138,11 @@ public abstract class MotorIO implements Loggable {
     public void log(String path) {
         BaseSetpoint<?> setpoint = getCurrentSetpoint();
         if (setpoint instanceof PositionSetpoint p) {
-            Logger.log(path, "Setpoint Value", p.get(), loggedPositionUnit);
+            Logger.log(path, "Setpoint Value", p.get().in(loggedPositionUnit));
         } else if (setpoint instanceof VelocitySetpoint v) {
-            Logger.log(path, "Setpoint Value", v.get(), loggedVelocityUnit);
+            Logger.log(path, "Setpoint Value", v.get().in(loggedVelocityUnit));
         } else {
-            Logger.log(path, "Setpoint Value", setpoint.get());
+            Logger.log(path, "Setpoint Value", setpoint.get().baseUnitMagnitude());
         }
         Logger.log(path, "Setpoint Type", getCurrentSetpoint().getName());
         Logger.log(path, "Main", outputs[0]);
