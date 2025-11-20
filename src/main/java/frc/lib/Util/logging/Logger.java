@@ -1,4 +1,4 @@
-package frc.lib.Util.logging;
+package frc.lib.util.logging;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.units.Measure;
@@ -29,7 +29,8 @@ public class Logger extends DogLog {
     // Measure
 
     public static <U extends Unit> void log(String key, Measure<U> value, U unit) {
-        log(key + " (" + unit.symbol().replace("/", " per ") + ")", value.in(unit));
+        log(key, "Value", value.in(unit));
+        log(key, "Units", unit.name());
     }
 
     public static <U extends Unit> void log(String key, Measure<U> value) {

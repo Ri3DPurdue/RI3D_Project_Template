@@ -3,9 +3,9 @@ package frc.lib.component;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
+import frc.lib.util.UnitsUtil;
 
 public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected Angle epsilonThreshold;

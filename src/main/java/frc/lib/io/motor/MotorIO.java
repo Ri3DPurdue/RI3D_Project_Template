@@ -7,12 +7,12 @@ import java.util.Arrays;
 
 import edu.wpi.first.units.measure.*;
 import frc.lib.io.motor.setpoints.*;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.TemperatureUnit;
 import edu.wpi.first.units.measure.Angle;
-import frc.lib.Util.logging.Loggable;
-import frc.lib.Util.logging.Logger;
 
 public abstract class MotorIO implements Loggable {
     private BaseSetpoint<?> currentSetpoint;
@@ -138,11 +138,11 @@ public abstract class MotorIO implements Loggable {
     public void log(String path) {
         BaseSetpoint<?> setpoint = getCurrentSetpoint();
         if (setpoint instanceof PositionSetpoint p) {
-            Logger.log(path, "Setpoint Value", p.get().in(loggedPositionUnit));
+            Logger.log(path, "Setpoint Value", p.get(), loggedPositionUnit);
         } else if (setpoint instanceof VelocitySetpoint v) {
-            Logger.log(path, "Setpoint Value", v.get().in(loggedVelocityUnit));
+            Logger.log(path, "Setpoint Value", v.get(), loggedVelocityUnit);
         } else {
-            Logger.log(path, "Setpoint Value", setpoint.get().baseUnitMagnitude());
+            Logger.log(path, "Setpoint Value", setpoint.get());
         }
         Logger.log(path, "Setpoint Type", getCurrentSetpoint().getName());
         Logger.log(path, "Main", outputs[0]);

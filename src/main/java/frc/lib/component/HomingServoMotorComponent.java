@@ -9,9 +9,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.*;
+import frc.lib.util.UnitsUtil;
 
 public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComponent<M> {
     private boolean homing = false;
@@ -19,19 +19,14 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     private HomingConfig homingConfig;
     private Debouncer homingDebouncer;
 
-
     public HomingServoMotorComponent(M motorIO, Angle epsilon, Angle startAngle, HomingConfig config) {
         super(motorIO, epsilon, startAngle);
         homingConfig = config;
         homingDebouncer = new Debouncer(config.homingDebouce.in(Units.Seconds), DebounceType.kRising);
     }
 
-    private boolean setpointNearHome() {
-        if (getSetpoint() instanceof PositionSetpoint p) {
-            return positionNearHome(p.get());
-        } else {
-            return false;
-        }
+    private boolean setpointIsHome() {
+        return getSetpoint() instanceof PositionSetpoint p && p.get().equals(homingConfig.homePosition);
     }
 
     private boolean positionNearHome(Angle position) {
@@ -45,7 +40,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
     @Override
     public void periodic() {
         super.periodic();
-        if (needsToHome && setpointNearHome() && isNearHome()) { // If homing is needed, targeting the homing location, and almost there
+        if (needsToHome && setpointIsHome() && isNearHome()) { // If homing is needed, targeting the homing location, and almost there
             beginHomingSequence(); // Start the homing sequence
         }
         if (homing && DriverStation.isEnabled()) { // If homing (and enabled so the voltage is ACTUALLY being applied)
@@ -53,7 +48,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
                     getVelocity().abs(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit)) <= 
                     homingConfig.homingVelocity.baseUnitMagnitude())) { // If you've been under the homing velocity threshold for the debounce (if you've stopped)
                 resetPosition(homingConfig.homePosition); // You know you're at the home position so reset it
-                applySetpoint(new ProfiledPositionSetpoint(homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
+                applySetpoint(homingConfig.homeSetpoint); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
             }
         }
     }
@@ -64,7 +59,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
         if (homing) { // If you were in the middle of homing
             endHomingSequence(); // Cancel homing
         }
-        if (!setpointNearHome()) { // If you're leaving your home position
+        if (!setpointIsHome()) { // If you're leaving your home position
             needsToHome = true; // You now need to rezero
         }
     }
@@ -87,6 +82,7 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
         public AngularVelocity homingVelocity = BaseUnits.AngleUnit.zero().div(BaseUnits.TimeUnit.zero());
         public Voltage homingVoltage = BaseUnits.VoltageUnit.zero();
         public Time homingDebouce = BaseUnits.TimeUnit.zero();
+        public PositionSetpoint homeSetpoint = null; // Position setpoint to target home and stay there once done homing
     }
     
 }

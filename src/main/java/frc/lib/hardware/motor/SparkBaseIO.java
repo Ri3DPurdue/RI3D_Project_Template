@@ -130,7 +130,7 @@ public class SparkBaseIO extends MotorIO {
                 default:
                     break;
             }
-
+            config.apply(mainConfig);
             config.follow(mainMotor, follower.getSecond());
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
