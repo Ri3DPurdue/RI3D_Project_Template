@@ -1,4 +1,4 @@
-package frc.lib.hardware.motor;
+package frc.lib.io.motor.ctre;
 
 import static edu.wpi.first.units.Units.*;
 

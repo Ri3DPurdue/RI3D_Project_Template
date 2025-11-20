@@ -1,4 +1,4 @@
-package frc.robot.subsystems.ExampleIntake;
+package frc.robot.subsystems.exampleIntake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -10,12 +10,12 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.component.MotorComponent;
-import frc.lib.hardware.motor.SparkBaseIO;
-import frc.lib.hardware.motor.SparkBaseSimIO;
+import frc.lib.io.motor.rev.SparkBaseIO;
+import frc.lib.io.motor.rev.SparkBaseSimIO;
 import frc.lib.io.motor.setpoints.*;
-import frc.lib.sim.RollerSim;
-import frc.lib.sim.SimObject;
-import frc.robot.Ports;
+import frc.lib.mechanismSim.RollerSim;
+import frc.lib.mechanismSim.SimObject;
+import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class RollerConstants {
@@ -39,14 +39,14 @@ public class RollerConstants {
             ? new SparkBaseIO(
                 MotorType.kBrushless, 
                 getMainConfig(), 
-                Ports.INTAKE_ROLLERS.id
+                IDs.INTAKE_ROLLERS.id
                 )
             : new SparkBaseSimIO(
                 getSimObject(),
                 motor,
                 MotorType.kBrushless, 
                 getMainConfig(), 
-                Ports.INTAKE_ROLLERS.id
+                IDs.INTAKE_ROLLERS.id
             );
     }
 

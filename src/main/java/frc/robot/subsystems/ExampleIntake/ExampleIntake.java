@@ -1,11 +1,11 @@
-package frc.robot.subsystems.ExampleIntake;
+package frc.robot.subsystems.exampleIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
-import frc.lib.hardware.motor.SparkBaseIO;
+import frc.lib.io.motor.rev.SparkBaseIO;
 
 public class ExampleIntake extends ComponentSubsystem {
     private final ServoMotorComponent<SparkBaseIO> pivot;

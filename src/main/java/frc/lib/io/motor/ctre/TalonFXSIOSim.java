@@ -1,4 +1,4 @@
-package frc.lib.hardware.motor;
+package frc.lib.io.motor.ctre;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
 
 import edu.wpi.first.math.Pair;
-import frc.lib.sim.SimObject;
+import frc.lib.mechanismSim.SimObject;
 
 /**
  * A class that represents a simulated {@link TalonFXS}
