@@ -3,79 +3,33 @@
 This is a robot project base intended to be used for fast prototyping with
 many plug-and-play built-ins
 
-## Goals
+## Features
 1) Plug-and-play architecture
-   - Pre-built mechanisms that can be combined into subsystems
-   - Motor agnostic mechanisms for a wide variety of prototyping capabilities
+   - Pre-built components that can be combined into subsystems
+   - Motor agnostic components for a combatability with different motor controlers
 2) Simulatable
-   - The ability to run the robot in simulation and make it as accurate to the real robot as possible
-3) Loggable
-   - The ability to run the robot and see what is happening to it at all points in time, even after we disable it
-4) Clean and simple
-   - The ability for anyone to read our code and know what is going on well enough
-   - This also implies good documentation
-5) Good unit management (future section)
+   - The ability to run the robot in simulation with high enough accuracy to test complex, high level commands and sequences
+3) Effective Logging
+   - Utilizes DogLog to have subsystems cleanly log their own key values
+4) Unit Management
+   - Usage of WPILib Units Library to easily and clearly store values in proper units
 
-## Non-Goals
-1) Perfection
-   - This is never going to be perfect. Deal with it.
-2) 100% use case coverage
-   - We are an RI3D team. At the end of the day, we need to prioritize quick prototyping
-     rather than covering every possible use case of our code
+## How It's Achieved
+ * Superstructure
+   - Handles high level coordination between different subsystems and drivetrain
 
-## Units
-We don't want to use the built in Units library to WPILib because we don't want to
-deal with all of the allocations bogging down our RIO.<br>
-So, we always* return a ```double``` For our units<br>
-This also means we need to be careful in how we name/document our code.<br>
-This is intended to be a step in the right direction<br>
-For the future, we might write our own units library, but that is still a discussion
-point<br>
-*We are going to be using a ```Rotation2d``` for angles for the time being<br>
+ * Component Subsystem
+   - Stores motor and sensor components within a subsystem and coordinates them from internal subsystem movements
 
-### WPILib Units
-For the most part, we are going to stay away from these<br>
-But, we will use the WPILib conversions set to help us keep a common convention<br>
-To that point, we will also use the WPILib convention for distances, angles and coordinate systems<br>
+ * Component
+   - Stores different types of IOs for easy utilization within a Component Subsystem
 
-### Distance
-Unless explicitly stated otherwise, all distances are stored in doubles and measured in meters.<br>
-Any conversions from a different unit should be handled by the WPILib conversion set<br>
+ * MotorIO
+   - Abstract class extended for all used motor controllers to allow higher level features to be motor agnostic
+   - Every motor controller also has simulatable versions utilizing SimObjects
+      - SimObjects are simulations of mechanisms usable my a MotorIO child for simple internal simulation
+   - Stores everything in mechanism units (angle of last rotating component in system such as arm, flywheel, or pulley of elevator)
 
-### Angles
-Unless explicitly stated otherwise, all angles are stored in Rotation2d objects, counterclockwise positive<br>
-
-### Velocities
-Unless explicity stated otherwise, all velocities are stored in doubles and measured in meters per second.<br>
-Any conversions from a different unit should be handled by the WPILib conversion set<br>
-
-### Angular Velocities
-Unless explicitly stated otherwise, all angular velocities are stored in doubles and measured in radians per second with
-counterclockwise being positive.<br>
-Any conversions from a different unit should be handled by the WPILib conversion set<br>
-
-### Motor Inputs
-Motor inputs are based on the mechanism to which they are attached, so the units are as well<br>
-Take an arm. You want to set the angle of that arm from level. You would tell the ```MotorIO``` that angle and it
-would handle the conversion from there<br>
-Now take an elevator. You want to set the height of that elevator from zero. You would tell the ```MotorIO``` that height
-and it would handle the conversion from there<br>
-
-### Positions
-Unless explicitly stated otherwise, all positions are stored in either a ```Translation2d``` or ```Pose2d``` with the
-conventions therein.<br>
-This means that the blue driverstation is on the left, and the red driverstation is on the right, and the field is in front
-of you<br>
-To your right is 0 degrees, and ahead of you is 90 degrees<br>
-The corner created from the alliance wall on the blue side and the field wall parallel to 0 degrees and closest to you is 0, 0<br>
-
-### Time
-Unless explicitly stated otherwise, all times are stored in doubles and measured in seconds<br>
-Any conversions from different units should be handled by the WPILib conversion set<br>
-
-### Temperature
-Unless explicitly stated otherwise, all temperatures are stored in doubles and measured in degrees celsius<br>
-Any conversions from different units should be handled by the WPILib conversion set<br>
-
-### BEANS (Best Empirically Allowed Number)
-No. Not again. It was too confusing, apparently...
+ * DigitalIO
+   - Abstract class extended for all different sensors that represent digital/boolean values to allow higher level features to be sensor agnostic
+   - Can be easily simulated off a controller button using DigitalInBooleanSupplierIO
