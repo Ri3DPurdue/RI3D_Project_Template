@@ -28,13 +28,15 @@ public class SparkBaseIO extends MotorIO {
         CANSparkMax,
         CANSparkFlex
     }
+
     /**
      * Inner class for exploding a generic Spark motor controller
      * Basically, I don't want to have to call a method to get the PID controller
      * or the relative encoder every single time I want to get them
-     * @param motor Either the Spark Max or the Spark Flex
+     * 
+     * @param motor                     Either the Spark Max or the Spark Flex
      * @param SparkClosedLoopController the REV controller to be used
-     * @param RelativeEncoder The encoder of the motor controller
+     * @param RelativeEncoder           The encoder of the motor controller
      */
     static class Exploded {
         public final SparkBase motor;
@@ -43,8 +45,7 @@ public class SparkBaseIO extends MotorIO {
         public final SparkBaseConfigAccessor accessor;
 
         public Exploded(
-            int id, MotorType type, ControllerType sparkType
-        ) {
+                int id, MotorType type, ControllerType sparkType) {
             switch (sparkType) {
                 case CANSparkFlex:
                     SparkFlex flex = new SparkFlex(id, type);
@@ -55,7 +56,7 @@ public class SparkBaseIO extends MotorIO {
                     SparkMax max = new SparkMax(id, type);
                     this.motor = max;
                     this.accessor = max.configAccessor;
-                    
+
                     break;
 
                 default:
@@ -63,7 +64,7 @@ public class SparkBaseIO extends MotorIO {
                     accessor = null;
                     break;
             }
-            
+
             this.controller = motor.getClosedLoopController();
             this.encoder = motor.getEncoder();
         }
@@ -79,19 +80,21 @@ public class SparkBaseIO extends MotorIO {
 
     /**
      * Creates a sparkBaseIO
+     * 
      * @param type Whether the motor is brushed or brushless.
      * @see com.revrobotics.spark.SparkLowLevel.MotorType
-     * @param sparkType Enum that indicates whether the motor controller is a spark max or a spark flex
+     * @param sparkType Enum that indicates whether the motor controller is a spark
+     *                  max or a spark flex
      * @param mainMotor The id of the main motor
-     * @param followers The id of any following motors, and whether they are inverted
+     * @param followers The id of any following motors, and whether they are
+     *                  inverted
      */
     @SuppressWarnings({ "unchecked" })
     public SparkBaseIO(
-        MotorType type,
-        SparkBaseConfig mainConfig,
-        int mainMotor,
-        Pair<Integer, Boolean>... followers
-    ) {
+            MotorType type,
+            SparkBaseConfig mainConfig,
+            int mainMotor,
+            Pair<Integer, Boolean>... followers) {
         super(followers.length);
 
         if (mainConfig instanceof SparkMaxConfig) {
@@ -103,9 +106,9 @@ public class SparkBaseIO extends MotorIO {
         } else {
             throw new IllegalArgumentException("Main config must either be a spark max or spark flex config");
         }
-        
+
         config.apply(mainConfig);
-        
+
         main = new Exploded(mainMotor, type, this.type);
         main.motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -127,7 +130,7 @@ public class SparkBaseIO extends MotorIO {
                 default:
                     break;
             }
-           
+
             config.follow(mainMotor, follower.getSecond());
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -137,7 +140,8 @@ public class SparkBaseIO extends MotorIO {
     public void reconfigure(SparkBaseConfig config) {
         if (config == this.config) {
             // Internal for more easy reconfiguring
-        } if (this.type == ControllerType.CANSparkMax && !(config instanceof SparkMaxConfig)) {
+        }
+        if (this.type == ControllerType.CANSparkMax && !(config instanceof SparkMaxConfig)) {
             throw new IllegalArgumentException("Must configure a spark max with a spark max config");
         } else if (this.type == ControllerType.CANSparkFlex && !(config instanceof SparkFlexConfig)) {
             throw new IllegalArgumentException("Must configure a spark flex with a spark flex config");
@@ -153,6 +157,7 @@ public class SparkBaseIO extends MotorIO {
 
     /**
      * helper method for loading the data from a motor into the outputs
+     * 
      * @param controller
      * @param outputs
      */
@@ -167,7 +172,7 @@ public class SparkBaseIO extends MotorIO {
 
         outputs.position = Units.Rotations.of(controller.encoder.getPosition());
         outputs.velocity = Units.RPM.of(controller.encoder.getVelocity());
-        
+
         outputs.temperature = Units.Celsius.of(controller.motor.getMotorTemperature());
     }
 
@@ -199,7 +204,7 @@ public class SparkBaseIO extends MotorIO {
     protected void setVelocity(AngularVelocity velocity) {
         main.controller.setReference(velocity.in(Units.RPM), kVelocity);
     }
-    
+
     @Override
     protected void setProfiledPosition(Angle position) {
         main.controller.setReference(position.in(Units.Rotations), kMAXMotionPositionControl);
@@ -210,17 +215,35 @@ public class SparkBaseIO extends MotorIO {
         main.controller.setReference(0, kVoltage);
     }
 
-	@Override
-	public void useSoftLimits(boolean use) {
+    @Override
+    public void useSoftLimits(boolean use) {
         this.config.softLimit
-            .forwardSoftLimitEnabled(use && forwardLimitEnabled)
-            .reverseSoftLimitEnabled(use && reverseLimitEnabled);
+                .forwardSoftLimitEnabled(use && forwardLimitEnabled)
+                .reverseSoftLimitEnabled(use && reverseLimitEnabled);
 
         main.motor.configure(this.config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-	}
+    }
 
-	@Override
-	public void resetPosition(Angle position) {
+    @Override
+    public void resetPosition(Angle position) {
         main.encoder.setPosition(position.in(Units.Rotations));
-	}
+    }
+
+    public static SparkMaxConfig getSafeSparkMaxConfig() {
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.smartCurrentLimit(20);
+        config.idleMode(SparkMaxConfig.IdleMode.kBrake);
+        config.limitSwitch.forwardLimitSwitchEnabled(false)
+                .reverseLimitSwitchEnabled(false);
+        return config;
+    }
+
+    public static SparkFlexConfig getSafeSparkFlexConfig() {
+        SparkFlexConfig config = new SparkFlexConfig();
+        config.smartCurrentLimit(20);
+        config.idleMode(SparkMaxConfig.IdleMode.kBrake);
+        config.limitSwitch.forwardLimitSwitchEnabled(false)
+                .reverseLimitSwitchEnabled(false);
+        return config;
+    }
 }
