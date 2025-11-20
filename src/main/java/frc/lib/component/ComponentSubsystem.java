@@ -41,4 +41,9 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
         cmd.addRequirements(this); 
         return cmd;
     }
+
+    protected Command command(Command command) {
+        command.addRequirements(this); 
+        return command;
+    }
 }
