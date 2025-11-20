@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleIntake1;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.component.ComponentSubsystem;

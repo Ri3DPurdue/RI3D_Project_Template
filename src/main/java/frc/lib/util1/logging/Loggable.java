@@ -1,4 +1,4 @@
-package frc.lib.util.logging;
+package frc.lib.util1.logging;
 
 public interface Loggable {
     public void log(String path);

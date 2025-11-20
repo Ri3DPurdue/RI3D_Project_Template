@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
-import frc.lib.util.UnitsUtil;
+import frc.robot.subsystems.exampleIntake1.util.UnitsUtil;
 
 public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     protected Angle epsilonThreshold;

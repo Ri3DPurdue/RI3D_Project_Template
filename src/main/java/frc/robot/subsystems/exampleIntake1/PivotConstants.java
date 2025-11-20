@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleIntake1;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;

@@ -7,7 +7,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import frc.lib.util.UnitsUtil.DistanceAngleConverter;
+import frc.robot.subsystems.exampleIntake1.util.UnitsUtil.DistanceAngleConverter;
 
 public class LinearSim extends SimObject {
     private final ElevatorSim sim;
