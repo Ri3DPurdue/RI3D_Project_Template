@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.setpoints.BaseSetpoint;
-import frc.robot.subsystems.exampleIntake1.util.logging.Logger;
+import frc.lib.util.logging.Logger;
 
 public class MotorComponent<M extends MotorIO> implements Component {
     private final M io;

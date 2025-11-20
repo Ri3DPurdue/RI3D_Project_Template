@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 import edu.wpi.first.units.measure.*;
 import frc.lib.io.motor.setpoints.*;
-import frc.robot.subsystems.exampleIntake1.util.logging.Loggable;
-import frc.robot.subsystems.exampleIntake1.util.logging.Logger;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.TemperatureUnit;

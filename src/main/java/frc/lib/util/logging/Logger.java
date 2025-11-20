@@ -1,4 +1,4 @@
-package frc.lib.util1.logging;
+package frc.lib.util.logging;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.units.Measure;

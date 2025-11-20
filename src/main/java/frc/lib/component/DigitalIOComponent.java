@@ -3,7 +3,7 @@ package frc.lib.component;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.sensor.DigitalIO;
-import frc.robot.subsystems.exampleIntake1.util.logging.Logger;
+import frc.lib.util.logging.Logger;
 
 public class DigitalIOComponent implements Component {
     private final DigitalIO io;

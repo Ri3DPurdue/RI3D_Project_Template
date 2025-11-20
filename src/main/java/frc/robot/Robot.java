@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.controlBoard.ControlBoard;
 import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.exampleIntake1.util.logging.Logger;
+import frc.lib.util.logging.Logger;
 
 /**
  * The methods in this class are called automatically corresponding to each

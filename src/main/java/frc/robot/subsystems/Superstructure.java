@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.exampleIntake1.ExampleIntake;
-import frc.robot.subsystems.exampleIntake1.util.logging.Loggable;
-import frc.robot.subsystems.exampleIntake1.util.logging.Logger;
+import frc.robot.subsystems.exampleIntake.ExampleIntake;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 
 public class Superstructure implements Loggable {
     public final ExampleIntake intake = new ExampleIntake();

@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.*;
-import frc.robot.subsystems.exampleIntake1.util.UnitsUtil;
+import frc.lib.util.UnitsUtil;
 
 public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComponent<M> {
     private boolean homing = false;
