@@ -1,4 +1,4 @@
-package frc.lib.sim;
+package frc.lib.mechanismSim;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
