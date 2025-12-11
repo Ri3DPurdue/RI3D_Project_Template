@@ -76,42 +76,34 @@ public class Logger extends DogLog {
 
     /*
      * Logs out the measures to the given key
-     * Does not create new subdirectories for the indexes?
      */
     public static <U extends Unit> void log(String key, Measure<U>[] values, U unit) {
-        for (Measure<U> value : values) {
-            log(key, value, unit);
+        for (int i = 0; i  < values.length; i++){
+            log(key + "/" + i, values[i], unit);
         }
     }
 
     /*
      * Logs out the measures to the given key
-     * Does not create new subdirectories for the indexes?
      */
     public static void log(String key, Measure<?> values[]) {
-        for (Measure<?> value : values) {
-            log(key, value);
+        for (int i = 0; i < values.length; i++) {
+            log(key + "/" + i, values[i]);
         }
     }
 
     /*
      * Logs out the measures to the given path with the given name
-     * Does not create new subdirectories for the indexes?
      */
     public static <U extends Unit> void log(String path, String key, Measure<U>[] values, U unit) {
-        for (Measure<U> value : values) {
-            log(path, key, value, unit);
-        }
+        log(path + "/" + key, values, unit);
     }
 
     /*
      * Logs out the measures to the given path with the given name
-     * Does not create new subdirectories for the indexes?
      */
     public static void log(String path, String key, Measure<?>[] values) {
-        for (Measure<?> value : values) {
-            log(path, key, value);
-        }
+        log(path + "/" + key, values);
     }
 
     // boolean
