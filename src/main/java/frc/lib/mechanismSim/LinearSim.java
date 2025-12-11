@@ -1,29 +1,31 @@
-package frc.lib.sim;
+package frc.lib.mechanismSim;
 
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.lib.util.UnitsUtil.DistanceAngleConverter;
 
-public class RollerSim extends SimObject{
-    private final FlywheelSim sim;
+public class LinearSim extends SimObject {
+    private final ElevatorSim sim;
+    private final DistanceAngleConverter converter;
 
-    public RollerSim(FlywheelSim system) {
+    public LinearSim(ElevatorSim system, DistanceAngleConverter distanceAngleConverter) {
         sim = system;
+        converter = distanceAngleConverter;
     }
-
+    
     @Override
     public Angle getPosition() {
-        return BaseUnits.AngleUnit.zero(); // Rollers do not care about position and no simulated value exists so just return 0
+        return converter.toAngle(Units.Meters.of(sim.getPositionMeters()));
     }
 
     @Override
     public AngularVelocity getVelocity() {
-        return Units.RadiansPerSecond.of(sim.getAngularVelocityRadPerSec());
+        return converter.toAngle(Units.MetersPerSecond.of(sim.getVelocityMetersPerSecond()));
     }
 
     @Override

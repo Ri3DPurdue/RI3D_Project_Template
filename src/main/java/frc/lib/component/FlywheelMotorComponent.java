@@ -3,9 +3,9 @@ package frc.lib.component;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.VelocitySetpoint;
+import frc.lib.util.UnitsUtil;
 
 /**
  * A motor component specialized for velocity-controlled (usually flywheel) mechanisms.

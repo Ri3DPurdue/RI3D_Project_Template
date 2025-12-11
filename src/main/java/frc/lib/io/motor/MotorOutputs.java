@@ -11,8 +11,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.Util.logging.Loggable;
-import frc.lib.Util.logging.Logger;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 
 public class MotorOutputs implements Loggable {
     public Angle position;

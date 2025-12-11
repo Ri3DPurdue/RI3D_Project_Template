@@ -5,8 +5,8 @@ import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.Util.logging.Loggable;
-import frc.lib.Util.logging.Logger;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 
 /**
  * A subsystem designed to use sub-components.

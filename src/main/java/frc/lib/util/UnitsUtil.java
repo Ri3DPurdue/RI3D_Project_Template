@@ -1,4 +1,4 @@
-package frc.lib.Util;
+package frc.lib.util;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.AngleUnit;

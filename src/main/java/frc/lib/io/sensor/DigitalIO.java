@@ -2,8 +2,8 @@ package frc.lib.io.sensor;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import frc.lib.Util.logging.Loggable;
-import frc.lib.Util.logging.Logger;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 
 public abstract class DigitalIO implements Loggable {
 

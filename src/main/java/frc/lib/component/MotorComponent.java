@@ -9,10 +9,10 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.Util.logging.Logger;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.setpoints.BaseSetpoint;
+import frc.lib.util.logging.Logger;
 
 /**
  * A component that wraps motor controller functionality.

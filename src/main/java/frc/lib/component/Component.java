@@ -1,6 +1,6 @@
 package frc.lib.component;
 
-import frc.lib.Util.logging.Loggable;
+import frc.lib.util.logging.Loggable;
 
 /**
  * Base interface for all components in the robot system.

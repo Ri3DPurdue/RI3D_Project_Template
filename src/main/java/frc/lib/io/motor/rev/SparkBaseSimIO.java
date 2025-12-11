@@ -1,4 +1,4 @@
-package frc.lib.hardware.motor;
+package frc.lib.io.motor.rev;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -8,8 +8,8 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
-import frc.lib.sim.SimObject;
 import frc.lib.io.motor.MotorOutputs;
+import frc.lib.mechanismSim.SimObject;
 
 
 public class SparkBaseSimIO extends SparkBaseIO {

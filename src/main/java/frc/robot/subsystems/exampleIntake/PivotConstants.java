@@ -1,4 +1,4 @@
-package frc.robot.subsystems.ExampleIntake;
+package frc.robot.subsystems.exampleIntake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -10,12 +10,12 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.component.ServoMotorComponent;
-import frc.lib.hardware.motor.SparkBaseIO;
-import frc.lib.hardware.motor.SparkBaseSimIO;
+import frc.lib.io.motor.rev.SparkBaseIO;
+import frc.lib.io.motor.rev.SparkBaseSimIO;
 import frc.lib.io.motor.setpoints.*;
-import frc.lib.sim.PivotSim;
-import frc.lib.sim.SimObject;
-import frc.robot.Ports;
+import frc.lib.mechanismSim.PivotSim;
+import frc.lib.mechanismSim.SimObject;
+import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class PivotConstants {
@@ -44,16 +44,16 @@ public class PivotConstants {
             ? new SparkBaseIO(
                 MotorType.kBrushless, 
                 getMainConfig(), 
-                Ports.INTAKE_PIVOT_MAIN.id, 
-                Pair.of(Ports.INTAKE_PIVOT_FOLLOWER.id, false)
+                IDs.INTAKE_PIVOT_MAIN.id, 
+                Pair.of(IDs.INTAKE_PIVOT_FOLLOWER.id, false)
                 )
             : new SparkBaseSimIO(
                 getSimObject(),
                 motor,
                 MotorType.kBrushless, 
                 getMainConfig(), 
-                Ports.INTAKE_PIVOT_MAIN.id, 
-                Pair.of(Ports.INTAKE_PIVOT_FOLLOWER.id, false)
+                IDs.INTAKE_PIVOT_MAIN.id, 
+                Pair.of(IDs.INTAKE_PIVOT_FOLLOWER.id, false)
             );
     }
 

@@ -1,4 +1,4 @@
-package frc.lib.hardware.motor;
+package frc.lib.io.motor.rev;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.RelativeEncoder;
@@ -130,7 +130,7 @@ public class SparkBaseIO extends MotorIO {
                 default:
                     break;
             }
-
+            config.apply(mainConfig);
             config.follow(mainMotor, follower.getSecond());
 
             this.followers[i].motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

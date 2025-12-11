@@ -1,4 +1,4 @@
-package frc.lib.sim;
+package frc.lib.mechanismSim;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -6,26 +6,23 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import frc.lib.Util.UnitsUtil.DistanceAngleConverter;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-public class LinearSim extends SimObject {
-    private final ElevatorSim sim;
-    private final DistanceAngleConverter converter;
+public class PivotSim extends SimObject {
+    private final SingleJointedArmSim sim;
 
-    public LinearSim(ElevatorSim system, DistanceAngleConverter distanceAngleConverter) {
+    public PivotSim(SingleJointedArmSim system) {
         sim = system;
-        converter = distanceAngleConverter;
     }
-    
+
     @Override
     public Angle getPosition() {
-        return converter.toAngle(Units.Meters.of(sim.getPositionMeters()));
+        return Units.Radians.of(sim.getAngleRads());
     }
 
     @Override
     public AngularVelocity getVelocity() {
-        return converter.toAngle(Units.MetersPerSecond.of(sim.getVelocityMetersPerSecond()));
+        return Units.RadiansPerSecond.of(sim.getVelocityRadPerSec());
     }
 
     @Override
