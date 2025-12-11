@@ -15,6 +15,9 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 public class UnitsUtil {
+	/*
+	 * Checks whether a given measure is within tolerance of the actual value
+	 */
     public static <M extends Measure<U>, U extends Unit> boolean isNear(M expected, M actual, M tolerance) {
         return MathUtil.isNear(expected.baseUnitMagnitude(), actual.baseUnitMagnitude(), tolerance.baseUnitMagnitude());
     } 
