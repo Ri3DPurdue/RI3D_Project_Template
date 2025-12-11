@@ -9,7 +9,7 @@ import frc.lib.Util.logging.Loggable;
 import frc.lib.Util.logging.Logger;
 
 /**
- * A subsystem that manages a collection of named components.
+ * A subsystem designed to use sub-components.
  * 
  * <p>
  * ComponentSubsystem provides a convenient base class for subsystems that
@@ -19,7 +19,7 @@ import frc.lib.Util.logging.Logger;
  * <p>
  * Components are registered by name using
  * {@link #registerComponent(String, Component)} and are automatically updated
- * during the periodic cycle. The subsystem also manages logging of all
+ * during the periodic cycle. The subsystem also automates logging of all
  * registered components.
  * 
  * @see Component

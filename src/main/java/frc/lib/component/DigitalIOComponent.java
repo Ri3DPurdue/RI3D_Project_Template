@@ -70,6 +70,8 @@ public class DigitalIOComponent implements Component {
     /**
      * Creates a command that waits until the digital input reaches the specified
      * state.
+     * <p>
+     * Reccomended to use in a sequential command group or .andThen() command.
      * 
      * <p>
      * Uses the raw (non-debounced) sensor reading.
@@ -84,6 +86,8 @@ public class DigitalIOComponent implements Component {
     /**
      * Creates a command that waits until the debounced digital input reaches the
      * specified state.
+     * <p>
+     * Reccomended to use in a sequential command group or .andThen() command.
      * 
      * <p>
      * Uses the debounced sensor reading, which is more stable and resistant to
