@@ -1,6 +1,7 @@
 package frc.robot.subsystems.exampleIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
@@ -19,35 +20,43 @@ public class ExampleIntake extends ComponentSubsystem {
     }
 
     public Command idleRollers() {
-        return parallel(
-            rollers.applySetpointCommand(RollerConstants.idleSetpoint),
-            indexer.applySetpointCommand(IndexerConstants.idleSetpoint)
+        return withRequirement(
+            Commands.parallel(
+                rollers.applySetpointCommand(RollerConstants.idleSetpoint),
+                indexer.applySetpointCommand(IndexerConstants.idleSetpoint)
+            )
         );
     }
 
     public Command intake() {
-        return sequence(
-            parallel(
-                pivot.applyPositionSetpointCommandWithWait(PivotConstants.deploySetpoint),
-                idleRollers()
-            ),
-            rollers.applySetpointCommand(RollerConstants.inwardsSetpoint),
-            indexer.applySetpointCommand(IndexerConstants.feedSetpoint)
-        );
+        return withRequirement(
+            Commands.sequence(
+                Commands.parallel(
+                    pivot.applyPositionSetpointCommandWithWait(PivotConstants.deploySetpoint),
+                    idleRollers()
+                ),
+                rollers.applySetpointCommand(RollerConstants.inwardsSetpoint),
+                indexer.applySetpointCommand(IndexerConstants.feedSetpoint)
+            ))
+        ;
     }
 
     public Command spit() {
-        return parallel(
-            pivot.applySetpointCommand(PivotConstants.unjamSetpoint),
-            rollers.applySetpointCommand(RollerConstants.spitSetpoint),
-            indexer.applySetpointCommand(IndexerConstants.spitSetpoint)
+        return withRequirement(
+            Commands.parallel(
+                pivot.applySetpointCommand(PivotConstants.unjamSetpoint),
+                rollers.applySetpointCommand(RollerConstants.spitSetpoint),
+                indexer.applySetpointCommand(IndexerConstants.spitSetpoint)
+            )
         );
     }
 
     public Command stow() {
-        return parallel(
-            pivot.applySetpointCommand(PivotConstants.stowSetpoint),
-            idleRollers()
+        return withRequirement(
+            Commands.parallel(
+                pivot.applySetpointCommand(PivotConstants.stowSetpoint),
+                idleRollers()
+            )
         );
     }
 }

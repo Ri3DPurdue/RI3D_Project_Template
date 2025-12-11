@@ -3,7 +3,6 @@ package frc.lib.component;
 import java.util.HashMap;
 import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.logging.Loggable;
 import frc.lib.util.logging.Logger;
@@ -30,19 +29,7 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
           }
     }
 
-    protected Command sequence(Command... commands) {
-        Command cmd = Commands.sequence(commands);
-        cmd.addRequirements(this); 
-        return cmd;
-    }
-
-    protected Command parallel(Command... commands) {
-        Command cmd = Commands.parallel(commands);
-        cmd.addRequirements(this); 
-        return cmd;
-    }
-
-    protected Command command(Command command) {
+    protected Command withRequirement(Command command) {
         command.addRequirements(this); 
         return command;
     }
