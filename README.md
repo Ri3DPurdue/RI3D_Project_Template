@@ -32,4 +32,4 @@ many plug-and-play built-ins
 
  * DigitalIO
    - Abstract class extended for all different sensors that represent digital/boolean values to allow higher level features to be sensor agnostic
-   - Can be easily simulated off a controller button using DigitalInBooleanSupplierIO
+   - Can be easily simulated off a controller button using DigitalBooleanSupplierIO
