@@ -3,10 +3,10 @@ package frc.robot.subsystems.exampleClimber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.ServoMotorComponent;
-import frc.lib.io.motor.rev.SparkBaseIO;
+import frc.lib.io.motor.ctre.TalonFXIO;
 
 public class ExampleClimber extends ComponentSubsystem {
-    private final ServoMotorComponent<SparkBaseIO> climber;
+    private final ServoMotorComponent<TalonFXIO> climber;
 
     public ExampleClimber() {
         climber = registerComponent("Climber", ClimberConstants.getComponent());
