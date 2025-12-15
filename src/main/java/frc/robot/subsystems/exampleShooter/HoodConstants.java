@@ -1,17 +1,14 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.math.Pair;
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.component.ServoMotorComponent;
-import frc.lib.io.motor.rev.SparkBaseIO;
-import frc.lib.io.motor.rev.SparkBaseSimIO;
+import frc.lib.io.motor.ctre.TalonFXIO;
+import frc.lib.io.motor.ctre.TalonFXIOSim;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.mechanismSim.PivotSim;
 import frc.lib.mechanismSim.SimObject;
@@ -19,48 +16,61 @@ import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class HoodConstants {
-    // TODO MAKE NOT IDENTICAL TO INTAKE PIVOT
+    // Epsilon threshold is distance that is considered "close" for internal methods and wait commands. Lower value is higher required accuracy
     public static final Angle epsilonThreshold = Units.Degrees.of(10.0);
-    public static final double gearing = 1.0;
-    public static final DCMotor motor = DCMotor.getNeo550(2);
-
+    
+    // Gearing is a 64 to 12 reduction followed by a 5 to 1 reduction
+    public static final double gearing = (64.0 / 12.0) * (5.0 / 1.0);
+    
+    // Constraints of the system's movement (hard stops, potential interferences, soft limits, etc.)
     public static final Angle minAngle = Units.Radians.of(-10.0);
     public static final Angle maxAngle = Units.Radians.of(110.0);
 
+    // Notable points for system
     public static final Angle shotAngle = Units.Radians.of(10.0);
     public static final Angle stowAngle = Units.Radians.of(110.0);
-
+    
+    // Setpoints for notable points
     public static final PositionSetpoint shotSetpoint = new PositionSetpoint(shotAngle);
     public static final PositionSetpoint stowSetpoint = new PositionSetpoint(stowAngle);
-
-    public static final ServoMotorComponent<SparkBaseIO> getComponent() {
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, stowAngle);
+    
+    // Information about motors driving system
+    public static final DCMotor motor = DCMotor.getKrakenX60Foc(1);
+    
+    /**
+     *  Gets the final component for the system
+     */ 
+    public static final ServoMotorComponent<TalonFXIO> getComponent() {
+        return new ServoMotorComponent<TalonFXIO>(getMotorIO(), epsilonThreshold, stowAngle);
     }
 
+    /**
+     * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
+     */
     @SuppressWarnings("unchecked")
-    public static final SparkBaseIO getMotorIO() {
+    public static final TalonFXIO getMotorIO() {
         return Robot.isReal() 
-            ? new SparkBaseIO(
-                MotorType.kBrushless, 
-                getMainConfig(), 
-                IDs.INTAKE_PIVOT_MAIN.id, 
-                Pair.of(IDs.INTAKE_PIVOT_FOLLOWER.id, false)
+            ? new TalonFXIO(
+                IDs.SHOOTER_HOOD.id,
+                new CANBus(IDs.SHOOTER_HOOD.bus),
+                getMainConfig()
                 )
-            : new SparkBaseSimIO(
-                getSimObject(),
-                motor,
-                MotorType.kBrushless, 
-                getMainConfig(), 
-                IDs.INTAKE_PIVOT_MAIN.id, 
-                Pair.of(IDs.INTAKE_PIVOT_FOLLOWER.id, false)
+            : new TalonFXIOSim(
+                IDs.SHOOTER_HOOD.id,
+                new CANBus(IDs.SHOOTER_HOOD.bus),
+                getMainConfig(),
+                getSimObject()
             );
     }
 
-    public static final SparkBaseConfig getMainConfig() {
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop
-            .p(0.15)
-            .d(0.15);
+    /** 
+     * Get the configuration of the main motor
+     */ 
+    public static final TalonFXConfiguration getMainConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.Slot0.kP = 0.1;
+        config.Slot0.kD = 0.15;
+
         return config;    
     }
 
@@ -74,7 +84,7 @@ public class HoodConstants {
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 
                 false,
-                0.0, 
+                stowAngle.in(Units.Radians), 
                 0.0, 0.0);
         return new PivotSim(system);
     }

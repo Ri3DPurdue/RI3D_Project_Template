@@ -25,12 +25,12 @@ public class WristConstants {
     public static final double gearing = (6.0 / 1.0);
     
     // Constraints of the system's movement (hard stops, potential interferences, soft limits, etc.)
-    public static final Angle minAngle = Units.Radians.of(-10.0);
-    public static final Angle maxAngle = Units.Radians.of(110.0);
+    public static final Angle minAngle = Units.Degrees.of(90.0);
+    public static final Angle maxAngle = Units.Degrees.of(210.0);
     
     // Notable points for system
-    public static final Angle scoreAngle = Units.Degrees.of(10.0);
-    public static final Angle stowAngle = Units.Radians.of(110.0);
+    public static final Angle scoreAngle = Units.Degrees.of(180.0);
+    public static final Angle stowAngle = minAngle;
     
     // Setpoints for notable points
     public static final PositionSetpoint scoreSetpoint = new PositionSetpoint(scoreAngle);

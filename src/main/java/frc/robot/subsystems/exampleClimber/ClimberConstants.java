@@ -48,7 +48,9 @@ public class ClimberConstants {
     // Information about motors driving system
     public static final DCMotor motor = DCMotor.getKrakenX60(2); // Only needed for sim
 
-    // Gets the final component for the system
+    /**
+     *  Gets the final component for the system
+     */ 
     public static final ServoMotorComponent<TalonFXIO> getComponent() {
         TalonFXIO io = getMotorIO();
         io.overrideLoggedUnits(converter.asAngleUnit(Units.Inches), converter.asAngularVelocityUnit(Units.InchesPerSecond), Units.Celsius);

@@ -5,10 +5,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
+import frc.lib.io.motor.ctre.TalonFXIO;
 import frc.lib.io.motor.rev.SparkBaseIO;
 
 public class ExampleIntake extends ComponentSubsystem {
-    private final ServoMotorComponent<SparkBaseIO> pivot;
+    private final ServoMotorComponent<TalonFXIO> pivot;
     private final MotorComponent<SparkBaseIO> rollers;
 
     public ExampleIntake() {

@@ -6,12 +6,12 @@ import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
-import frc.lib.io.motor.rev.SparkBaseIO;
+import frc.lib.io.motor.ctre.TalonFXIO;
 
 public class ExampleShooter extends ComponentSubsystem {
-    private final ServoMotorComponent<SparkBaseIO> hood;
-    private final MotorComponent<SparkBaseIO> feeder;
-    private final FlywheelMotorComponent<SparkBaseIO> flywheel;
+    private final ServoMotorComponent<TalonFXIO> hood;
+    private final MotorComponent<TalonFXIO> feeder;
+    private final FlywheelMotorComponent<TalonFXIO> flywheel;
 
     public ExampleShooter() {
         hood = registerComponent("Hood", HoodConstants.getComponent());

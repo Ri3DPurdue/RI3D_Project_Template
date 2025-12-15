@@ -1,17 +1,16 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.component.MotorComponent;
-import frc.lib.io.motor.rev.SparkBaseIO;
-import frc.lib.io.motor.rev.SparkBaseSimIO;
+import frc.lib.io.motor.ctre.TalonFXIO;
+import frc.lib.io.motor.ctre.TalonFXIOSim;
 import frc.lib.io.motor.setpoints.IdleSetpoint;
 import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.mechanismSim.RollerSim;
@@ -20,39 +19,54 @@ import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class FeederConstants {
-    //TODO MAKE VALUES NOT IDENTICAL TO INTAKE ROLLER
-    public static final double gearing = 1.0;
-    public static final DCMotor motor = DCMotor.getNeo550(1);
+    // Gearing is a 36 to 16 reduction
+    public static final double gearing = (36.0 / 16.0);
 
+    // Notable points for system
     public static final Voltage feedVoltage = Units.Volts.of(8.0);
 
+    // Setpoints for notable points
     public static final VoltageSetpoint feedSetpoint = new VoltageSetpoint(feedVoltage);
     public static final IdleSetpoint idleSetpoint = new IdleSetpoint();
 
-    public static final MotorComponent<SparkBaseIO> getComponent() {
-        return new MotorComponent<SparkBaseIO>(getMotorIO());
+    // Information about motors driving system // TODO MAKE X44
+    public static final DCMotor motor = DCMotor.getKrakenX60(1); // Only needed for sim
+
+    /**
+     * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
+     */
+    public static final MotorComponent<TalonFXIO> getComponent() {
+        return new MotorComponent<TalonFXIO>(getMotorIO());
     }
 
+    /**
+     * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
+     */
     @SuppressWarnings("unchecked")
-    public static final SparkBaseIO getMotorIO() {
+    public static final TalonFXIO getMotorIO() {
         return Robot.isReal() 
-            ? new SparkBaseIO(
-                MotorType.kBrushless, 
-                getMainConfig(), 
-                IDs.INTAKE_ROLLERS.id
+            ? new TalonFXIO(
+                IDs.SHOOTER_FEEDER.id,
+                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                getMainConfig(),
+                Pair.of(IDs.SHOOTER_FEEDER.id, false)
                 )
-            : new SparkBaseSimIO(
+            : new TalonFXIOSim(
+                IDs.SHOOTER_FEEDER.id,
+                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                getMainConfig(),
                 getSimObject(),
-                motor,
-                MotorType.kBrushless, 
-                getMainConfig(), 
-                IDs.INTAKE_ROLLERS.id
+                Pair.of(IDs.SHOOTER_FEEDER.id, false)
             );
     }
 
-    public static final SparkBaseConfig getMainConfig() {
-        SparkMaxConfig config = new SparkMaxConfig();
-        return config;
+    /** 
+     * Get the configuration of the main motor
+     */ 
+    public static final TalonFXConfiguration getMainConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+
+        return config;    
     }
 
     public static final SimObject getSimObject() {

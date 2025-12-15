@@ -9,7 +9,7 @@ public enum IDs {
     CLIMBER_MAIN(20, "rio"),
     CLIMBER_FOLLOWER(21, "rio"),
     INTAKE_PIVOT(31, "rio"),
-    INTAKE_ROLLER(32, "rio"),
+    INTAKE_ROLLERS(32, "rio"),
     SHOOTER_HOOD(41, "rio"),
     SHOOTER_FLYWHEEL_MAIN(42, "rio"),
     SHOOTER_FLYWHEEL_FOLLOWER(43, "rio"),
