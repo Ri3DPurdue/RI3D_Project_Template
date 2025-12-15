@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleArm;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 import frc.lib.io.motor.rev.SparkBaseSimIO;
-import frc.lib.io.motor.setpoints.*;
+import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.mechanismSim.PivotSim;
 import frc.lib.mechanismSim.SimObject;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
-public class PivotConstants {
+public class WristConstants {
+    // TODO EDIT VALUE SO NOT COPY PASTED
     public static final Angle epsilonThreshold = Units.Degrees.of(10.0);
     public static final double gearing = 1.0;
     public static final DCMotor motor = DCMotor.getNeo550(2);
@@ -26,16 +27,14 @@ public class PivotConstants {
     public static final Angle minAngle = Units.Radians.of(-10.0);
     public static final Angle maxAngle = Units.Radians.of(110.0);
 
-    public static final Angle deployAngle = Units.Radians.of(10.0);
+    public static final Angle scoreAngle = Units.Radians.of(10.0);
     public static final Angle stowAngle = Units.Radians.of(110.0);
-    public static final Angle unjamAngle = Units.Radians.of(70.0);
 
-    public static final PositionSetpoint deploySetpoint = new PositionSetpoint(deployAngle);
+    public static final PositionSetpoint scoreSetpoint = new PositionSetpoint(scoreAngle);
     public static final PositionSetpoint stowSetpoint = new PositionSetpoint(stowAngle);
-    public static final PositionSetpoint unjamSetpoint = new PositionSetpoint(unjamAngle);
 
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, unjamAngle);
+        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, stowAngle);
     }
 
     @SuppressWarnings("unchecked")

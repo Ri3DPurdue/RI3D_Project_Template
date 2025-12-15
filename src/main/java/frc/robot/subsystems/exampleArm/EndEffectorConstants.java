@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleArm;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -12,21 +12,23 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.component.MotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 import frc.lib.io.motor.rev.SparkBaseSimIO;
-import frc.lib.io.motor.setpoints.*;
+import frc.lib.io.motor.setpoints.IdleSetpoint;
+import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.mechanismSim.RollerSim;
 import frc.lib.mechanismSim.SimObject;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
-public class RollerConstants {
+public class EndEffectorConstants {
+    // TODO EDIT VALYES SO NOT COPY PASTED
     public static final double gearing = 1.0;
     public static final DCMotor motor = DCMotor.getNeo550(1);
 
-    public static final Voltage inwardsVoltage = Units.Volts.of(8.0);
-    public static final Voltage spitVoltage = Units.Volts.of(-6.0);
+    public static final Voltage intakeVoltage = Units.Volts.of(8.0);
+    public static final Voltage outtakeVoltage = Units.Volts.of(-6.0);
 
-    public static final VoltageSetpoint inwardsSetpoint = new VoltageSetpoint(inwardsVoltage);
-    public static final VoltageSetpoint spitSetpoint = new VoltageSetpoint(spitVoltage);
+    public static final VoltageSetpoint intakeSetpoint = new VoltageSetpoint(intakeVoltage);
+    public static final VoltageSetpoint outtakeSetpoint = new VoltageSetpoint(outtakeVoltage);
     public static final IdleSetpoint idleSetpoint = new IdleSetpoint();
 
     public static final MotorComponent<SparkBaseIO> getComponent() {

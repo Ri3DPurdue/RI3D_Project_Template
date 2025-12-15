@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleArm;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -8,34 +8,44 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 import frc.lib.io.motor.rev.SparkBaseSimIO;
-import frc.lib.io.motor.setpoints.*;
-import frc.lib.mechanismSim.PivotSim;
+import frc.lib.io.motor.setpoints.PositionSetpoint;
+import frc.lib.mechanismSim.LinearSim;
 import frc.lib.mechanismSim.SimObject;
+import frc.lib.util.UnitsUtil.DistanceAngleConverter;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
-public class PivotConstants {
+public class ElevatorConstants {
+    // TODO MAKE DIFFERENT THAT COPY PASTE AND USE DISTANCES
     public static final Angle epsilonThreshold = Units.Degrees.of(10.0);
     public static final double gearing = 1.0;
     public static final DCMotor motor = DCMotor.getNeo550(2);
 
-    public static final Angle minAngle = Units.Radians.of(-10.0);
-    public static final Angle maxAngle = Units.Radians.of(110.0);
+    // Create a converter to convert linear distances of the climber into rotations of the motor
+    public static final DistanceAngleConverter converter = new DistanceAngleConverter(
+            Units.Inches.of(2.0) // Diameter of pulley
+            .plus(Units.Inches.of(0.25)) // Diameter of rope
+            .div(2.0) // Divide by 2 to get radius
+        );
 
-    public static final Angle deployAngle = Units.Radians.of(10.0);
-    public static final Angle stowAngle = Units.Radians.of(110.0);
-    public static final Angle unjamAngle = Units.Radians.of(70.0);
+    public static final Distance minHeight = Units.Inches.of(0.0);
+    public static final Distance maxHeight = Units.Inches.of(12.0);
 
-    public static final PositionSetpoint deploySetpoint = new PositionSetpoint(deployAngle);
-    public static final PositionSetpoint stowSetpoint = new PositionSetpoint(stowAngle);
-    public static final PositionSetpoint unjamSetpoint = new PositionSetpoint(unjamAngle);
+    public static final Distance scoreHeight = Units.Inches.of(10.0);
+    public static final Distance stowHeight = minHeight;
+
+    public static final PositionSetpoint scoreSetpoint = new PositionSetpoint(converter.toAngle(scoreHeight));
+    public static final PositionSetpoint stowSetpoint = new PositionSetpoint(converter.toAngle(stowHeight));
 
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, unjamAngle);
+        SparkBaseIO io = getMotorIO();
+        io.overrideLoggedUnits(converter.asAngleUnit(Units.Inches), converter.asAngularVelocityUnit(Units.InchesPerSecond), Units.Celsius);
+        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, converter.toAngle(stowHeight));
     }
 
     @SuppressWarnings("unchecked")
@@ -66,17 +76,17 @@ public class PivotConstants {
     }
 
     public static final SimObject getSimObject() {
-        SingleJointedArmSim system = 
-            new SingleJointedArmSim(
+        ElevatorSim system = 
+            new ElevatorSim(
                 motor, 
                 gearing, 
                 0.01, 
                 0.2, 
-                minAngle.in(Units.Radians), 
-                maxAngle.in(Units.Radians), 
+                minHeight.in(Units.Meters), 
+                minHeight.in(Units.Meters), 
                 false,
                 0.0, 
                 0.0, 0.0);
-        return new PivotSim(system);
+        return new LinearSim(system, converter);
     }
 }
