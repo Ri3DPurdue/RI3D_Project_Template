@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleShooter;
 
 import frc.lib.component.DigitalIOComponent;
 import frc.lib.io.sensor.DigitalBooleanSupplierIO;
@@ -10,15 +10,15 @@ import frc.robot.controlBoard.ControlBoardConstants;
 
 public class SensorConstants {
     // Seconds of pure values of a certain reading before asertion (filters out momentary signal flickers)
-    private static final double beamBreakDebounceSeconds = 0.1;
+    private static final double feederBeamBreakDebounceSeconds = 0.1;
 
-    public static final DigitalIOComponent getBeamBreakComponent() {
+    public static final DigitalIOComponent getFeederBeamBreakComponent() {
         return new DigitalIOComponent(getBeamBreakIO());
     }
 
     public static final DigitalIO getBeamBreakIO() {
         return Robot.isReal()
-         ? new DigitalInIO(beamBreakDebounceSeconds, IDs.INTAKE_BEAM_BREAK.id)
-         : new DigitalBooleanSupplierIO(beamBreakDebounceSeconds, ControlBoardConstants.driver.povUp()); // Simulate the breambreak with a controller button
+         ? new DigitalInIO(feederBeamBreakDebounceSeconds, IDs.SHOOTER_FEEDER_BEAM_BREAK.id)
+         : new DigitalBooleanSupplierIO(feederBeamBreakDebounceSeconds, ControlBoardConstants.driver.povDown()); // Simulate the breambreak with a controller button
     }
 }

@@ -8,6 +8,7 @@ import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
 import frc.lib.io.motor.rev.SparkBaseIO;
+import frc.robot.subsystems.exampleShooter.SensorConstants;
 
 public class ExampleIntake extends ComponentSubsystem {
     private final ServoMotorComponent<TalonFXIO> pivot;
@@ -17,7 +18,7 @@ public class ExampleIntake extends ComponentSubsystem {
     public ExampleIntake() {
         pivot = registerComponent("Pivot", PivotConstants.getComponent());
         rollers = registerComponent("Rollers", RollerConstants.getComponent());
-        beamBreak = registerComponent("Beam Break", SensorConstants.getBeamBreakComponent());
+        beamBreak = registerComponent("Beam Break", SensorConstants.getFeederBeamBreakComponent());
     }
 
     public Command intake() {

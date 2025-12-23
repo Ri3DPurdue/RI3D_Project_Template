@@ -18,7 +18,8 @@ public enum IDs {
     SHOOTER_FEEDER(44, "rio"),
     
     // Rio Digital Ports
-    INTAKE_BEAM_BREAK(0, "RIO_DIGITAL_IN");
+    INTAKE_BEAM_BREAK(0, "RIO_DIGITAL_IN"),
+    SHOOTER_FEEDER_BEAM_BREAK(0, "RIO_DIGITAL_IN");
 
     public final int id;
     public final String bus;

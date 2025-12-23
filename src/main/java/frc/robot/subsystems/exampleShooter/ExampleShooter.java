@@ -3,6 +3,7 @@ package frc.robot.subsystems.exampleShooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
+import frc.lib.component.DigitalIOComponent;
 import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
@@ -12,11 +13,13 @@ public class ExampleShooter extends ComponentSubsystem {
     private final ServoMotorComponent<TalonFXIO> hood;
     private final MotorComponent<TalonFXIO> feeder;
     private final FlywheelMotorComponent<TalonFXIO> flywheel;
+    private final DigitalIOComponent feederBeamBreak;
 
     public ExampleShooter() {
         hood = registerComponent("Hood", HoodConstants.getComponent());
         feeder = registerComponent("Feeder", FeederConstants.getComponent());
         flywheel = registerComponent("Flywheel", FlywheelConstants.getComponent());
+        feederBeamBreak = registerComponent("Beam Break", SensorConstants.getFeederBeamBreakComponent());
     }
 
     public Command prepShot() {
@@ -50,6 +53,16 @@ public class ExampleShooter extends ComponentSubsystem {
                 feeder.applySetpointCommand(FeederConstants.idleSetpoint),
                 hood.applySetpointCommand(HoodConstants.stowSetpoint),
                 flywheel.applySetpointCommand(FlywheelConstants.idleSetpoint)
+            )
+        );
+    }
+
+    public Command intakeToFeeder() {
+        return withRequirement(
+            Commands.sequence(
+                feeder.applySetpointCommand(FeederConstants.intakeSetpoint), // Slowly roll the feeder
+                feederBeamBreak.stateWaitDebounced(true), // Until the game piece is detected
+                feeder.applySetpointCommand(FeederConstants.idleSetpoint) // Then stop to not fire too early
             )
         );
     }
