@@ -29,8 +29,16 @@ public class FeederConstants {
     public static final VoltageSetpoint feedSetpoint = new VoltageSetpoint(feedVoltage);
     public static final IdleSetpoint idleSetpoint = new IdleSetpoint();
 
-    // Information about motors driving system // TODO MAKE X44
-    public static final DCMotor motor = DCMotor.getKrakenX60(1); // Only needed for sim
+    // Information about motors driving system 
+    public static final DCMotor motor = 
+        new DCMotor( // Specs for Kraken x44 from https://docs.wcproducts.com/welcome/electronics/kraken-x44/kraken-x44-motor/overview-and-features/motor-performance because not included in DCMotor pre-provided motors 
+            12.0, 
+            4.05, 
+            275.0, 
+            1.4, 
+            edu.wpi.first.math.util.Units.rotationsPerMinuteToRadiansPerSecond(7530.0), 
+            1 // Number of Kraken x44 motors
+        ); // Only needed for sim 
 
     /**
      * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
