@@ -1,6 +1,8 @@
 package frc.robot;
 
 public enum IDs {
+    // CAN IDs
+
     // IDs 0-9 Reserved for drivetrain
     ARM_ELEVATOR_MAIN(10, "rio"),
     ARM_ELEVATOR_FOLLOWER(11, "rio"),
@@ -13,7 +15,10 @@ public enum IDs {
     SHOOTER_HOOD(41, "rio"),
     SHOOTER_FLYWHEEL_MAIN(42, "rio"),
     SHOOTER_FLYWHEEL_FOLLOWER(43, "rio"),
-    SHOOTER_FEEDER(44, "rio");
+    SHOOTER_FEEDER(44, "rio"),
+    
+    // Rio Digital Ports
+    INTAKE_BEAM_BREAK(0, "RIO_DIGITAL_IN");
 
     public final int id;
     public final String bus;
