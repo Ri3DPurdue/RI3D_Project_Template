@@ -32,4 +32,14 @@ public class ExampleArm extends ComponentSubsystem {
             endEffector.applySetpointCommand(EndEffectorConstants.outtakeSetpoint)
         );
     }
+
+    public Command stow() {
+        return withRequirement(
+            Commands.parallel(
+                wrist.applyPositionSetpointCommandWithWait(WristConstants.stowSetpoint),
+                elevator.applyPositionSetpointCommandWithWait(ElevatorConstants.stowSetpoint),
+                endEffector.applySetpointCommand(EndEffectorConstants.idleSetpoint)
+            )
+        );
+    }
 }

@@ -48,7 +48,7 @@ public class ExampleIntake extends ComponentSubsystem {
         );
     }
 
-    public Command smartIntake() {
+    public Command intakeAndAutoStow() {
         return withRequirement(
             Commands.sequence(
                 intake().withDeadline(beamBreak.stateWaitDebounced(true)), // Intake until the Beam Break sees a game piece
