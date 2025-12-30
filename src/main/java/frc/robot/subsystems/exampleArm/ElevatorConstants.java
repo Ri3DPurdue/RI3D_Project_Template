@@ -51,7 +51,7 @@ public class ElevatorConstants {
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
         SparkBaseIO io = getMotorIO();
         io.overrideLoggedUnits(converter.asAngleUnit(Units.Inches), converter.asAngularVelocityUnit(Units.InchesPerSecond), Units.Celsius);
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), converter.toAngle(epsilonThreshold), converter.toAngle(stowHeight));
+        return new ServoMotorComponent<SparkBaseIO>(io, converter.toAngle(epsilonThreshold), converter.toAngle(stowHeight));
     }
 
     /**

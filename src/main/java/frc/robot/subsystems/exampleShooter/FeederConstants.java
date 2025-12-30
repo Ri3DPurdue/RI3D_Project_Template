@@ -2,7 +2,6 @@ package frc.robot.subsystems.exampleShooter;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
@@ -58,15 +57,13 @@ public class FeederConstants {
             ? new TalonFXIO(
                 IDs.SHOOTER_FEEDER.id,
                 new CANBus(IDs.SHOOTER_FEEDER.bus),
-                getMainConfig(),
-                Pair.of(IDs.SHOOTER_FEEDER.id, false)
+                getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_FEEDER.id,
                 new CANBus(IDs.SHOOTER_FEEDER.bus),
                 getMainConfig(),
-                getSimObject(),
-                Pair.of(IDs.SHOOTER_FEEDER.id, false)
+                getSimObject()
             );
     }
 

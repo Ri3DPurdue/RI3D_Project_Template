@@ -12,7 +12,7 @@ import frc.lib.mechanismSim.SimObject;
  * A class that represents a simulated {@link TalonFX}
  */
 public class TalonFXIOSim extends TalonFXIO {
-    private SimObject sim;
+    private final SimObject sim;
 
     /**
      * Constructs a {@link TalonFXIOSim}
@@ -25,6 +25,7 @@ public class TalonFXIOSim extends TalonFXIO {
     @SuppressWarnings("unchecked")
     public TalonFXIOSim(int leaderID, CANBus canbus, TalonFXConfiguration config, SimObject simObject, Pair<Integer, Boolean>... followers ) {
         super(leaderID, canbus, config, followers);
+        sim = simObject;
     }
 
     @Override
