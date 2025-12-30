@@ -12,6 +12,7 @@ import frc.lib.io.motor.ctre.TalonFXIOSim;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.mechanismSim.PivotSim;
 import frc.lib.mechanismSim.SimObject;
+import frc.lib.util.ConfigUtil;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
@@ -67,7 +68,7 @@ public class HoodConstants {
      * Get the configuration of the main motor
      */ 
     public static final TalonFXConfiguration getMainConfig() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
+        TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
         config.Slot0.kP = 0.1;
         config.Slot0.kD = 0.15;
 

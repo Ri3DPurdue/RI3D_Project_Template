@@ -16,6 +16,7 @@ import frc.lib.io.motor.setpoints.IdleSetpoint;
 import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.mechanismSim.RollerSim;
 import frc.lib.mechanismSim.SimObject;
+import frc.lib.util.ConfigUtil;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
@@ -65,7 +66,7 @@ public class EndEffectorConstants {
      * Get the configuration of the main motor
      */
     public static final SparkBaseConfig getMainConfig() {
-        SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         return config;
     }
 

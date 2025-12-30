@@ -15,6 +15,7 @@ import frc.lib.io.motor.rev.SparkBaseSimIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.mechanismSim.LinearSim;
 import frc.lib.mechanismSim.SimObject;
+import frc.lib.util.ConfigUtil;
 import frc.lib.util.UnitsUtil.DistanceAngleConverter;
 import frc.robot.IDs;
 import frc.robot.Robot;
@@ -76,11 +77,11 @@ public class ElevatorConstants {
             );
     }
 
-    /** TODO ADD CURRENT LIMITS AND CONVERSION FACTORS TO ALL CONFIGS
+    /*
      * Get the configuration of the main motor
      */ 
     public static final SparkBaseConfig getMainConfig() {
-        SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         config.closedLoop
             .p(0.15)
             .d(0.15);

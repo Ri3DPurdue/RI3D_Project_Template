@@ -17,6 +17,7 @@ import frc.lib.io.motor.setpoints.VelocitySetpoint;
 import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.mechanismSim.RollerSim;
 import frc.lib.mechanismSim.SimObject;
+import frc.lib.util.ConfigUtil;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
@@ -72,7 +73,7 @@ public class FlywheelConstants {
      * Get the configuration of the main motor
      */ 
     public static final TalonFXConfiguration getMainConfig() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
+        TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
         config.Slot0.kP = 0.1;
         config.Slot0.kD = 0.15;
 
