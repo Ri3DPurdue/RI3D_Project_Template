@@ -35,7 +35,7 @@ public class WristConstants {
     
     // Notable points for system
     public static final Angle scoreAngle = Units.Degrees.of(180.0);
-    public static final Angle stowAngle = minAngle; // TODO BROKEN BECAUSE RESET POSITION DOES NOT WORK IN SPARK SIM
+    public static final Angle stowAngle = minAngle;
     
     // Setpoints for notable points
     public static final PositionSetpoint scoreSetpoint = new PositionSetpoint(scoreAngle);
@@ -77,6 +77,7 @@ public class WristConstants {
      */ 
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
+        ConfigUtil.withSoftLimits(config, maxAngle, minAngle);
         config.closedLoop
             .p(0.1)
             .d(0.05);

@@ -1,7 +1,11 @@
 package frc.lib.util;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.Angle;
 
 public class ConfigUtil {
     public static final double safeCurrentLimitAmps = 40.0;
@@ -26,6 +30,15 @@ public class ConfigUtil {
 
     public static SparkMaxConfig getSafeMaxConfig(double gearing) {
         return withCurrentLimits(withGearing(new SparkMaxConfig(), gearing), safeCurrentLimitAmps);
+    }
+
+    public static SparkMaxConfig withSoftLimits(SparkMaxConfig config, Angle forwardSoftLimit, Angle reverseSoftLimit) {
+        config.softLimit.forwardSoftLimitEnabled(true);
+        config.softLimit.forwardSoftLimit(forwardSoftLimit.in(Rotations));
+        config.softLimit.reverseSoftLimitEnabled(true);
+        config.softLimit.reverseSoftLimit(reverseSoftLimit.in(Rotations));
+
+        return config;
     }
 
     public static TalonFXConfiguration withGearing(TalonFXConfiguration config, double gearing) {
@@ -53,5 +66,12 @@ public class ConfigUtil {
         return withCurrentLimits(withGearing(new TalonFXConfiguration(), gearing), safeCurrentLimitAmps, safeStatorCurrentLimitAmps);
     }
 
-    // TODO add soft limits configs
+    public static TalonFXConfiguration withSoftLimits(TalonFXConfiguration config, Angle forwardSoftLimit, Angle reverseSoftLimit) {
+        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = forwardSoftLimit.in(Rotations);
+        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = reverseSoftLimit.in(Rotations);
+
+        return config;
+    }
 }

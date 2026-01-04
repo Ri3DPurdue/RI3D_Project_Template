@@ -85,7 +85,8 @@ public class ClimberConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
-        config.Slot0.kP = 0.5; // TODO 12 volts always when >= 1.0, less than a volt if 0.9 
+        ConfigUtil.withSoftLimits(config, converter.toAngle(maxDistance), converter.toAngle(minDistance));
+        config.Slot0.kP = 0.5; 
         config.Slot0.kD = 0.0;
 
         return config;    

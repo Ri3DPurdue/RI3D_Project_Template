@@ -77,6 +77,7 @@ public class PivotConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
+        ConfigUtil.withSoftLimits(config, maxAngle, minAngle);
         config.Slot0.kP = 10.0;
         config.Slot0.kD = 10.0;
 

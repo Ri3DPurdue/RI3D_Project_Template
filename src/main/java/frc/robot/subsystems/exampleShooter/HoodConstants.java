@@ -70,6 +70,7 @@ public class HoodConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
+        ConfigUtil.withSoftLimits(config, maxAngle, minAngle);
         config.Slot0.kP = 5.0;
         config.Slot0.kD = 0.0;
 
