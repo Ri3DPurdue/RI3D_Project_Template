@@ -2,11 +2,15 @@ package frc.lib.io.motor.rev;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
+
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.spark.SparkSim;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.mechanismSim.SimObject;
@@ -48,6 +52,12 @@ public class SparkBaseSimIO extends SparkBaseIO {
             12,
             deltaTime.in(Units.Seconds)
         );
+    }
+
+    @Override
+    public void resetPosition(Angle position) {
+        simMotor.setPosition(position.in(Rotations));
+        super.resetPosition(position);
     }
 }
 
