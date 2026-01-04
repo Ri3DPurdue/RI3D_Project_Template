@@ -49,7 +49,7 @@ public class WristConstants {
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
         SparkBaseIO io = getMotorIO();
         io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
-        return new ServoMotorComponent<SparkBaseIO>(io, epsilonThreshold, stowAngle);
+        return new ServoMotorComponent<SparkBaseIO>(io, epsilonThreshold, stowAngle); // TODO not starting reading stow angle
     }
 
     /**
@@ -79,8 +79,8 @@ public class WristConstants {
         SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         ConfigUtil.withSoftLimits(config, maxAngle, minAngle);
         config.closedLoop
-            .p(0.1)
-            .d(0.05);
+            .p(1.0)
+            .d(0.5);
         return config;    
     }
     

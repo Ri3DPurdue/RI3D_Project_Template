@@ -84,8 +84,8 @@ public class ElevatorConstants {
         SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         ConfigUtil.withSoftLimits(config, converter.toAngle(maxHeight), converter.toAngle(minHeight));
         config.closedLoop
-            .p(10.0)
-            .d(0.1);
+            .p(0.2)
+            .d(0.0);
         return config;    
     }
 
