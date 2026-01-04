@@ -1,5 +1,9 @@
 package frc.robot.subsystems.exampleIntake;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -40,7 +44,9 @@ public class RollerConstants {
      * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
      */
     public static final MotorComponent<SparkBaseIO> getComponent() {
-        return new MotorComponent<SparkBaseIO>(getMotorIO());
+        SparkBaseIO io = getMotorIO();
+        io.overrideLoggedUnits(Rotations, RPM, Celsius);
+        return new MotorComponent<SparkBaseIO>(io);
     }
 
     @SuppressWarnings("unchecked")

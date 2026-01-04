@@ -60,7 +60,8 @@ public class HoodConstants {
                 IDs.SHOOTER_HOOD.id,
                 new CANBus(IDs.SHOOTER_HOOD.bus),
                 getMainConfig(),
-                getSimObject()
+                getSimObject(),
+                gearing
             );
     }
 

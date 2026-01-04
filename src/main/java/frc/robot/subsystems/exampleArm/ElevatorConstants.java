@@ -21,7 +21,7 @@ import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class ElevatorConstants {
-    // Create a converter to convert linear distances of the climber into rotations of the motor
+    // Create a converter to convert linear distances of the climber into rotations of the sprocket
     public static final DistanceAngleConverter converter = new DistanceAngleConverter(
             Units.Inches.of(2.0) // Effective radius of a sprocket driving elevator on a chain
         );
@@ -83,8 +83,8 @@ public class ElevatorConstants {
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         config.closedLoop
-            .p(0.15)
-            .d(0.15);
+            .p(0.5)
+            .d(0.1);
         return config;    
     }
 
@@ -96,10 +96,10 @@ public class ElevatorConstants {
             new ElevatorSim(
                 motor, 
                 gearing, 
-                0.01, 
-                0.2, 
+                5.0, 
+                0.08, 
                 minHeight.in(Units.Meters), 
-                minHeight.in(Units.Meters), 
+                maxHeight.in(Units.Meters), 
                 false,
                 stowHeight.in(Units.Meters), 
                 0.0, 0.0);

@@ -28,7 +28,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
 
     @Override
     public void log(String path) {
-        Logger.log(path, "Motor", io);
+        Logger.log(path, "", io);
     }
 
     public void enable() {

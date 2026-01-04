@@ -19,9 +19,9 @@ import frc.robot.IDs;
 import frc.robot.Robot;
 
 public class ClimberConstants {
-    // Create a converter to convert linear distances of the climber into rotations of the motor
+    // Create a converter to convert linear distances of the climber into rotations of the pulley
     public static final DistanceAngleConverter converter = new DistanceAngleConverter(
-            Units.Inches.of(2.0) // Diameter of pulley
+            Units.Inches.of(4.0) // Diameter of pulley
             .plus(Units.Inches.of(0.25)) // Diameter of rope
             .div(2.0) // Divide by 2 to get radius
         );
@@ -29,8 +29,8 @@ public class ClimberConstants {
     // Epsilon threshold is distance that is considered "close" for internal methods and wait commands. Lower value is higher required accuracy
     public static final Distance epsilonThreshold = Units.Centimeters.of(2.0);
     
-    // Gearing is a 5 to 1 reduction followed by another 5 to 1 reduction
-    public static final double gearing = (5.0 / 1.0) * (5.0 / 1.0);
+    // Gearing is a 5 to 1 reduction followed by a 2 to 1 reduction
+    public static final double gearing = (5.0 / 1.0) * (2.0 / 1.0);
     
     // Constraints of the system's movement (hard stops, potential interferences, soft limits, etc.)
     public static final Distance minDistance = Units.Meters.of(0.0);
@@ -39,7 +39,7 @@ public class ClimberConstants {
     // Notable points for system
     public static final Distance extendDistance = Units.Meters.of(1.08);
     public static final Distance stowDistance = minDistance;
-    public static final Distance pullDistance = Units.Inches.of(0.23);
+    public static final Distance pullDistance = Units.Inches.of(6.0);
     
     // Setpoints for notable points
     public static final PositionSetpoint extendSetpoint = new PositionSetpoint(converter.toAngle(extendDistance));
@@ -55,7 +55,7 @@ public class ClimberConstants {
     public static final ServoMotorComponent<TalonFXIO> getComponent() {
         TalonFXIO io = getMotorIO();
         io.overrideLoggedUnits(converter.asAngleUnit(Units.Inches), converter.asAngularVelocityUnit(Units.InchesPerSecond), Units.Celsius);
-        return new ServoMotorComponent<TalonFXIO>(getMotorIO(), converter.toAngle(epsilonThreshold), converter.toAngle(stowDistance));
+        return new ServoMotorComponent<TalonFXIO>(io, converter.toAngle(epsilonThreshold), converter.toAngle(stowDistance));
     }
 
     /**
@@ -75,6 +75,7 @@ public class ClimberConstants {
                 new CANBus(IDs.CLIMBER_MAIN.bus),
                 getMainConfig(),
                 getSimObject(),
+                gearing,
                 Pair.of(IDs.CLIMBER_FOLLOWER.id, false)
             );
     }
@@ -84,8 +85,8 @@ public class ClimberConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
-        config.Slot0.kP = 0.1;
-        config.Slot0.kD = 0.15;
+        config.Slot0.kP = 0.5; // TODO 12 volts always when >= 1.0, less than a volt if 0.9 
+        config.Slot0.kD = 0.0;
 
         return config;    
     }
@@ -98,10 +99,10 @@ public class ClimberConstants {
             new ElevatorSim(
                 motor, 
                 gearing, 
-                0.01, 
-                0.2, 
+                4.0, 
+                0.1, 
                 minDistance.in(Units.Meters), 
-                minDistance.in(Units.Meters), 
+                maxDistance.in(Units.Meters), 
                 false,
                 stowDistance.in(Units.Meters), 
                 0.0, 0.0);

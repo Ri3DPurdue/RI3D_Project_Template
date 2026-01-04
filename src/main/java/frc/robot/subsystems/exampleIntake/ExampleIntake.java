@@ -1,5 +1,6 @@
 package frc.robot.subsystems.exampleIntake;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
@@ -8,7 +9,6 @@ import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
 import frc.lib.io.motor.rev.SparkBaseIO;
-import frc.robot.subsystems.exampleShooter.SensorConstants;
 
 public class ExampleIntake extends ComponentSubsystem {
     private final ServoMotorComponent<TalonFXIO> pivot;
@@ -18,7 +18,7 @@ public class ExampleIntake extends ComponentSubsystem {
     public ExampleIntake() {
         pivot = registerComponent("Pivot", PivotConstants.getComponent());
         rollers = registerComponent("Rollers", RollerConstants.getComponent());
-        beamBreak = registerComponent("Beam Break", SensorConstants.getFeederBeamBreakComponent());
+        beamBreak = registerComponent("Beam Break", SensorConstants.getBeamBreakComponent());
     }
 
     public Command intake() {

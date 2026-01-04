@@ -13,6 +13,7 @@ import frc.lib.mechanismSim.SimObject;
  */
 public class TalonFXIOSim extends TalonFXIO {
     private final SimObject sim;
+    private final double gearing;
 
     /**
      * Constructs a {@link TalonFXIOSim}
@@ -23,9 +24,10 @@ public class TalonFXIOSim extends TalonFXIO {
      * @param followers An array of integer boolean pairs which represent the can ID and inversion relative to the main motor for each follower
      */
     @SuppressWarnings("unchecked")
-    public TalonFXIOSim(int leaderID, CANBus canbus, TalonFXConfiguration config, SimObject simObject, Pair<Integer, Boolean>... followers ) {
+    public TalonFXIOSim(int leaderID, CANBus canbus, TalonFXConfiguration config, SimObject simObject, double gearing, Pair<Integer, Boolean>... followers ) {
         super(leaderID, canbus, config, followers);
         sim = simObject;
+        this.gearing = gearing;
     }
 
     @Override
@@ -34,8 +36,8 @@ public class TalonFXIOSim extends TalonFXIO {
         sim.update();
         for (TalonFX motor : motors) {
             TalonFXSimState simState = motor.getSimState();
-            simState.setRawRotorPosition(sim.getPosition().times(config.Feedback.SensorToMechanismRatio));
-            simState.setRotorVelocity(sim.getVelocity().times(config.Feedback.SensorToMechanismRatio));
+            simState.setRawRotorPosition(sim.getPosition().times(gearing));
+            simState.setRotorVelocity(sim.getVelocity().times(gearing));
         }
         super.periodic();
     }

@@ -64,6 +64,7 @@ public class FlywheelConstants {
                 new CANBus(IDs.SHOOTER_FLYWHEEL_MAIN.bus),
                 getMainConfig(),
                 getSimObject(),
+                gearing,
                 Pair.of(IDs.SHOOTER_FLYWHEEL_FOLLOWER.id, false)
             );
     }

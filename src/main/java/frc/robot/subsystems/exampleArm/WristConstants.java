@@ -1,5 +1,9 @@
 package frc.robot.subsystems.exampleArm;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -31,7 +35,7 @@ public class WristConstants {
     
     // Notable points for system
     public static final Angle scoreAngle = Units.Degrees.of(180.0);
-    public static final Angle stowAngle = minAngle;
+    public static final Angle stowAngle = minAngle; // TODO BROKEN BECAUSE RESET POSITION DOES NOT WORK IN SPARK SIM
     
     // Setpoints for notable points
     public static final PositionSetpoint scoreSetpoint = new PositionSetpoint(scoreAngle);
@@ -43,7 +47,9 @@ public class WristConstants {
 
     // Gets the final component for the system
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
-        return new ServoMotorComponent<SparkBaseIO>(getMotorIO(), epsilonThreshold, stowAngle);
+        SparkBaseIO io = getMotorIO();
+        io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
+        return new ServoMotorComponent<SparkBaseIO>(io, epsilonThreshold, stowAngle);
     }
 
     /**
@@ -72,8 +78,8 @@ public class WristConstants {
     public static final SparkBaseConfig getMainConfig() {
         SparkMaxConfig config = ConfigUtil.getSafeMaxConfig(gearing);
         config.closedLoop
-            .p(0.15)
-            .d(0.15);
+            .p(0.1)
+            .d(0.05);
         return config;    
     }
     
@@ -85,7 +91,7 @@ public class WristConstants {
             new SingleJointedArmSim(
                 motor, 
                 gearing, 
-                0.01, 
+                0.1, 
                 0.2, 
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 

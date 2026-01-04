@@ -22,5 +22,7 @@ public class ControlBoard {
 
         driver.povUp().onTrue(s.prepClimb());
         driver.povDown().onTrue(s.exampleClimber.pull());
+
+        // TODO bind drivetrain
     }
 }

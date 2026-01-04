@@ -64,7 +64,8 @@ public class FeederConstants {
                 IDs.SHOOTER_FEEDER.id,
                 new CANBus(IDs.SHOOTER_FEEDER.bus),
                 getMainConfig(),
-                getSimObject()
+                getSimObject(),
+                gearing
             );
     }
 

@@ -1,5 +1,10 @@
 package frc.robot.subsystems.exampleIntake;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -42,7 +47,9 @@ public class PivotConstants {
 
     // Gets the final component for the system
     public static final ServoMotorComponent<TalonFXIO> getComponent() {
-        return new ServoMotorComponent<TalonFXIO>(getMotorIO(), epsilonThreshold, unjamAngle);
+        TalonFXIO io = getMotorIO();
+        io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
+        return new ServoMotorComponent<TalonFXIO>(io, epsilonThreshold, Radians.of(1.0)); // TODO BROKEN WITH NON ZERO START ANGLE
     }
 
     /**
@@ -60,7 +67,8 @@ public class PivotConstants {
                 IDs.INTAKE_PIVOT.id,
                 new CANBus(IDs.INTAKE_PIVOT.bus),
                 getMainConfig(),
-                getSimObject()
+                getSimObject(),
+                gearing
             );
     }
 
@@ -69,8 +77,8 @@ public class PivotConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
-        config.Slot0.kP = 0.1;
-        config.Slot0.kD = 0.15;
+        config.Slot0.kP = 10.0;
+        config.Slot0.kD = 10.0;
 
         return config;    
     }
@@ -83,12 +91,12 @@ public class PivotConstants {
             new SingleJointedArmSim(
                 motor, 
                 gearing, 
-                0.01, 
                 0.2, 
+                0.3, 
                 minAngle.in(Units.Radians), 
                 maxAngle.in(Units.Radians), 
                 false,
-                0.0, 
+                1.0, 
                 0.0, 0.0);
         return new PivotSim(system);
     }

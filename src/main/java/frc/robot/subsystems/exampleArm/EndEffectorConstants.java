@@ -1,5 +1,9 @@
 package frc.robot.subsystems.exampleArm;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -39,7 +43,9 @@ public class EndEffectorConstants {
     
     // Gets the final component for the system
     public static final MotorComponent<SparkBaseIO> getComponent() {
-        return new MotorComponent<SparkBaseIO>(getMotorIO());
+        SparkBaseIO io = getMotorIO();
+        io.overrideLoggedUnits(Rotations, RPM, Celsius);
+        return new MotorComponent<SparkBaseIO>(io);
     }
 
     /**
