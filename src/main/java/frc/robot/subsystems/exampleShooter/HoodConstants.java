@@ -24,12 +24,12 @@ public class HoodConstants {
     public static final double gearing = (64.0 / 12.0) * (5.0 / 1.0);
     
     // Constraints of the system's movement (hard stops, potential interferences, soft limits, etc.)
-    public static final Angle minAngle = Units.Radians.of(-10.0);
-    public static final Angle maxAngle = Units.Radians.of(110.0);
+    public static final Angle minAngle = Units.Radians.of(0.3);
+    public static final Angle maxAngle = Units.Radians.of(1.6);
 
     // Notable points for system
-    public static final Angle shotAngle = Units.Radians.of(10.0);
-    public static final Angle stowAngle = Units.Radians.of(110.0);
+    public static final Angle shotAngle = Units.Radians.of(1.0);
+    public static final Angle stowAngle = minAngle;
     
     // Setpoints for notable points
     public static final PositionSetpoint shotSetpoint = new PositionSetpoint(shotAngle);
@@ -42,7 +42,7 @@ public class HoodConstants {
      *  Gets the final component for the system
      */ 
     public static final ServoMotorComponent<TalonFXIO> getComponent() {
-        return new ServoMotorComponent<TalonFXIO>(getMotorIO(), epsilonThreshold, stowAngle);
+        return new ServoMotorComponent<TalonFXIO>(getMotorIO(), epsilonThreshold, stowAngle); 
     }
 
     /**
@@ -70,8 +70,8 @@ public class HoodConstants {
      */ 
     public static final TalonFXConfiguration getMainConfig() {
         TalonFXConfiguration config = ConfigUtil.getSafeFXConfig(gearing);
-        config.Slot0.kP = 0.1;
-        config.Slot0.kD = 0.15;
+        config.Slot0.kP = 5.0;
+        config.Slot0.kD = 0.0;
 
         return config;    
     }

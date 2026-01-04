@@ -49,7 +49,7 @@ public class PivotConstants {
     public static final ServoMotorComponent<TalonFXIO> getComponent() {
         TalonFXIO io = getMotorIO();
         io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
-        return new ServoMotorComponent<TalonFXIO>(io, epsilonThreshold, Radians.of(1.0)); // TODO BROKEN WITH NON ZERO START ANGLE
+        return new ServoMotorComponent<TalonFXIO>(io, epsilonThreshold, stowAngle);     
     }
 
     /**
@@ -93,10 +93,10 @@ public class PivotConstants {
                 gearing, 
                 0.2, 
                 0.3, 
-                minAngle.in(Units.Radians), 
-                maxAngle.in(Units.Radians), 
+                minAngle.in(Radians), 
+                maxAngle.in(Radians), 
                 false,
-                1.0, 
+                stowAngle.in(Radians), 
                 0.0, 0.0);
         return new PivotSim(system);
     }

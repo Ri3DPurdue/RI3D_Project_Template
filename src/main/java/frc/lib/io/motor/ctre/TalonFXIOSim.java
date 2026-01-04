@@ -28,17 +28,22 @@ public class TalonFXIOSim extends TalonFXIO {
         super(leaderID, canbus, config, followers);
         sim = simObject;
         this.gearing = gearing;
+        updateMotorSimState();
     }
 
     @Override
     public void periodic() {
         sim.setVoltage(motors[0].getMotorVoltage().getValue());
         sim.update();
+        updateMotorSimState();
+        super.periodic();
+    }
+
+    private void updateMotorSimState() {
         for (TalonFX motor : motors) {
             TalonFXSimState simState = motor.getSimState();
             simState.setRawRotorPosition(sim.getPosition().times(gearing));
             simState.setRotorVelocity(sim.getVelocity().times(gearing));
         }
-        super.periodic();
     }
 }
