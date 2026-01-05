@@ -5,7 +5,8 @@
 package frc.robot;
 
 
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,7 +27,7 @@ import frc.lib.util.logging.Logger;
  */
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-    public static ArrayList<Runnable> blockingCalls;
+    public static Queue<Runnable> blockingCalls;
 
     private Superstructure superstructure = new Superstructure();
 
@@ -36,12 +37,13 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
+        blockingCalls = new ConcurrentLinkedQueue<>();
         new Thread(() -> {
             while (true) {
-                for (Runnable call : blockingCalls) {
+                Runnable call = blockingCalls.poll();
+                if (call != null) {
                     call.run();
                 }
-                blockingCalls.clear();
             }
         }).start();
         Logger.setEnabled(true);
