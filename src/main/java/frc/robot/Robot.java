@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import java.util.ArrayList;
+
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -24,6 +26,7 @@ import frc.lib.util.logging.Logger;
  */
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
+    public static ArrayList<Runnable> blockingCalls;
 
     private Superstructure superstructure = new Superstructure();
 
@@ -33,6 +36,14 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
+        new Thread(() -> {
+            while (true) {
+                for (Runnable call : blockingCalls) {
+                    call.run();
+                }
+                blockingCalls.clear();
+            }
+        }).start();
         Logger.setEnabled(true);
         Logger.setOptions(new DogLogOptions(
             () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));

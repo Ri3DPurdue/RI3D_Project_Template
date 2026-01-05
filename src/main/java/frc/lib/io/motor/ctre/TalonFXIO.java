@@ -2,7 +2,6 @@ package frc.lib.io.motor.ctre;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -19,6 +18,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
+import frc.robot.Robot;
 
 /**
  * A class that represents a {@link TalonFX}
@@ -30,8 +30,6 @@ public class TalonFXIO extends MotorIO {
     private MotionMagicVoltage profiledPositionRequest;
     private NeutralOut idleRequest;
     protected TalonFXConfiguration config;
-    private boolean forwardLimitEnabled;
-    private boolean reverseLimitEnabled;
 
     /**
      * Constructs a {@link TalonFXIO}
@@ -41,21 +39,15 @@ public class TalonFXIO extends MotorIO {
      * @param followers An array of integer boolean pairs which represent the can ID and inversion relative to the main motor for each follower
      */
     @SuppressWarnings("unchecked")
-    public TalonFXIO(int leaderID, CANBus canbus, TalonFXConfiguration config, Pair<Integer, Boolean>... followers) {
+    public TalonFXIO(int leaderID, String canbus, TalonFXConfiguration config, Pair<Integer, Boolean>... followers) {
         super(followers.length);
         motors = new TalonFX[followers.length + 1];
         motors[0] = new TalonFX(leaderID, canbus);
-        this.config = config;
-        reconfigure(config);
-        TalonFXConfiguration blank = new TalonFXConfiguration();
         for (int i = 1; i <= followers.length; i++) {
             motors[i] = new TalonFX(followers[i].getFirst(), canbus);
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
-                status = motors[i].getConfigurator().apply(blank);
-            }
             motors[i].setControl(new Follower(leaderID, followers[i].getSecond()));
         }
+        reconfigure(config);
         positionRequest = new PositionVoltage(0);
         velocityRequest = new VelocityVoltage(0);
         profiledPositionRequest = new MotionMagicVoltage(0);
@@ -64,12 +56,23 @@ public class TalonFXIO extends MotorIO {
 
     public void reconfigure(TalonFXConfiguration config) {
         this.config = config;
-        StatusCode status = StatusCode.StatusCodeNotInitialized;
-        for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-            status = motors[0].getConfigurator().apply(config);
-        }
-        forwardLimitEnabled = config.SoftwareLimitSwitch.ForwardSoftLimitEnable;
-        reverseLimitEnabled = config.SoftwareLimitSwitch.ReverseSoftLimitEnable;
+        Robot.blockingCalls.add(() -> {
+            StatusCode status = StatusCode.StatusCodeNotInitialized;
+            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                status = motors[0].getConfigurator().apply(config);
+            }
+        });
+        Robot.blockingCalls.add(() -> {
+            for (int i = 1; i < motors.length; i++) {
+                TalonFXConfiguration followerConfig = new TalonFXConfiguration();
+                followerConfig.CurrentLimits = config.CurrentLimits;
+                followerConfig.Feedback = config.Feedback;
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
+                    status = motors[j].getConfigurator().apply(config);
+                }
+            }
+        });
     }
 
     @Override
@@ -117,12 +120,9 @@ public class TalonFXIO extends MotorIO {
 
     @Override
     public void useSoftLimits(boolean use) {
-        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = use && forwardLimitEnabled;
-        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = use && reverseLimitEnabled;
-        StatusCode status = StatusCode.StatusCodeNotInitialized;
-        for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-            status = motors[0].getConfigurator().apply(config);
-        }
+        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = use;
+        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = use;
+        reconfigure(config);
     }
 
     @Override
