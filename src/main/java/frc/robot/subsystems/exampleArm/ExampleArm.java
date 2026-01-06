@@ -3,13 +3,14 @@ package frc.robot.subsystems.exampleArm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
+import frc.lib.component.HomingServoMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 
 public class ExampleArm extends ComponentSubsystem {
     private final ServoMotorComponent<SparkBaseIO> wrist;
-    private final ServoMotorComponent<SparkBaseIO> elevator;
+    private final HomingServoMotorComponent<SparkBaseIO> elevator;
     private final MotorComponent<SparkBaseIO> endEffector;
 
     public ExampleArm() {

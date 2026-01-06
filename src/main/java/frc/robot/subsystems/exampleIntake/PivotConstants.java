@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -11,7 +13,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.lib.component.ServoMotorComponent;
+import frc.lib.component.HomingServoMotorComponent;
+import frc.lib.component.HomingServoMotorComponent.HomingConfig;
 import frc.lib.io.motor.ctre.TalonFXIO;
 import frc.lib.io.motor.ctre.TalonFXIOSim;
 import frc.lib.io.motor.setpoints.*;
@@ -46,10 +49,10 @@ public class PivotConstants {
     public static final DCMotor motor = DCMotor.getFalcon500(1); // Only needed for sim
 
     // Gets the final component for the system
-    public static final ServoMotorComponent<TalonFXIO> getComponent() {
+    public static final HomingServoMotorComponent<TalonFXIO> getComponent() {
         TalonFXIO io = getMotorIO();
         io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
-        return new ServoMotorComponent<TalonFXIO>(io, epsilonThreshold, stowAngle);     
+        return new HomingServoMotorComponent<TalonFXIO>(io, epsilonThreshold, stowAngle, getHomingConfig());     
     }
 
     /**
@@ -82,6 +85,21 @@ public class PivotConstants {
         config.Slot0.kD = 10.0;
 
         return config;    
+    }
+
+    /**
+     * Gets the homing configuration for the component
+     */
+    public static final HomingConfig getHomingConfig() {
+        HomingConfig config = new HomingConfig();
+
+        config.homePosition = stowAngle;
+        config.homeSetpoint = stowSetpoint;
+        config.homingDebouce = Seconds.of(0.1);
+        config.homingVelocity = DegreesPerSecond.of(1.0);
+        config.homingVoltage = Volts.of(2.0);
+
+        return config;
     }
 
     /**

@@ -1,5 +1,9 @@
 package frc.robot.subsystems.exampleArm;
 
+import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -9,7 +13,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import frc.lib.component.ServoMotorComponent;
+import frc.lib.component.HomingServoMotorComponent.HomingConfig;
+import frc.lib.component.HomingServoMotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 import frc.lib.io.motor.rev.SparkBaseSimIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
@@ -49,10 +54,10 @@ public class ElevatorConstants {
     public static final DCMotor motor = DCMotor.getNeo550(2); // Only needed for sim
 
     // Gets the final component for the system
-    public static final ServoMotorComponent<SparkBaseIO> getComponent() {
+    public static final HomingServoMotorComponent<SparkBaseIO> getComponent() {
         SparkBaseIO io = getMotorIO();
         io.overrideLoggedUnits(converter.asAngleUnit(Units.Inches), converter.asAngularVelocityUnit(Units.InchesPerSecond), Units.Celsius);
-        return new ServoMotorComponent<SparkBaseIO>(io, converter.toAngle(epsilonThreshold), converter.toAngle(stowHeight));
+        return new HomingServoMotorComponent<SparkBaseIO>(io, converter.toAngle(epsilonThreshold), converter.toAngle(stowHeight), getHomingConfig());
     }
 
     /**
@@ -87,6 +92,21 @@ public class ElevatorConstants {
             .p(0.2)
             .d(0.0);
         return config;    
+    }
+
+    /**
+     * Gets the homing configuration for the component
+     */
+    public static final HomingConfig getHomingConfig() {
+        HomingConfig config = new HomingConfig();
+
+        config.homePosition = converter.toAngle(stowHeight);
+        config.homeSetpoint = stowSetpoint;
+        config.homingDebouce = Seconds.of(0.1);
+        config.homingVelocity = converter.toAngle(Centimeters.per(Seconds).of(0.5));
+        config.homingVoltage = Volts.of(-2.0);
+
+        return config;
     }
 
     /**
