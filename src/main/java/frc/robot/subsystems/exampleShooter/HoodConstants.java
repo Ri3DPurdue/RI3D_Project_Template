@@ -1,6 +1,5 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;

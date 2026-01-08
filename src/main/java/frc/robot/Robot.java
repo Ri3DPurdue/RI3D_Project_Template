@@ -5,8 +5,9 @@
 package frc.robot;
 
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,9 +28,14 @@ import frc.lib.util.logging.Logger;
  */
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-    public static Queue<Runnable> blockingCalls;
+    private static final BlockingQueue<Runnable> blockingCallsQueue = new LinkedBlockingQueue<>();
+    private static final ThreadPoolExecutor blockingCallsExecutor = new ThreadPoolExecutor(1, 1, 5, java.util.concurrent.TimeUnit.MILLISECONDS, blockingCallsQueue);
 
     private Superstructure superstructure = new Superstructure();
+
+    public static void submitBlockingCall(Runnable call) {
+        blockingCallsExecutor.submit(call);
+    }
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -37,15 +43,6 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
     public Robot() {
-        blockingCalls = new ConcurrentLinkedQueue<>();
-        new Thread(() -> {
-            while (true) {
-                Runnable call = blockingCalls.poll();
-                if (call != null) {
-                    call.run();
-                }
-            }
-        }).start();
         Logger.setEnabled(true);
         Logger.setOptions(new DogLogOptions(
             () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));

@@ -60,20 +60,11 @@ public class TalonFXIO extends MotorIO {
 
     public void reconfigure(TalonFXConfiguration config) {
         this.config = config;
-        Robot.blockingCalls.add(() -> {
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-                status = motors[0].getConfigurator().apply(config);
-            }
-        });
-        Robot.blockingCalls.add(() -> {
-            for (int i = 1; i < motors.length; i++) {
-                TalonFXConfiguration followerConfig = new TalonFXConfiguration();
-                followerConfig.CurrentLimits = config.CurrentLimits;
-                followerConfig.Feedback = config.Feedback;
+        Robot.submitBlockingCall(() -> {
+            for (TalonFX fx: motors) {
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
-                    status = motors[j].getConfigurator().apply(config);
+                    status = fx.getConfigurator().apply(config);
                 }
             }
         });
@@ -131,8 +122,13 @@ public class TalonFXIO extends MotorIO {
 
     @Override
     public void resetPosition(Angle position) {
-        for (TalonFX fx : motors) {
-            fx.setPosition(position);
-        }
+        Robot.submitBlockingCall(() -> {
+            for (TalonFX fx: motors) {
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
+                    fx.setPosition(position);
+                }
+            }
+        });
     }
 }
