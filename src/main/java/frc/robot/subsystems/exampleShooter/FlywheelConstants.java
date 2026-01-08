@@ -55,13 +55,13 @@ public class FlywheelConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_FLYWHEEL_MAIN.id,
-                new CANBus(IDs.SHOOTER_FLYWHEEL_MAIN.bus),
+                IDs.SHOOTER_FLYWHEEL_MAIN.bus,
                 getMainConfig(),
                 Pair.of(IDs.SHOOTER_FLYWHEEL_FOLLOWER.id, false)
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_FLYWHEEL_MAIN.id,
-                new CANBus(IDs.SHOOTER_FLYWHEEL_MAIN.bus),
+                IDs.SHOOTER_FLYWHEEL_MAIN.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing,

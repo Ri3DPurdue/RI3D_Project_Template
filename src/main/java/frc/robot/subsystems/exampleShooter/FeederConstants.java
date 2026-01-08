@@ -57,12 +57,12 @@ public class FeederConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_FEEDER.id,
-                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                IDs.SHOOTER_FEEDER.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_FEEDER.id,
-                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                IDs.SHOOTER_FEEDER.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing

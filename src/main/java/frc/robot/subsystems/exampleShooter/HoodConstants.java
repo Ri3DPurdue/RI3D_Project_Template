@@ -53,12 +53,12 @@ public class HoodConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_HOOD.id,
-                new CANBus(IDs.SHOOTER_HOOD.bus),
+                IDs.SHOOTER_HOOD.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_HOOD.id,
-                new CANBus(IDs.SHOOTER_HOOD.bus),
+                IDs.SHOOTER_HOOD.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing

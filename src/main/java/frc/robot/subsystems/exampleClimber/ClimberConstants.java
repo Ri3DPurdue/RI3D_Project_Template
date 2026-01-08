@@ -66,13 +66,13 @@ public class ClimberConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.CLIMBER_MAIN.id,
-                new CANBus(IDs.CLIMBER_MAIN.bus),
+                IDs.CLIMBER_MAIN.bus,
                 getMainConfig(),
                 Pair.of(IDs.CLIMBER_FOLLOWER.id, false)
                 )
             : new TalonFXIOSim(
                 IDs.CLIMBER_MAIN.id,
-                new CANBus(IDs.CLIMBER_MAIN.bus),
+                IDs.CLIMBER_MAIN.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing,

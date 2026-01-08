@@ -63,12 +63,12 @@ public class PivotConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.INTAKE_PIVOT.id,
-                new CANBus(IDs.INTAKE_PIVOT.bus),
+                IDs.INTAKE_PIVOT.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.INTAKE_PIVOT.id,
-                new CANBus(IDs.INTAKE_PIVOT.bus),
+                IDs.INTAKE_PIVOT.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing
