@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.setpoints.BaseSetpoint;
-import frc.lib.util.logging.Logger;
 
 public class MotorComponent<M extends MotorIO> implements Component {
     private final M io;
@@ -28,7 +27,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
 
     @Override
     public void log(String path) {
-        Logger.log(path, "Motor", io);
+        io.log(path);
     }
 
     public void enable() {
