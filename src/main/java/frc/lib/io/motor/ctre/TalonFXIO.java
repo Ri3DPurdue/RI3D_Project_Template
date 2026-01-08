@@ -44,8 +44,12 @@ public class TalonFXIO extends MotorIO {
         motors = new TalonFX[followers.length + 1];
         motors[0] = new TalonFX(leaderID, canbus);
         for (int i = 1; i <= followers.length; i++) {
-            motors[i] = new TalonFX(followers[i].getFirst(), canbus);
-            motors[i].setControl(new Follower(leaderID, followers[i].getSecond()));
+            motors[i] = new TalonFX(followers[i - 1].getFirst(), canbus);
+            StatusCode status = StatusCode.StatusCodeNotInitialized;
+            for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
+                status = motors[i].getConfigurator().apply(config);
+            }
+            motors[i].setControl(new Follower(leaderID, followers[i - 1].getSecond()));
         }
         reconfigure(config);
         positionRequest = new PositionVoltage(0);
