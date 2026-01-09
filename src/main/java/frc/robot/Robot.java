@@ -9,9 +9,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,10 +31,11 @@ import frc.lib.util.logging.Logger;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+    private SendableChooser<Command> autoChooser;
     private Command m_autonomousCommand;
     private static final BlockingQueue<Runnable> blockingCallsQueue = new LinkedBlockingQueue<>();
     private static final ThreadPoolExecutor blockingCallsExecutor = new ThreadPoolExecutor(1, 1, 5, java.util.concurrent.TimeUnit.MILLISECONDS, blockingCallsQueue);
-
+    
     private Superstructure superstructure = new Superstructure();
 
     public static void submitBlockingCall(Runnable call) {
@@ -47,6 +52,10 @@ public class Robot extends TimedRobot {
         Logger.setOptions(new DogLogOptions(
             () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));
         ControlBoard.bindControls(superstructure);
+        
+        FollowPathCommand.warmupCommand().schedule();
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
@@ -88,7 +97,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = null;
+        m_autonomousCommand = autoChooser.getSelected();
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
