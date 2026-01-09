@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.revrobotics.spark.SparkSim;
+import com.revrobotics.spark.SparkBase;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -15,7 +16,9 @@ import edu.wpi.first.units.measure.Time;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.mechanismSim.SimObject;
 
-
+/**
+ * A class that represents a simulated {@link SparkBase}
+ */
 public class SparkBaseSimIO extends SparkBaseIO {
     private SparkSim simMotor;
     private SimObject simObject;
