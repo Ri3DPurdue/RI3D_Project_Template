@@ -79,6 +79,11 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
         }
     }
 
+    /**
+     * Adds this subsystem to the requirement list of the passed in command
+     * @param command The command that requires this subsystem, which will be modified
+     * @return The passed in command, for call chaining
+     */
     protected Command withRequirement(Command command) {
         command.addRequirements(this); 
         return command;
