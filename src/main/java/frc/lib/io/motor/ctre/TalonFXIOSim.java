@@ -38,6 +38,9 @@ public class TalonFXIOSim extends TalonFXIO {
         super.periodic();
     }
 
+    /**
+     * Updates the internal sim states for all of the talon's in the group
+     */
     private void updateMotorSimState() {
         for (TalonFX motor : motors) {
             TalonFXSimState simState = motor.getSimState();
