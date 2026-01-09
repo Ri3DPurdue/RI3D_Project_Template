@@ -11,9 +11,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.Util.logging.Loggable;
-import frc.lib.Util.logging.Logger;
+import frc.lib.util.logging.Loggable;
+import frc.lib.util.logging.Logger;
 
+/**
+ * A class that represents the outputs that all motors must log
+ * @see Loggable
+ */
 public class MotorOutputs implements Loggable {
     public Angle position;
     public AngularVelocity velocity;
@@ -27,6 +31,9 @@ public class MotorOutputs implements Loggable {
     private AngularVelocityUnit loggedVelocityUnit;
     private TemperatureUnit loggedTemperatureUnit;
 
+    /**
+     * Creates a motor ouput with zeroes for all fields
+     */
     public MotorOutputs() {
         this(BaseUnits.AngleUnit.zero(), 
         BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).zero(), 
@@ -38,6 +45,16 @@ public class MotorOutputs implements Loggable {
         );
     }
 
+    /**
+     * Creates a motor output with the given fields
+     * @param position The output's position
+     * @param velocity The output's velocity
+     * @param supplyVoltage The output's supply voltage
+     * @param statorVoltage The output's stator voltage
+     * @param statorCurrent The output's supply current
+     * @param supplyCurrent The output's stator current
+     * @param temperature The output's temperature
+     */
     public MotorOutputs(
         Angle position,
         AngularVelocity velocity,
@@ -70,6 +87,12 @@ public class MotorOutputs implements Loggable {
         Logger.log(path, "Temperature", temperature, loggedTemperatureUnit);
     }
 
+    /**
+     * Overrides the units that outputs are logged in
+     * @param loggedPositionUnit The new unit to log position in
+     * @param loggedVelocityUnit The new unit to log velocity in
+     * @param loggedTemperatureUnit The new unit to log temperature in
+     */
     public void overrideLoggedUnits(
         AngleUnit loggedPositionUnit,
         AngularVelocityUnit loggedVelocityUnit,

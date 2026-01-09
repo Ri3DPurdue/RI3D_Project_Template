@@ -9,16 +9,55 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.lib.Util.UnitsUtil;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.*;
+import frc.lib.util.UnitsUtil;
+import frc.lib.util.logging.Logger;
 
+/**
+ * A servo motor component with automatic homing functionality.
+ * 
+ * <p>
+ * This component extends {@link ServoMotorComponent} to add automatic homing
+ * capabilities.
+ * Homing is the process of moving a mechanism to a known physical hard stop and
+ * resetting
+ * the encoder position, ensuring accurate absolute positioning throughout
+ * operation.
+ * 
+ * <p>
+ * The homing sequence is triggered automatically when:
+ * <ul>
+ * <li>The mechanism needs homing (after moving away from home)</li>
+ * <li>A setpoint targets the home position</li>
+ * <li>The mechanism is near the home position</li>
+ * </ul>
+ * 
+ * <p>
+ * During homing, the component:
+ * <ol>
+ * <li>Disables soft limits to allow movement to the hard stop</li>
+ * <li>Applies a constant voltage towards the hard stop</li>
+ * <li>Monitors velocity to detect when the mechanism has stopped</li>
+ * <li>Resets the encoder position once stopped</li>
+ * <li>Re-enables soft limits and applies position control</li>
+ * </ol>
+ * 
+ * @param <M> the type of MotorIO implementation used by this component
+ * @see ServoMotorComponent
+ * @see HomingConfig
+ */
 public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComponent<M> {
+    /** Whether a homing sequence is currently in progress */
     private boolean homing = false;
+    /** Whether the mechanism needs to be homed before reliable operation */
     private boolean needsToHome = true;
+    /** Configuration parameters for the homing sequence */
     private HomingConfig homingConfig;
+    /**
+     * Debouncer to ensure velocity has stabilized before declaring homing complete
+     */
     private Debouncer homingDebouncer;
-
 
     public HomingServoMotorComponent(M motorIO, Angle epsilon, Angle startAngle, HomingConfig config) {
         super(motorIO, epsilon, startAngle);
@@ -26,67 +65,138 @@ public class HomingServoMotorComponent<M extends MotorIO> extends ServoMotorComp
         homingDebouncer = new Debouncer(config.homingDebouce.in(Units.Seconds), DebounceType.kRising);
     }
 
-    private boolean setpointNearHome() {
-        if (getSetpoint() instanceof PositionSetpoint p) {
-            return positionNearHome(p.get());
-        } else {
-            return false;
-        }
+    private boolean setpointIsHome() {
+        return getSetpoint() instanceof PositionSetpoint p && p.get().equals(homingConfig.homePosition);
     }
 
+    /**
+     * Checks if a given position is within tolerance of the home position.
+     * 
+     * @param position the position to check
+     * @return true if the position is near home, false otherwise
+     */
     private boolean positionNearHome(Angle position) {
         return UnitsUtil.isNear(homingConfig.homePosition, position, epsilonThreshold);
     }
 
+    /**
+     * Checks if the mechanism's current position is near home.
+     * 
+     * @return true if the current position is near home, false otherwise
+     */
     private boolean isNearHome() {
         return positionNearHome(getPosition());
     }
 
+    /**
+     * Performs periodic updates including automatic homing sequence management.
+     * 
+     * <p>
+     * If homing is needed, the current setpoint targets home, and the mechanism is
+     * near
+     * home, the homing sequence is initiated.
+     * During homing, the mechanism's velocity is monitored, and once it has
+     * stabilized below
+     * the configured threshold for the debounce duration, the encoder position is
+     * reset,
+     * and position control is applied to hold the home position.
+     */
     @Override
     public void periodic() {
         super.periodic();
-        if (needsToHome && setpointNearHome() && isNearHome()) { // If homing is needed, targeting the homing location, and almost there
+        if (needsToHome && setpointIsHome() && isNearHome()) { // If homing is needed, targeting the homing location,
+                                                               // and almost there
             beginHomingSequence(); // Start the homing sequence
         }
         if (homing && DriverStation.isEnabled()) { // If homing (and enabled so the voltage is ACTUALLY being applied)
             if (homingDebouncer.calculate(
-                    getVelocity().abs(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit)) <= 
-                    homingConfig.homingVelocity.baseUnitMagnitude())) { // If you've been under the homing velocity threshold for the debounce (if you've stopped)
+                    getVelocity().abs(BaseUnits.AngleUnit.per(BaseUnits.TimeUnit)) <= homingConfig.homingVelocity
+                            .baseUnitMagnitude())) { // If you've been under the homing velocity threshold for the
+                                                     // debounce (if you've stopped)
                 resetPosition(homingConfig.homePosition); // You know you're at the home position so reset it
-                applySetpoint(new ProfiledPositionSetpoint(homingConfig.homePosition)); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
+                needsToHome = false; // You just finished homing so no longer need to
+                applySetpoint(homingConfig.homeSetpoint); // Target the homing location with position control so you don't keep slamming into it (this also ends homing sequence because new setpoint is applied)
             }
         }
     }
 
+    /**
+     * Applies a setpoint and manages homing state accordingly.
+     * 
+     * <p>
+     * Cancels any ongoing homing sequence if a new setpoint is applied.
+     * 
+     * @param setpoint the setpoint to apply
+     */
     @Override
     public void applySetpoint(BaseSetpoint<?> setpoint) {
         super.applySetpoint(setpoint); // Apply your setpoint
         if (homing) { // If you were in the middle of homing
             endHomingSequence(); // Cancel homing
         }
-        if (!setpointNearHome()) { // If you're leaving your home position
+        if (!setpointIsHome()) { // If you're leaving your home position
             needsToHome = true; // You now need to rezero
         }
     }
 
+    /**
+     * Begins the homing sequence.
+     * 
+     * <p>
+     * This method:
+     * <ul>
+     * <li>Disables soft limits to allow movement to the hard stop</li>
+     * <li>Applies a constant voltage towards the home position</li>
+     * <li>Resets the velocity debouncer</li>
+     * <li>Sets the homing flag</li>
+     * </ul>
+     */
     public void beginHomingSequence() {
         homing = true; // Save that you are currently homing
         useSoftLimits(false); // Disable soft limits so you can physically hit the hardstop
-        super.applySetpoint(new VoltageSetpoint(homingConfig.homingVoltage)); // Go at your homing voltage (but don't apply setpoint normally so homing isn't canceled)
+        super.applySetpoint(new VoltageSetpoint(homingConfig.homingVoltage)); // Go at your homing voltage (but don't
+                                                                              // apply setpoint normally so homing isn't
+                                                                              // canceled)
         homingDebouncer.calculate(false); // Reset the debouncer
     }
 
+    /**
+     * Ends the homing sequence and restores normal operation.
+     * 
+     * <p>
+     * This method:
+     * <ul>
+     * <li>Clears the homing flag</li>
+     * <li>Re-enables soft limits for safe operation</li>
+     * </ul>
+     */
     public void endHomingSequence() {
         homing = false; // Save that you're done homing
         useSoftLimits(true); // Turn soft limits back on
     }
 
+    @Override
+    public void log(String path) {
+        super.log(path);
+        String homingPath = path + "/Homing";
+        Logger.log(homingPath, "Is Homing", homing);
+        Logger.log(homingPath, "Needs To Home", needsToHome);
+    }
+
 
     public static class HomingConfig {
+        /** The encoder position value to set when homing is complete */
         public Angle homePosition = BaseUnits.AngleUnit.zero();
+        /** The velocity threshold below which the mechanism is considered stopped */
         public AngularVelocity homingVelocity = BaseUnits.AngleUnit.zero().div(BaseUnits.TimeUnit.zero());
+        /** The voltage to apply while moving towards the hard stop */
         public Voltage homingVoltage = BaseUnits.VoltageUnit.zero();
+        /**
+         * The time velocity must remain below threshold before declaring homing
+         * complete
+         */
         public Time homingDebouce = BaseUnits.TimeUnit.zero();
+        public PositionSetpoint homeSetpoint = null; // Position setpoint to target home and stay there once done homing
     }
-    
+
 }
