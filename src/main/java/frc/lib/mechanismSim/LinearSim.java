@@ -9,10 +9,19 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.lib.util.UnitsUtil.DistanceAngleConverter;
 
+/**
+ * Simulation wrapper for linear mechanisms (e.g., elevators) that exposes position/velocity as angles.
+ */
 public class LinearSim extends SimObject {
     private final ElevatorSim sim;
     private final DistanceAngleConverter converter;
 
+    /**
+     * Create a linear mechanism simulation that can report angular equivalents.
+     *
+     * @param system underlying WPILib elevator simulation
+     * @param distanceAngleConverter converter between linear travel and rotational units
+     */
     public LinearSim(ElevatorSim system, DistanceAngleConverter distanceAngleConverter) {
         sim = system;
         converter = distanceAngleConverter;
