@@ -54,6 +54,11 @@ public class TalonFXSIO extends MotorIO {
         idleRequest = new NeutralOut();
     }
 
+    /**
+     * Applies the given config to the talon fx. Note that this is done asynchronously,
+     * so code after this can't assume the config has been applied
+     * @param config The config to apply
+     */
     public void reconfigure(TalonFXSConfiguration config) {
         this.config = config;
         Robot.submitBlockingCall(() -> {

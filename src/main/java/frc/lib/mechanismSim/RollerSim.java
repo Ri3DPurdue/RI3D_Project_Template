@@ -9,9 +9,18 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
+/**
+ * Simulation wrapper for flywheel-style rollers that focuses on angular velocity and current draw.
+ * Position always returns zero because roller rotation typically is not tracked.
+ */
 public class RollerSim extends SimObject{
     private final FlywheelSim sim;
 
+    /**
+     * Create a roller simulation around a WPILib flywheel model.
+     *
+     * @param system underlying WPILib flywheel simulation
+     */
     public RollerSim(FlywheelSim system) {
         sim = system;
     }

@@ -12,8 +12,18 @@ import frc.lib.util.logging.Logger;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.TemperatureUnit;
-import edu.wpi.first.units.measure.Angle;
 
+/**
+ * Base abstract class that represents a motor. 
+ * <p>
+ * Subclasses should be made for individual motor controllers, which override
+ * the abstract methods which define how to use the hardware.
+ * <p>
+ * Sim classes should also override the {@link #periodic} method, where
+ * they can utilize vendor simulation support, and both Sim and Real classes
+ * can override the {@link #log} method to log additional motor specific information 
+ * @see Loggable
+ */
 public abstract class MotorIO implements Loggable {
     private BaseSetpoint<?> currentSetpoint;
     private boolean enabled;
@@ -24,7 +34,7 @@ public abstract class MotorIO implements Loggable {
     /**
      * Sets up the internal state for a MotorIO
      * @throws IllegalArgumentException If numFollowers is less than 0
-     * @param numFollowers
+     * @param numFollowers The number of motor
      */
     protected MotorIO(int numFollowers) {
         if (numFollowers < 0) {
@@ -69,6 +79,9 @@ public abstract class MotorIO implements Loggable {
         setIdle();
     }
 
+    /**
+     * @return whether this motor is currently enabled
+     */
     public final boolean isEnabled() {
         return enabled;
     }
@@ -84,8 +97,6 @@ public abstract class MotorIO implements Loggable {
      * @param setpoint
      */
     public final void applySetpoint(BaseSetpoint<?> setpoint) {
-        currentSetpoint = setpoint;
-
         if (enabled) {
             // Because profiled position setpoint is a subclass of
             // position setpoint, this check needs to be first.
@@ -94,16 +105,22 @@ public abstract class MotorIO implements Loggable {
             // However, it does enforce some ordering on this side
             if (setpoint instanceof ProfiledPositionSetpoint p) {
                 setProfiledPosition(p.get());
+                currentSetpoint = new ProfiledPositionSetpoint(p.get());
             } else if (setpoint instanceof PositionSetpoint p) {
                 setPosition(p.get());
+                currentSetpoint = new PositionSetpoint(p.get());
             } else if (setpoint instanceof VelocitySetpoint v) {
                 setVelocity(v.get());
+                currentSetpoint = new VelocitySetpoint(v.get());
             } else if (setpoint instanceof VoltageSetpoint v) {
                 setVoltage(v.get());
+                currentSetpoint = new VoltageSetpoint(v.get());
             } else if (setpoint instanceof CurrentSetpoint c) {
                 setCurrent(c.get());
+                currentSetpoint = new CurrentSetpoint(c.get());
             } else if (setpoint instanceof IdleSetpoint) {
                 setIdle();
+                currentSetpoint = new IdleSetpoint();
             } else {
                 throw new RuntimeException("Unknown setpoint type. Please use one of the given setpoint types in frc.lib.motors.setpoints");
             }
@@ -117,13 +134,31 @@ public abstract class MotorIO implements Loggable {
     public final BaseSetpoint<?> getCurrentSetpoint() {
         return currentSetpoint;
     }
-
+    
     /**
      * Gets the outputs from all the motors
      * @implNote This returns the internal array, so be careful about modifying it
      */
     public final MotorOutputs[] getOutputs() {
         return outputs;
+    }
+
+    /**
+     * Overrides the units that outputs are logged in
+     * @param loggedPositionUnit The new unit to log position in
+     * @param loggedVelocityUnit The new unit to log velocity in
+     * @param loggedTemperatureUnit The new unit to log temperature in
+     */
+    public final void overrideLoggedUnits(
+        AngleUnit loggedPositionUnit,
+        AngularVelocityUnit loggedVelocityUnit,
+        TemperatureUnit loggedTemperatureUnit
+    ) {
+        this.loggedPositionUnit = loggedPositionUnit;
+        this.loggedVelocityUnit = loggedVelocityUnit;
+        for (MotorOutputs output : outputs) {
+            output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
+        }
     }
 
     /**
@@ -149,17 +184,6 @@ public abstract class MotorIO implements Loggable {
         Logger.log(path, "Followers", Arrays.copyOfRange(outputs, 1, outputs.length));
     }
 
-    public void overrideLoggedUnits(
-        AngleUnit loggedPositionUnit,
-        AngularVelocityUnit loggedVelocityUnit,
-        TemperatureUnit loggedTemperatureUnit
-    ) {
-        this.loggedPositionUnit = loggedPositionUnit;
-        this.loggedVelocityUnit = loggedVelocityUnit;
-        for (MotorOutputs output : outputs) {
-            output.overrideLoggedUnits(loggedPositionUnit, loggedVelocityUnit, loggedTemperatureUnit);
-        }
-    }
 
     /**
      * Gets the outputs for the motor
@@ -168,15 +192,59 @@ public abstract class MotorIO implements Loggable {
      */
     protected abstract void updateOutputs(MotorOutputs[] outputs);
 
+    /**
+     * Commands the motor to apply the given stator voltage
+     * @param voltage The voltage to apply
+     */
     protected abstract void setVoltage(Voltage voltage);
+
+    /**
+     * Commands the motor to apply the given stator current
+     * @param current The current to apply
+     */
     protected abstract void setCurrent(Current current);
 
+    /**
+     * Commands the motor to target the given position
+     * @param angle The position to target
+     */
     protected abstract void setPosition(Angle angle);
+
+    /**
+     * Commands the motor to target the given velocity
+     * @param velocity The velocity to target
+     */
     protected abstract void setVelocity(AngularVelocity velocity);
+
+    /**
+     * Commands the motor to target the given position using a motion profile
+     * @param position The position to target
+     */
     protected abstract void setProfiledPosition(Angle position);
 
+    /**
+     * Commands the motor to idle. Whether this causes the motor to brake or coast
+     * depends on the motor's current config
+     */
     protected abstract void setIdle();
 
+    /**
+     * Tells the motor whether to respect its configured soft limits
+     * <p>
+     * Note that because this is a config changing call, it may be done on a seperate
+     * thread, which means that lines of code after this can't assume this config
+     * has been applied 
+     * @param use Whether to respect the soft limits
+     */
     public abstract void useSoftLimits(boolean use);
+
+    /**
+     * Tells the motor it's current position
+     * <p>
+     * Note that because this is a config changing call, it may be done on a seperate
+     * thread, which means that lines of code after this can't assume this config
+     * has been applied 
+     * @param position The actual current position of the motor
+     */
     public abstract void resetPosition(Angle position);
 }

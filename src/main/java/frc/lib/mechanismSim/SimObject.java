@@ -9,6 +9,9 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 
 public abstract class SimObject {
+    /**
+     * Timestamp of the last simulation update. Used to compute delta time between calls.
+     */
     private Time lastFPGASeconds;
 
     /**
@@ -45,12 +48,14 @@ public abstract class SimObject {
     /**
      * Update the implementation specific internal simulation based on the time passed since the last update.
      * 
-     * @param deltaSeconds The amount of time since the last simulation update.
+     * @param deltaTime The amount of time since the last simulation update.
      */
     protected abstract void simulate(Time deltaTime);
 
     /**
      * Update the simulation. Needs to be called periodically more frequent calls will result in higher sim resolution.
+     * 
+     * @return The delta time since the last update.
      */
     public Time update() {
         Time currentFPGASeconds = Units.Seconds.of(Timer.getFPGATimestamp());
