@@ -1,6 +1,5 @@
 package frc.lib.io.motor.ctre;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
@@ -23,7 +22,7 @@ public class TalonFXSIOSim extends TalonFXSIO {
      * @param followers An array of integer boolean pairs which represent the can ID and inversion relative to the main motor for each follower
      */
     @SuppressWarnings("unchecked")
-    public TalonFXSIOSim(int leaderID, CANBus canbus, TalonFXSConfiguration config, SimObject simObject, Pair<Integer, Boolean>... followers ) {
+    public TalonFXSIOSim(int leaderID, String canbus, TalonFXSConfiguration config, SimObject simObject, Pair<Integer, Boolean>... followers ) {
         super(leaderID, canbus, config, followers);
     }
 

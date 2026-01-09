@@ -1,6 +1,5 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -55,13 +54,13 @@ public class FlywheelConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_FLYWHEEL_MAIN.id,
-                new CANBus(IDs.SHOOTER_FLYWHEEL_MAIN.bus),
+                IDs.SHOOTER_FLYWHEEL_MAIN.bus,
                 getMainConfig(),
                 Pair.of(IDs.SHOOTER_FLYWHEEL_FOLLOWER.id, false)
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_FLYWHEEL_MAIN.id,
-                new CANBus(IDs.SHOOTER_FLYWHEEL_MAIN.bus),
+                IDs.SHOOTER_FLYWHEEL_MAIN.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing,

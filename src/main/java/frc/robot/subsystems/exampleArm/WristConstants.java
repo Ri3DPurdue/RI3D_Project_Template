@@ -49,7 +49,7 @@ public class WristConstants {
     public static final ServoMotorComponent<SparkBaseIO> getComponent() {
         SparkBaseIO io = getMotorIO();
         io.overrideLoggedUnits(Degrees, DegreesPerSecond, Celsius);
-        return new ServoMotorComponent<SparkBaseIO>(io, epsilonThreshold, stowAngle); // TODO not starting reading stow angle
+        return new ServoMotorComponent<SparkBaseIO>(io, epsilonThreshold, stowAngle);
     }
 
     /**

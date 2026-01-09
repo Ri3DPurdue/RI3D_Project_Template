@@ -1,6 +1,5 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
@@ -53,12 +52,12 @@ public class HoodConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_HOOD.id,
-                new CANBus(IDs.SHOOTER_HOOD.bus),
+                IDs.SHOOTER_HOOD.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_HOOD.id,
-                new CANBus(IDs.SHOOTER_HOOD.bus),
+                IDs.SHOOTER_HOOD.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.exampleClimber;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -66,13 +65,13 @@ public class ClimberConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.CLIMBER_MAIN.id,
-                new CANBus(IDs.CLIMBER_MAIN.bus),
+                IDs.CLIMBER_MAIN.bus,
                 getMainConfig(),
                 Pair.of(IDs.CLIMBER_FOLLOWER.id, false)
                 )
             : new TalonFXIOSim(
                 IDs.CLIMBER_MAIN.id,
-                new CANBus(IDs.CLIMBER_MAIN.bus),
+                IDs.CLIMBER_MAIN.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing,

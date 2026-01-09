@@ -1,6 +1,5 @@
 package frc.robot.subsystems.exampleShooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -57,12 +56,12 @@ public class FeederConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.SHOOTER_FEEDER.id,
-                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                IDs.SHOOTER_FEEDER.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.SHOOTER_FEEDER.id,
-                new CANBus(IDs.SHOOTER_FEEDER.bus),
+                IDs.SHOOTER_FEEDER.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing

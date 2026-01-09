@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
@@ -63,12 +62,12 @@ public class PivotConstants {
         return Robot.isReal() 
             ? new TalonFXIO(
                 IDs.INTAKE_PIVOT.id,
-                new CANBus(IDs.INTAKE_PIVOT.bus),
+                IDs.INTAKE_PIVOT.bus,
                 getMainConfig()
                 )
             : new TalonFXIOSim(
                 IDs.INTAKE_PIVOT.id,
-                new CANBus(IDs.INTAKE_PIVOT.bus),
+                IDs.INTAKE_PIVOT.bus,
                 getMainConfig(),
                 getSimObject(),
                 gearing
