@@ -6,10 +6,9 @@ import frc.lib.util.logging.Loggable;
 import frc.lib.util.logging.Logger;
 
 public abstract class DigitalIO implements Loggable {
-
     public static class DigitalIOOutputs implements Loggable {
-        public boolean raw;
-        public boolean debounced;
+        public boolean raw = false;
+        public boolean debounced = false;
 
         @Override
         public void log(String path) {
@@ -24,7 +23,6 @@ public abstract class DigitalIO implements Loggable {
     public DigitalIO(double debounceSeconds) {
 		debouncer = new Debouncer(debounceSeconds, DebounceType.kBoth);
         outputs = new DigitalIOOutputs();
-        update();
 	}
 
 	public abstract boolean get();

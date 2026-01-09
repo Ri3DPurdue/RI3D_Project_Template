@@ -1,4 +1,4 @@
-package frc.robot.subsystems.exampleIntake;
+package frc.robot.subsystems.exampleArm;
 
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.RPM;
@@ -16,53 +16,55 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.component.MotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
 import frc.lib.io.motor.rev.SparkBaseSimIO;
-import frc.lib.io.motor.setpoints.*;
+import frc.lib.io.motor.setpoints.IdleSetpoint;
+import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.mechanismSim.RollerSim;
 import frc.lib.mechanismSim.SimObject;
 import frc.lib.util.ConfigUtil;
 import frc.robot.IDs;
 import frc.robot.Robot;
 
-public class RollerConstants {
-    // Gearing is a 36 to 16 reduction
-    public static final double gearing = (36.0 / 16.0);
+public class EndEffectorConstants {
+    // Gearing is a 48 to 36 reduction
+    public static final double gearing = (48.0 / 36.0);
 
     // Notable points for system
-    public static final Voltage inwardsVoltage = Units.Volts.of(8.0);
-    public static final Voltage spitVoltage = Units.Volts.of(-6.0);
-
+    public static final Voltage intakeVoltage = Units.Volts.of(8.0);
+    public static final Voltage outtakeVoltage = Units.Volts.of(-6.0);
+    
     // Setpoints for notable points
-    public static final VoltageSetpoint inwardsSetpoint = new VoltageSetpoint(inwardsVoltage);
-    public static final VoltageSetpoint spitSetpoint = new VoltageSetpoint(spitVoltage);
+    public static final VoltageSetpoint intakeSetpoint = new VoltageSetpoint(intakeVoltage);
+    public static final VoltageSetpoint outtakeSetpoint = new VoltageSetpoint(outtakeVoltage);
     public static final IdleSetpoint idleSetpoint = new IdleSetpoint();
-
-    // Information about motors driving system
+   
+    // Information about motors driving system    
     public static final MotorType motorType = MotorType.kBrushless; // Only needed for Sparks 
     public static final DCMotor motor = DCMotor.getNeo550(1); // Only needed for sim
-
-    /**
-     * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
-     */
+    
+    // Gets the final component for the system
     public static final MotorComponent<SparkBaseIO> getComponent() {
         SparkBaseIO io = getMotorIO();
         io.overrideLoggedUnits(Rotations, RPM, Celsius);
         return new MotorComponent<SparkBaseIO>(io);
     }
 
+    /**
+     * Gets a MotorIO for the system, returning a real one when actually running and a simulated one when running the simulation.
+     */
     @SuppressWarnings("unchecked")
     public static final SparkBaseIO getMotorIO() {
         return Robot.isReal() 
             ? new SparkBaseIO(
                 motorType, 
                 getMainConfig(), 
-                IDs.INTAKE_ROLLERS.id
+                IDs.ARM_END_EFFECTOR.id
                 )
             : new SparkBaseSimIO(
                 getSimObject(),
                 motor,
                 motorType, 
                 getMainConfig(), 
-                IDs.INTAKE_ROLLERS.id
+                IDs.ARM_END_EFFECTOR.id
             );
     }
 

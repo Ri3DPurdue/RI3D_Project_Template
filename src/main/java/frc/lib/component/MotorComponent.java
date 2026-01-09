@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import frc.lib.io.motor.setpoints.BaseSetpoint;
-import frc.lib.util.logging.Logger;
 
 /**
  * A component that wraps motor controller functionality.
@@ -66,7 +65,7 @@ public class MotorComponent<M extends MotorIO> implements Component {
      */
     @Override
     public void log(String path) {
-        Logger.log(path, "Motor", io);
+        io.log(path);
     }
 
     /**

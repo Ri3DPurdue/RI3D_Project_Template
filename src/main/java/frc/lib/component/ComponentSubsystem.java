@@ -3,7 +3,6 @@ package frc.lib.component;
 import java.util.HashMap;
 import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.logging.Loggable;
 import frc.lib.util.logging.Logger;
@@ -80,56 +79,8 @@ public class ComponentSubsystem extends SubsystemBase implements Loggable {
         }
     }
 
-    /**
-     * Creates a sequential command that requires this subsystem.
-     * 
-     * <p>
-     * This is a convenience method that creates a sequence of commands and
-     * automatically
-     * adds this subsystem as a requirement. Commands execute in order, with each
-     * command
-     * completing before the next begins.
-     * 
-     * @param commands The commands to execute in sequence
-     * @return A new sequential command with this subsystem as a requirement
-     */
-    protected Command sequence(Command... commands) {
-        Command cmd = Commands.sequence(commands);
-        cmd.addRequirements(this);
-        return cmd;
-    }
-
-    /**
-     * Creates a parallel command that requires this subsystem.
-     * 
-     * <p>
-     * This is a convenience method that creates a group of parallel commands and
-     * automatically adds this subsystem as a requirement. Commands execute
-     * simultaneously
-     * and the group completes when all commands finish.
-     * 
-     * @param commands The commands to execute in parallel
-     * @return A new parallel command with this subsystem as a requirement
-     */
-    protected Command parallel(Command... commands) {
-        Command cmd = Commands.parallel(commands);
-        cmd.addRequirements(this);
-        return cmd;
-    }
-
-    /**
-     * Wraps a command to require this subsystem.
-     * 
-     * <p>
-     * This is a convenience method that automatically adds this subsystem as a
-     * requirement for the provided command. Needed for ensuring that commands have
-     * the proper subsystem requirements set before scheduling.
-     * 
-     * @param command The command to wrap
-     * @return The same command with this subsystem added as a requirement
-     */
-    protected Command command(Command command) {
-        command.addRequirements(this);
+    protected Command withRequirement(Command command) {
+        command.addRequirements(this); 
         return command;
     }
 }
