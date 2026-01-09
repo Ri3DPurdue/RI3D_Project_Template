@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.exampleArm.ExampleArm;
 import frc.robot.subsystems.exampleClimber.ExampleClimber;
 import frc.robot.subsystems.exampleIntake.ExampleIntake;
@@ -10,6 +11,7 @@ import frc.lib.util.logging.Loggable;
 import frc.lib.util.logging.Logger;
 
 public class Superstructure implements Loggable {
+    public final Drive drive = new Drive();
     public final ExampleIntake exampleIntake = new ExampleIntake();
     public final ExampleShooter exampleShooter = new ExampleShooter();
     public final ExampleClimber exampleClimber = new ExampleClimber();
@@ -17,6 +19,7 @@ public class Superstructure implements Loggable {
 
     @Override
     public void log(String path) {
+        Logger.log(path, "Drive", drive);
         Logger.log(path, "Example Intake", exampleIntake);
         Logger.log(path, "Example Shooter", exampleShooter);
         Logger.log(path, "Example Climber", exampleClimber);

@@ -10,6 +10,8 @@ public class ControlBoard {
         CommandXboxController operator = ControlBoardConstants.operator;
 
         // Controls
+        s.drive.setDefaultCommand(s.drive.teleopDrive(driver));
+        
         driver.a().onTrue(s.exampleArm.prepScore());
         driver.x().onTrue(s.exampleIntake.unjam());
         driver.b().onTrue(s.stowAll());
@@ -23,6 +25,5 @@ public class ControlBoard {
         driver.povUp().onTrue(s.prepClimb());
         driver.povDown().onTrue(s.exampleClimber.pull());
 
-        // TODO bind drivetrain
     }
 }
