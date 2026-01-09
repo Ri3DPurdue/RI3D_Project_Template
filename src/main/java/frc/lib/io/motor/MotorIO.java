@@ -97,8 +97,6 @@ public abstract class MotorIO implements Loggable {
      * @param setpoint
      */
     public final void applySetpoint(BaseSetpoint<?> setpoint) {
-        currentSetpoint = setpoint; //TODO: Implement clone
-
         if (enabled) {
             // Because profiled position setpoint is a subclass of
             // position setpoint, this check needs to be first.
@@ -107,16 +105,22 @@ public abstract class MotorIO implements Loggable {
             // However, it does enforce some ordering on this side
             if (setpoint instanceof ProfiledPositionSetpoint p) {
                 setProfiledPosition(p.get());
+                currentSetpoint = new ProfiledPositionSetpoint(p.get());
             } else if (setpoint instanceof PositionSetpoint p) {
                 setPosition(p.get());
+                currentSetpoint = new PositionSetpoint(p.get());
             } else if (setpoint instanceof VelocitySetpoint v) {
                 setVelocity(v.get());
+                currentSetpoint = new VelocitySetpoint(v.get());
             } else if (setpoint instanceof VoltageSetpoint v) {
                 setVoltage(v.get());
+                currentSetpoint = new VoltageSetpoint(v.get());
             } else if (setpoint instanceof CurrentSetpoint c) {
                 setCurrent(c.get());
+                currentSetpoint = new CurrentSetpoint(c.get());
             } else if (setpoint instanceof IdleSetpoint) {
                 setIdle();
+                currentSetpoint = new IdleSetpoint();
             } else {
                 throw new RuntimeException("Unknown setpoint type. Please use one of the given setpoint types in frc.lib.motors.setpoints");
             }

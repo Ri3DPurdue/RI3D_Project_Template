@@ -3,7 +3,7 @@ package frc.lib.io.motor.setpoints;
 import edu.wpi.first.units.measure.Current;
 
 /**
- * A setpoint for current
+ * A setpoint for stator current
  */
 public class CurrentSetpoint extends BaseSetpoint<Current> {
     /**
