@@ -8,9 +8,18 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
+/**
+ * Simulation wrapper for single-jointed arms that reports angle, velocity, and current draw.
+ * Keeps the interface aligned with other simulated mechanisms.
+ */
 public class PivotSim extends SimObject {
     private final SingleJointedArmSim sim;
 
+    /**
+     * Create a pivot simulation around a WPILib single-jointed arm model.
+     *
+     * @param system underlying WPILib arm simulation
+     */
     public PivotSim(SingleJointedArmSim system) {
         sim = system;
     }
