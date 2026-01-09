@@ -44,7 +44,10 @@ public class SparkBaseSimIO extends SparkBaseIO {
         updateSimMotor();
     }
 
-    public void updateSimMotor() {
+    /**
+     * Updates the internal sim motor
+     */
+    private void updateSimMotor() {
         Time deltaTime = simObject.update();
 
         simMotor.iterate(

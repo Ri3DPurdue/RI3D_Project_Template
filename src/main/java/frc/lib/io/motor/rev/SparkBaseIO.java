@@ -20,6 +20,9 @@ import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.MotorOutputs;
 import static com.revrobotics.spark.SparkBase.ControlType.*;
 
+/**
+ * A class that represents a {@link SparkMax}
+ */
 public class SparkBaseIO extends MotorIO {
     /**
      * Identifier enum for whether a motor controller is a spark base or spark max.
@@ -137,6 +140,10 @@ public class SparkBaseIO extends MotorIO {
         }
     }
 
+    /**
+     * Applies the given config to the Spark
+     * @param config The config to apply
+     */
     public void reconfigure(SparkBaseConfig config) {
         if (config == this.config) {
             // Internal for more easy reconfiguring
@@ -229,6 +236,9 @@ public class SparkBaseIO extends MotorIO {
         main.encoder.setPosition(position.in(Units.Rotations));
     }
 
+    /**
+     * @return A default {@link SparkMaxConfig} with reasonable current limits 
+     */
     public static SparkMaxConfig getSafeSparkMaxConfig() {
         SparkMaxConfig config = new SparkMaxConfig();
         config.smartCurrentLimit(20);
@@ -238,6 +248,9 @@ public class SparkBaseIO extends MotorIO {
         return config;
     }
 
+    /**
+     * @return A default {@link SparkMaxFlex} with reasonable current limits 
+     */
     public static SparkFlexConfig getSafeSparkFlexConfig() {
         SparkFlexConfig config = new SparkFlexConfig();
         config.smartCurrentLimit(20);
