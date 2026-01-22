@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
      */
     public Robot() {
         Logger.setEnabled(true);
-        Logger.setOptions(new DogLogOptions( // TODO: not being identified as boolean suppliers
+        Logger.setOptions(new DogLogOptions(
            (BooleanSupplier) () -> !DriverStation.isFMSAttached(), true, true, 
            true, true, 1000, (BooleanSupplier) () -> !DriverStation.isFMSAttached(), true));
         ControlBoard.bindControls(superstructure);
