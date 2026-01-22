@@ -8,6 +8,7 @@ package frc.robot;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
@@ -50,7 +51,8 @@ public class Robot extends TimedRobot {
     public Robot() {
         Logger.setEnabled(true);
         Logger.setOptions(new DogLogOptions( // TODO: not being identified as boolean suppliers
-            () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> !DriverStation.isFMSAttached()));
+           (BooleanSupplier) () -> !DriverStation.isFMSAttached(), true, true, 
+           true, true, 1000, (BooleanSupplier) () -> !DriverStation.isFMSAttached(), true));
         ControlBoard.bindControls(superstructure);
         
         FollowPathCommand.warmupCommand().schedule();
