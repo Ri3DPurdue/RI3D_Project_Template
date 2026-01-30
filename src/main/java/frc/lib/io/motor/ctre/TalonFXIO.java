@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.units.measure.Angle;
@@ -49,7 +50,8 @@ public class TalonFXIO extends MotorIO {
             for (int j = 0; j < 5 && status != StatusCode.OK; j++) {
                 status = motors[i].getConfigurator().apply(config);
             }
-            motors[i].setControl(new Follower(leaderID, followers[i - 1].getSecond()));
+            motors[i].setControl(new Follower(leaderID, followers[i - 1].getSecond() ? 
+            MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned));
         }
         reconfigure(config);
         positionRequest = new PositionVoltage(0);
