@@ -110,7 +110,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
     }
 
     /**
-     * Gets the current position of the main motor.
+     * Gets the current position of the steer motor.
      * 
      * @return the motor position as an Angle measurement
      */
@@ -119,7 +119,16 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
     }
 
     /**
-     * Gets the current velocity of the main motor.
+     * Gets the current position of the drive motor.
+     * 
+     * @return the motor position as an Angle measurement
+     */
+    public Angle getDrivePosition() {
+        return getDriveOutputs()[0].position;
+    }
+
+    /**
+     * Gets the current velocity of the drive motor.
      * 
      * @return the motor velocity as an AngularVelocity measurement
      */
@@ -263,6 +272,18 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
      */
     public void resetSteeringAngle(Angle position) {
         steerMotor.resetPosition(position);
+    }
+
+    /**
+     * Resets the drive motor's position encoder to a specified value.
+     * 
+     * <p>
+     * This is typically used during homing or calibration procedures.
+     * 
+     * @param position the new position value to set
+     */
+    public void resetDrivePosition(Angle position) {
+        driveMotor.resetPosition(position);
     }
 
     /**
