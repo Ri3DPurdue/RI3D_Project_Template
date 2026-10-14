@@ -46,7 +46,7 @@ public class VisionSubsystem extends SubsystemBase implements Loggable{
     }
 
     /** Holds an estimated position from a vison system. */
-    public static record PoseEstimate(
+    public static record PoseEstimate (
         Pose2d pose,
         double timestampSeconds,
         int tagCount,
