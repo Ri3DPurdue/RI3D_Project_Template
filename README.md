@@ -47,15 +47,15 @@ many plug-and-play built-ins
 ## Current State
 NOT ALL FEATURES HAVE BEEN EXTENSIVELY TESTED YET. UNDISCOVERED BUGS MAY STILL EXIST.
  * IOs
-   - TalonFX -- Working in simulation
+   - TalonFX -- Working in simulation and on real robot
    - TalonFXS -- Untested
    - SparkMax -- Working in simulation
    - SparkFlex -- Untested
    - DigitalInIO -- Untested
    - DigitalBooleanSupplierIO -- Working in simulation
  * Components
-   - MotorComponent -- Working in simulation
-   - ServoMotorComponent -- Working in simulation
+   - MotorComponent -- Working in simulation and on real robot
+   - ServoMotorComponent -- Working in simulation and on real robot
    - HomingServoMotorComponent -- Working in simulation
-   - FlywheelMotorComponent -- Working in simulation
+   - FlywheelMotorComponent -- Working in simulation and on real robot
    - DigitalIOComponent -- Working in simulation

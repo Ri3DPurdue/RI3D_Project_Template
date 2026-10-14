@@ -1,5 +1,7 @@
 package frc.robot.controlBoard;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Superstructure;
 
@@ -11,7 +13,8 @@ public class ControlBoard {
 
         // Controls
         s.drive.setDefaultCommand(s.drive.teleopDrive(driver));
-        
+        driver.start().onTrue(Commands.runOnce(() -> s.drive.resetPose(new Pose2d())));
+
         driver.a().onTrue(s.exampleArm.prepScore());
         driver.x().onTrue(s.exampleIntake.unjam());
         driver.b().onTrue(s.stowAll());

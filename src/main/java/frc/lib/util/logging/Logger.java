@@ -54,8 +54,9 @@ public class Logger extends DogLog {
     /*
      * Logs out the given measure in it's base unit to the given key
      */
-    public static <U extends Unit> void log(String key, Measure<U> value) {
-        log(key, value, value.baseUnit());
+    @SuppressWarnings("unchecked")
+    public static void log(String key, Measure<?> value) {
+        log(key, (Measure<Unit>) value, value.baseUnit());
     }
 
     /*
@@ -189,16 +190,16 @@ public class Logger extends DogLog {
     // Enum
 
     /*
-     * Logs out the enum to the given paht with the given name
+     * Logs out the enum to the given path with the given name
      */
-    public static void log(String path, String key, Enum<?> value) {
+    public static <E extends Enum<E>> void log(String path, String key, E value) {
         log(path + "/" + key, value);
     }
 
     /*
-     * Logs out the enums to the given paht with the given name
+     * Logs out the enums to the given path with the given name
      */
-    public static void log(String path, String key, Enum<?>[] value) {
+    public static <E extends Enum<E>> void log(String path, String key, E[] value) {
         log(path + "/" + key, value);
     }
 }
