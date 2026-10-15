@@ -30,10 +30,8 @@ public class PositionNode {
      * @param servo The servo component that updates this node's state
      * @param defaultAttachmentOffset The offset between this node's start and end when the servo reads zero
      * @param servoAxis Which axis the servo is in {x, y, z, roll, pitch, yaw} -> {0, 1, 2, 3, 4, 5}.
-     * @throws UnsupportedOperationException if the servoAxis is less than 3, use the other constructor if
+     * @throws UnsupportedOperationException if the servoAxis is X, Y, or Z, use the other constructor if
      * the servo controls a distance
-     * @throws UnsupportedOperationException if the servoAxis isn't within [0, 5], as other values
-     * don't correspond to an actual axis in 3D space
      */
     public PositionNode(
         Optional<PositionNode> parent,
@@ -48,14 +46,9 @@ public class PositionNode {
         this.attachmentOffset = defaultAttachmentOffset;
         this.servoAxis = servoAxis.ordinal();
         this.converter = Optional.empty();
-        if (this.servoAxis < 3) {
+        if (servoAxis == ServoAxis.X || servoAxis == ServoAxis.Y || servoAxis == ServoAxis.Z) {
             throw new UnsupportedOperationException(
                 "If the servo controls a distance, you must use the other constructor to pass in the distance converted");
-        }
-        if (this.servoAxis > 5 || this.servoAxis < 0) {
-            throw new UnsupportedOperationException(
-                "Servo axis must be between 0 and 5 inclusive"
-            );
         }
     }
 
@@ -68,10 +61,8 @@ public class PositionNode {
      * @param defaultAttachmentOffset The offset between this node's start and end when the servo reads zero
      * @param servoAxis Which axis the servo is in {x, y, z, roll, pitch, yaw} -> {0, 1, 2, 3, 4, 5}.
      * @param converter Converts the servo's angle reading into a distance traveled measurement
-     * @throws UnsupportedOperationException if the servoAxis is greater than 2, use the other constructor if
+     * @throws UnsupportedOperationException if the servoAxis is Roll, Pitch, or Yaw, use the other constructor if
      * the servo controls a rotation
-     * @throws UnsupportedOperationException if the servoAxis isn't within [0, 5], as other values
-     * don't correspond to an actual axis in 3D space
      */
     public PositionNode(
         Optional<PositionNode> parent,
@@ -87,14 +78,9 @@ public class PositionNode {
         this.attachmentOffset = defaultAttachmentOffset;
         this.servoAxis = servoAxis.ordinal();
         this.converter = Optional.of(converter);
-        if (this.servoAxis > 2) {
+        if (servoAxis == ServoAxis.ROLL || servoAxis == ServoAxis.PITCH || servoAxis == ServoAxis.YAW) {
             throw new UnsupportedOperationException(
                 "If the servo controls an angle, you must use the other constructor and not pass in a converter");
-        }
-        if (this.servoAxis > 5 || this.servoAxis < 0) {
-            throw new UnsupportedOperationException(
-                "Servo axis must be between 0 and 5 inclusive"
-            );
         }
     }
 
