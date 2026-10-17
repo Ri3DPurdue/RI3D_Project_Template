@@ -45,7 +45,7 @@ public class LinearNode implements PositionNode {
      * Subscriber to read whether we are overriding the servo reading from NT
      */
     private final BooleanSubscriber overrideServo;
-    
+     
     /**
      * The offset from the parent node's attachment point to this node's base
      */
