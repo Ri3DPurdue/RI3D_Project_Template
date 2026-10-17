@@ -17,8 +17,8 @@ import frc.lib.util.logging.Logger;
 /**
  * Represents the position of a linear mechanism relative to the robot
  * <p>
- * NOTE: Linear mechanisms must rotate only in extend in x. This means that when setting up the mechanism in AdvantageScope,
- * you must configure the mechanism such that it only extends towards the x-axis
+ * NOTE: Linear mechanisms must only in extend in x. This means that when setting up the mechanism in AdvantageScope,
+ * you must configure the mechanism such that it only extends along the x-axis
  */
 public class LinearNode implements PositionNode {
     /**
@@ -26,10 +26,26 @@ public class LinearNode implements PositionNode {
      */
     private final PositionNode parent;
 
+    /**
+     * Subscribers to read the parent offsets from NT (x, y, z, roll, pitch, yaw)
+     */
     private final DoubleSubscriber[] parentOffsets;
+
+    /**
+     * Subscribers to read the attachment offsets from NT (x, y, z, roll, pitch, yaw)
+     */
     private final DoubleSubscriber[] attachmentOffsets;
+
+    /**
+     * Subscriber to read the overriden servo value from NT
+     */
     private final DoubleSubscriber servoReadingOverride;
+
+    /**
+     * Subscriber to read whether we are overriding the servo reading from NT
+     */
     private final BooleanSubscriber overrideServo;
+    
     /**
      * The offset from the parent node's attachment point to this node's base
      */
