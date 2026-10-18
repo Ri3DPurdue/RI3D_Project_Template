@@ -2,7 +2,7 @@ package frc.lib.component;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.io.sensor.DigitalIO;
+import frc.lib.io.sensor.digital.DigitalIO;
 import frc.lib.util.logging.Logger;
 
 /**
