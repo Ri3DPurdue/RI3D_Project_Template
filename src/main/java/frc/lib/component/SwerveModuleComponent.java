@@ -3,10 +3,8 @@ package frc.lib.component;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.*;
+import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
@@ -14,14 +12,16 @@ import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.io.motor.setpoints.VelocitySetpoint;
 import frc.lib.io.motor.setpoints.VoltageSetpoint;
 import frc.lib.io.sensor.encoder.EncoderIO;
+import frc.lib.util.UnitsUtil.DistanceAngleConverter;
 import frc.lib.util.logging.Logger;
 
 public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E extends EncoderIO> implements Component {
     private final FlywheelMotorComponent<D> driveMotor;
     private final ServoMotorComponent<S> steerMotor;
     private final E encoder;
+    private final DistanceAngleConverter conv;
 
-    public SwerveModuleComponent(D driveMotor, AngularVelocity driveEpsilon, S steerMotor, Angle steerEpsilon, E driveEncoder) {
+    public SwerveModuleComponent(D driveMotor, AngularVelocity driveEpsilon, S steerMotor, Angle steerEpsilon, E driveEncoder, Distance wheelRadius) {
         this.driveMotor = new FlywheelMotorComponent<>(
             driveMotor,
             driveEpsilon
@@ -32,15 +32,17 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
             driveEncoder.getPosition()
         );
         this.encoder = driveEncoder;
+        this.conv = new DistanceAngleConverter(wheelRadius);
     }
 
-    public SwerveModuleComponent(D driveMotor, S steerMotor, E driveEncoder) {
+    public SwerveModuleComponent(D driveMotor, S steerMotor, E driveEncoder, Distance wheelRadius) {
         this(
             driveMotor,
             Units.RPM.of(10),
             steerMotor,
             Units.Degrees.of(5),
-            driveEncoder
+            driveEncoder,
+            wheelRadius
         );
     }
 
@@ -119,6 +121,14 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
         return encoder;
     }
 
+    public Distance getDriveDistance() {
+        return conv.toDistance(getDriveComponent().getPosition());
+    }
+
+    public Angle getSteerAngle() {
+        return getSteerComponent().getPosition();
+    }
+
     public void resetToAbsolute() {
         this.steerMotor.resetPosition(this.encoder.getPosition());
     }
@@ -129,9 +139,9 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
      * @param angle the angle to rotate the wheel at
      * @param vel the angular velocity to rotate the drive wheel at
      */
-    public void applySetpoint(Rotation2d angle, AngularVelocity vel) {
+    public void applySetpoint(Rotation2d angle, LinearVelocity vel) {
         steerMotor.applySetpoint(new PositionSetpoint(Units.Radians.of(angle.getRadians())));
-        driveMotor.applySetpoint(new VelocitySetpoint(vel));
+        driveMotor.applySetpoint(new VelocitySetpoint(conv.toAngle(vel)));
     }
 
     /**
@@ -151,7 +161,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
      * @param angle the angle to rotate the wheel at
      * @param vel the angular velocity to rotate the drive wheel at
      */
-    public Command applySetpointCommand(Rotation2d angle, AngularVelocity vel) {
+    public Command applySetpointCommand(Rotation2d angle, LinearVelocity vel) {
         return Commands.runOnce(() -> applySetpoint(angle, vel));
     }
 
@@ -167,9 +177,9 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
 
     public static class SwerveModuleVelocitySetpoint {
         public Rotation2d angle;
-        public AngularVelocity vel;
+        public LinearVelocity vel;
 
-        public SwerveModuleVelocitySetpoint(Rotation2d angle, AngularVelocity vel) {
+        public SwerveModuleVelocitySetpoint(Rotation2d angle, LinearVelocity vel) {
             this.angle = angle;
             this.vel = vel;
         }
