@@ -29,7 +29,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
         this.steerMotor = new ServoMotorComponent<>(
             steerMotor,
             steerEpsilon,
-            Units.Radians.of(driveEncoder.getPosition().getRadians())
+            driveEncoder.getPosition()
         );
         this.encoder = driveEncoder;
     }
@@ -120,9 +120,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
     }
 
     public void resetToAbsolute() {
-        this.steerMotor.resetPosition(
-            Units.Radians.of(this.encoder.getPosition().getRadians())
-        );
+        this.steerMotor.resetPosition(this.encoder.getPosition());
     }
 
     /**
