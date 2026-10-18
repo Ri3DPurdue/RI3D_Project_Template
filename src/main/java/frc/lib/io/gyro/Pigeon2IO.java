@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 
 public class Pigeon2IO extends GyroIO {
     private Pigeon2 pigeon;
@@ -19,21 +19,22 @@ public class Pigeon2IO extends GyroIO {
     }
 
     @Override
-    public Rotation2d getYaw() {
-        return this.pigeon.getRotation2d();
-    }
-
-    public void setYaw(Rotation2d yaw) {
-        this.pigeon.setYaw(yaw.getDegrees());
+    public Angle getYaw() {
+        return this.pigeon.getYaw().getValue();
     }
 
     @Override
-    public Optional<Rotation2d> getPitch() {
-        return Optional.of(new Rotation2d(this.pigeon.getPitch().getValue().in(Units.Radians)));
+    public void setYaw(Angle yaw) {
+        this.pigeon.setYaw(yaw.in(Units.Degrees));
     }
 
     @Override
-    public Optional<Rotation2d> getRoll() {
-        return Optional.of(new Rotation2d(this.pigeon.getRoll().getValue().in(Units.Radians)));
+    public Optional<Angle> getPitch() {
+        return Optional.of(this.pigeon.getPitch().getValue());
+    }
+
+    @Override
+    public Optional<Angle> getRoll() {
+        return Optional.of(this.pigeon.getRoll().getValue());
     }
 }

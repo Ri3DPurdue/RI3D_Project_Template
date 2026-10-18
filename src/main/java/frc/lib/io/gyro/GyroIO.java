@@ -2,7 +2,8 @@ package frc.lib.io.gyro;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import frc.lib.util.logging.Loggable;
 import frc.lib.util.logging.Logger;
 
@@ -10,25 +11,25 @@ public abstract class GyroIO implements Loggable {
     /*
      * Gets the yaw of the gyroscope with CCW positive
      */
-    public abstract Rotation2d getYaw();
+    public abstract Angle getYaw();
 
     /*
      * Resets the yaw of the gyroscope
      */
-    public abstract void setYaw(Rotation2d yaw);
+    public abstract void setYaw(Angle yaw);
 
     /*
      * Sets the yaw of the gyroscope to zero
      */
     public void zero() {
-        setYaw(new Rotation2d());
+        setYaw(Units.Degrees.zero());
     }
 
     /*
      * Gets the pitch of the gyroscope
      * Return empty for not supported
      */
-    public Optional<Rotation2d> getPitch() {
+    public Optional<Angle> getPitch() {
         return Optional.empty();
     }
 
@@ -36,7 +37,7 @@ public abstract class GyroIO implements Loggable {
      * Gets the roll of the gyroscope
      * Return empty for not supported
      */
-    public Optional<Rotation2d> getRoll() {
+    public Optional<Angle> getRoll() {
         return Optional.empty();
     }
 
