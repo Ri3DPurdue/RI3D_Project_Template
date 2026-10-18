@@ -20,12 +20,12 @@ import edu.wpi.first.units.measure.Time;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.GyroIOComponent;
 import frc.lib.component.SwerveModuleComponent;
-import frc.lib.io.gyro.GyroIO;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.sensor.encoder.EncoderIO;
+import frc.lib.io.sensor.gyro.GyroIO;
 
 public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends EncoderIO> extends ComponentSubsystem {
-    private final HashMap<String, Pair<SwerveModuleComponent<D, S, E>, Integer>> modules;
+    private final SwerveModuleComponent<D, S, E>[] modules;
     private final SwerveDriveKinematics kinematics;
     private final SwerveDrivePoseEstimator odometry;
     private final GyroIOComponent gyroscope;
@@ -40,27 +40,22 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
     ) {
         Translation2d[] moduleTranslations = new Translation2d[modules.size()];
         SwerveModulePosition[] positions = new SwerveModulePosition[modules.size()];
-        int posIndex = 0;
 
-        this.modules = new HashMap<>();
+        this.modules = new SwerveModuleComponent[modules.size()];
+        int idx = 0;
 
         for (var e : modules.entrySet()) {
-            moduleTranslations[posIndex] = e.getValue().getSecond();
+            this.modules[idx] = e.getValue().getFirst();
+            moduleTranslations[idx] = e.getValue().getSecond();
 
-            positions[posIndex] = new SwerveModulePosition(
+            positions[idx] = new SwerveModulePosition(
                 Units.Meter.of(0),
                 Rotation2d.fromRadians(e.getValue().getFirst().getSteerComponent().getPosition().in(Units.Radians))
             );
 
-
-            this.modules.put(
-                e.getKey(),
-                Pair.of(e.getValue().getFirst(), Integer.valueOf(posIndex))
-            );
-
             this.registerComponent(e.getKey(), e.getValue().getFirst());
 
-            posIndex++;
+            idx++;
         }
 
         this.gyroscope = registerComponent(gyroName, new GyroIOComponent(gyro)); 
@@ -138,12 +133,14 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
     public void periodic() {
         super.periodic();
 
-        SwerveModulePosition[] positions = new SwerveModulePosition[modules.size()];
+        SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
 
-        for (var k : modules.values()) {
-            positions[k.getSecond()] = new SwerveModulePosition(
-                k.getFirst().getDriveDistance(),
-                Rotation2d.fromRadians(k.getFirst().getSteerAngle().in(Units.Radians))
+        for (int i = 0; i < modules.length; i++) {
+            var module = modules[i];
+
+            positions[i] =  new SwerveModulePosition(
+                module.getDriveDistance(),
+                Rotation2d.fromRadians(module.getSteerAngle().in(Units.Radians))
             );
         }
 
@@ -155,14 +152,15 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
 
         SwerveDriveKinematics.desaturateWheelSpeeds(states, maxModuleSpeed);
 
-        for (var e : modules.entrySet()) {
-            var module = e.getValue().getFirst();
-            int i = e.getValue().getSecond();
-
-            module.applySetpoint(states[i].angle, Units.MetersPerSecond.of(states[i].speedMetersPerSecond));
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].applySetpoint(states[i].angle, Units.MetersPerSecond.of(states[i].speedMetersPerSecond));
         }
     }
 
+    /*
+     * Because chassis speeds are meters per second, this method is private
+     * because it treats the speeds as a duty cycle
+     */
     private void driveVoltage(ChassisSpeeds speeds) {
         // Units don't matter...
         // https://i.pinimg.com/originals/26/b2/50/26b250a738ea4abc7a5af4d42ad93af0.jpg
@@ -171,11 +169,8 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
 
         SwerveDriveKinematics.desaturateWheelSpeeds(states, 1);
 
-        for (var e : modules.entrySet()) {
-            var module = e.getValue().getFirst();
-            int i = e.getValue().getSecond();
-
-            module.applySetpoint(states[i].angle, Units.Volts.of(states[i].speedMetersPerSecond * 12));
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].applySetpoint(states[i].angle, Units.Volts.of(states[i].speedMetersPerSecond * 12));
         }
     }
 
@@ -211,5 +206,9 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
 
     public void addVisionMeasurement(Pose2d estimate, Time timestamp) {
         odometry.addVisionMeasurement(estimate, timestamp.in(Units.Seconds));
+    }
+
+    public void addVisionMeasurement(Pose2d estimate, double timestampSeconds) {
+        odometry.addVisionMeasurement(estimate, timestampSeconds);
     }
 }

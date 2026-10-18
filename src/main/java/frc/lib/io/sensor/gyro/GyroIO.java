@@ -1,4 +1,4 @@
-package frc.lib.io.gyro;
+package frc.lib.io.sensor.gyro;
 
 import java.util.Optional;
 

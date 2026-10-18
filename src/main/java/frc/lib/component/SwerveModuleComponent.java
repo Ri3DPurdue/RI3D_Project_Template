@@ -106,7 +106,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
      * @return true if the motor is enabled, false otherwise
      */
     public boolean isEnabled() {
-        return driveMotor.isEnabled() && steerMotor.isEnabled();
+        return driveMotor.isEnabled() || steerMotor.isEnabled();
     }
 
     public FlywheelMotorComponent<D> getDriveComponent() {
@@ -226,18 +226,18 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
     }
 
     /**
-     * Creates a command that enables the motor controller.
+     * Creates a command that enables the motor controllers.
      * 
-     * @return a command that enables the motor once and ends immediately
+     * @return a command that enables the motors once and ends immediately
      */
     public Command enableCommand() {
         return Commands.runOnce(() -> enable());
     }
 
     /**
-     * Creates a command that disables the motor controller.
+     * Creates a command that disables the motor controllers.
      * 
-     * @return a command that disables the motor once and ends immediately
+     * @return a command that disables the motors once and ends immediately
      */
     public Command disableCommand() {
         return Commands.runOnce(() -> disable());

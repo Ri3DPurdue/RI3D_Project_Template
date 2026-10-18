@@ -3,7 +3,7 @@ package frc.lib.component;
 import java.util.Optional;
 
 import edu.wpi.first.units.measure.Angle;
-import frc.lib.io.gyro.GyroIO;
+import frc.lib.io.sensor.gyro.GyroIO;
 
 public class GyroIOComponent implements Component {
     private final GyroIO gyro;
