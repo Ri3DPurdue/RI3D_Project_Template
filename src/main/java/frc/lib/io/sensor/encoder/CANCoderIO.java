@@ -4,8 +4,8 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 
 public class CANCoderIO extends EncoderIO {
     private CANcoder canCoder;
@@ -28,24 +28,26 @@ public class CANCoderIO extends EncoderIO {
     }
 
     @Override
-    public Rotation2d getPosition() {
-        return new Rotation2d(canCoder.getPosition().getValue().in(Units.Radians));
+    public Angle getPosition() {
+        return canCoder.getPosition().getValue();
     }
 
     @Override
-    public void setPosition(Rotation2d position) {
-        canCoder.setPosition(Units.Radians.of(position.getRadians()));
+    public void setPosition(Angle position) {
+        canCoder.setPosition(position);
     }
 
     @Override
-    public void setOffset(Rotation2d offset) {
-        magCfg.MagnetOffset = -(offset.getRotations() % 1.0);
+    public void setOffset(Angle offset) {
+        magCfg.MagnetOffset = -(offset.in(Units.Rotations) % 1.0);
         canCoder.getConfigurator().apply(magCfg);
     }
 
     @Override
     public void setInverted(boolean inverted) {
-        magCfg.SensorDirection = inverted ? SensorDirectionValue.Clockwise_Positive : SensorDirectionValue.CounterClockwise_Positive;
+        magCfg.SensorDirection = inverted ?
+            SensorDirectionValue.Clockwise_Positive :
+            SensorDirectionValue.CounterClockwise_Positive;
         canCoder.getConfigurator().apply(magCfg);
     }
 }
