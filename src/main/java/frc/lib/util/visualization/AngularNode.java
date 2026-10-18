@@ -26,16 +26,6 @@ public class AngularNode implements PositionNode {
     private final PositionNode parent;
 
     /**
-     * Subscribers to read the parent offsets from NT (x, y, z, roll, pitch, yaw)
-     */
-    private final DoubleSubscriber[] parentOffsets;
-
-    /**
-     * Subscribers to read the attachment offsets from NT (x, y, z, roll, pitch, yaw)
-     */
-    private final DoubleSubscriber[] attachmentOffsets;
-
-    /**
      * Subscriber to read the overriden servo value from NT
      */
     private final DoubleSubscriber servoReadingOverride;
@@ -46,73 +36,52 @@ public class AngularNode implements PositionNode {
     private final BooleanSubscriber overrideServo;
     
     /**
-     * The offset from the parent node's attachment point to this node's base
+     * The offset from the parent to this node when the servo reads 0
      */
     private Supplier<Transform3d> parentOffset;
 
     /**
-     * The offset from this node's base to this node's attachment point
+     * The offset caused by the servo reading
      */
     private Supplier<Transform3d> servoOffset;
 
     /**
      * Creates an AngularNode to visualize the given servo readings
      * @param parent The parent node for this mechanism. If this mechanism is fixed relative to the robot, use {@link PositionNode.BASE}
-     * @param parentAttachmentToBaseOffset The transform from the parent's attachment point to this node's base
-     * @param selfBaseToAttachmentOffset The transform from this node's base to this node's attachment point when the servo reads 0
+     * @param offsetFromParent The transform from the parent to this node when the servo reads 0
      * @param servoReading The angle of the servo controlled mechanism
      */
     public AngularNode(
         String nodeName,
         PositionNode parent,
-        Transform3d parentAttachmentToBaseOffset,
-        Transform3d selfBaseToAttachmentOffset,
+        Transform3d offsetFromParent,
         Supplier<Angle> servoReading
     ) {
         this.parent = parent;
-        parentOffsets = new DoubleSubscriber[6];
-        parentOffsets[0] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/X (m)", parentAttachmentToBaseOffset.getX());
-        parentOffsets[1] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/Y (m)", parentAttachmentToBaseOffset.getY());
-        parentOffsets[2] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/Z (m)", parentAttachmentToBaseOffset.getZ());
-        parentOffsets[4] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/Roll (rad)", parentAttachmentToBaseOffset.getRotation().getX());
-        parentOffsets[3] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/Pitch (rad)", parentAttachmentToBaseOffset.getRotation().getY());
-        parentOffsets[5] = Logger.tunable("TuneableNumbers/" + nodeName + "ParentOffset/Yaw (rad)", parentAttachmentToBaseOffset.getRotation().getZ());
-        attachmentOffsets = new DoubleSubscriber[6];
-        attachmentOffsets[0] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/X (m)", selfBaseToAttachmentOffset.getX());
-        attachmentOffsets[1] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/Y (m)", selfBaseToAttachmentOffset.getY());
-        attachmentOffsets[2] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/Z (m)", selfBaseToAttachmentOffset.getZ());
-        attachmentOffsets[4] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/Roll (rad)", selfBaseToAttachmentOffset.getRotation().getX());
-        attachmentOffsets[3] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/Pitch (rad)", selfBaseToAttachmentOffset.getRotation().getY());
-        attachmentOffsets[5] = Logger.tunable("TuneableNumbers/" + nodeName + "Attachment Offset/Yaw (rad)", selfBaseToAttachmentOffset.getRotation().getZ());
-        servoReadingOverride = Logger.tunable("TuneableNumbers/" + nodeName + "/Servo Reading Override (m)", 0.0);
-        overrideServo = Logger.tunable("TuneableNumbers/" + nodeName + "/Override Servo Reading?", false);
+        DoubleSubscriber[] parentOffsets = new DoubleSubscriber[6];
+        parentOffsets[0] = Logger.tunable(nodeName + "/Parent Offset/X (m)", offsetFromParent.getX());
+        parentOffsets[1] = Logger.tunable(nodeName + "/Parent Offset/Y (m)", offsetFromParent.getY());
+        parentOffsets[2] = Logger.tunable(nodeName + "/Parent Offset/Z (m)", offsetFromParent.getZ());
+        parentOffsets[3] = Logger.tunable(nodeName + "/Parent Offset/Roll (deg)", Math.toDegrees(offsetFromParent.getRotation().getX()));
+        parentOffsets[4] = Logger.tunable(nodeName + "/Parent Offset/Pitch (deg)", Math.toDegrees(offsetFromParent.getRotation().getY()));
+        parentOffsets[5] = Logger.tunable(nodeName + "/Parent Offset/Yaw (deg)", Math.toDegrees(offsetFromParent.getRotation().getZ()));
+        servoReadingOverride = Logger.tunable(nodeName + "/Servo Reading Override (deg)", 0.0);
+        overrideServo = Logger.tunable(nodeName + "/Override Servo Reading?", false);
         this.parentOffset = () -> new Transform3d(
             parentOffsets[0].get(),
             parentOffsets[1].get(),
             parentOffsets[2].get(),
             new Rotation3d(
-                parentOffsets[3].get(),
-                parentOffsets[4].get(),
-                parentOffsets[5].get()
+                Math.toRadians(parentOffsets[3].get()),
+                Math.toRadians(parentOffsets[4].get()),
+                Math.toRadians(parentOffsets[5].get())
             )
         );
         this.servoOffset = () -> {
-            Transform3d attachmentOffset = new Transform3d(
-                attachmentOffsets[0].get(),
-                attachmentOffsets[1].get(),
-                attachmentOffsets[2].get(),
-                new Rotation3d(
-                    attachmentOffsets[3].get(),
-                    attachmentOffsets[4].get(),
-                    attachmentOffsets[5].get()
-                )
-            );
             if (overrideServo.get()) {
-                return attachmentOffset
-                    .plus(new Transform3d(Translation3d.kZero, new Rotation3d(0, 0, servoReadingOverride.get())));
+                return new Transform3d(Translation3d.kZero, new Rotation3d(0, 0, Math.toRadians(servoReadingOverride.get())));
             }
-            return attachmentOffset
-                .plus(new Transform3d(Translation3d.kZero, new Rotation3d(0, 0, servoReading.get().in(Units.Radians))));
+            return new Transform3d(Translation3d.kZero, new Rotation3d(0, 0, servoReading.get().in(Units.Radians)));
         };
         
     }
@@ -120,30 +89,24 @@ public class AngularNode implements PositionNode {
     /**
      * Creates an AngularNode to visualize the given servo
      * @param parent The parent node for this mechanism. If this mechanism is fixed relative to the robot, use {@link PositionNode.BASE}
-     * @param parentAttachmentToBaseOffset The transform from the parent's attachment point to this node's base
-     * @param selfBaseToAttachmentOffset The transform from this node's base to this node's attachment point when the servo reads 0
+     * @param offsetFromParent The transform from the parent to this node when the servo reads 0
      * @param servo The servo controlling this mechanism
      */
     public AngularNode(
         String nodeName,
         PositionNode parent,
-        Transform3d parentAttachmentToBaseOffset,
-        Transform3d selfBaseToAttachmentOffset,
+        Transform3d offsetFromParent,
         ServoMotorComponent<?> servo
     ) {
         this(
-            nodeName, parent, parentAttachmentToBaseOffset, selfBaseToAttachmentOffset, 
+            nodeName, parent, offsetFromParent,
             () -> servo.getPosition()
         );
     }
 
     @Override
-    public Pose3d getAttachmentPose() {
-        return parent.getAttachmentPose().plus(parentOffset.get()).plus(servoOffset.get());
-    }
-    @Override
-    public Pose3d getVisualizationPose() {
-        return parent.getAttachmentPose().plus(parentOffset.get()).plus(
+    public Pose3d getPose() {
+        return parent.getPose().plus(parentOffset.get()).plus(
             new Transform3d(Translation3d.kZero, servoOffset.get().getRotation()));
     }
 }

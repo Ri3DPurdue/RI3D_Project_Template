@@ -9,18 +9,13 @@ import frc.lib.util.logging.Logger;
  */
 public interface PositionNode extends Loggable {
     /**
-     * @return The position to use as a base for all child nodes (end of arm, top of elevator, etc)
-     */
-    public Pose3d getAttachmentPose();
-    /**
      * @return The position to use to visualize the state of the mechanism in AScope (base of arm or elevator, pointing in correct direction)
      */
-    public Pose3d getVisualizationPose();
+    public Pose3d getPose();
 
     @Override
     public default void log(String path) {
-        Logger.log(path, "Vizualization Pose", getVisualizationPose());
-        Logger.log(path, "Attachment Pose", getAttachmentPose());
+        Logger.log(path, "Vizualization Pose", getPose());
     }
 
     /**
@@ -28,9 +23,6 @@ public interface PositionNode extends Loggable {
      */
     public static final PositionNode BASE = new PositionNode() {
         @Override
-        public Pose3d getAttachmentPose() {return Pose3d.kZero;}
-
-        @Override
-        public Pose3d getVisualizationPose() {return Pose3d.kZero;}
+        public Pose3d getPose() {return Pose3d.kZero;}
     };
 }
