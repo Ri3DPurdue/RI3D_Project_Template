@@ -1,5 +1,9 @@
 package frc.robot.subsystems.exampleShooter;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.component.ComponentSubsystem;
@@ -8,18 +12,28 @@ import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
+import frc.lib.util.visualization.AngularNode;
+import frc.lib.util.visualization.PositionNode;
 
 public class ExampleShooter extends ComponentSubsystem {
     private final ServoMotorComponent<TalonFXIO> hood;
     private final MotorComponent<TalonFXIO> feeder;
     private final FlywheelMotorComponent<TalonFXIO> flywheel;
     private final DigitalIOComponent feederBeamBreak;
+    private final AngularNode hoodNode;
 
     public ExampleShooter() {
         hood = registerComponent("Hood", HoodConstants.getComponent());
         feeder = registerComponent("Feeder", FeederConstants.getComponent());
         flywheel = registerComponent("Flywheel", FlywheelConstants.getComponent());
         feederBeamBreak = registerComponent("Beam Break", SensorConstants.getFeederBeamBreakComponent());
+        hoodNode = new AngularNode(
+            "Shooter Hood Node", 
+            PositionNode.BASE, 
+            new Transform3d(0.028, -0.28, 0.66, new Rotation3d(Degrees.of(90), Degrees.of(0), Degrees.of(90))), 
+            hood
+        );
+        hood.setPositionNode(hoodNode);
     }
 
     public Command prepShot() {

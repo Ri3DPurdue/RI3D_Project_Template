@@ -1,6 +1,7 @@
 package frc.robot.controlBoard;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Superstructure;
@@ -28,5 +29,15 @@ public class ControlBoard {
         driver.povUp().onTrue(s.prepClimb());
         driver.povDown().onTrue(s.exampleClimber.pull());
 
+        SmartDashboard.putData("Reset Pose", Commands.runOnce(() -> s.drive.resetPose(Pose2d.kZero)));
+        SmartDashboard.putData("Prep Score", s.exampleArm.prepScore());
+        SmartDashboard.putData("Unjam Intake", s.exampleIntake.unjam());
+        SmartDashboard.putData("Stow All", s.stowAll());
+        SmartDashboard.putData("Prep Shot", s.exampleShooter.prepShot());
+        SmartDashboard.putData("Intake and Feed", s.intakeToShooter());
+        SmartDashboard.putData("Fire When Ready", s.exampleShooter.fireWhenReady());
+        SmartDashboard.putData("Score", s.exampleArm.score());
+        SmartDashboard.putData("Prep Climb", s.prepClimb());
+        SmartDashboard.putData("Climb", s.exampleClimber.pull());
     }
 }
