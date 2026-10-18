@@ -1,11 +1,15 @@
 package frc.lib.component;
 
+import java.util.Optional;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.util.UnitsUtil;
+import frc.lib.util.logging.Logger;
+import frc.lib.util.visualization.PositionNode;
 
 /**
  * A motor component specialized for position-controlled servo mechanisms.
@@ -25,6 +29,7 @@ import frc.lib.util.UnitsUtil;
 public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     /** The position tolerance for determining if a target has been reached */
     protected Angle epsilonThreshold;
+    private Optional<PositionNode> worldPosition;
 
     /**
      * Constructs a new ServoMotorComponent with specified tolerance and starting position.
@@ -36,7 +41,12 @@ public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
     public ServoMotorComponent(M motorIO, Angle epsilon, Angle startAngle) {
         super(motorIO);
         epsilonThreshold = epsilon;
+        worldPosition = Optional.empty();
         resetPosition(startAngle);
+    }
+
+    public void setPositionNode(PositionNode node) {
+        worldPosition = Optional.of(node);
     }
 
     /**
@@ -78,6 +88,14 @@ public class ServoMotorComponent<M extends MotorIO> extends MotorComponent<M> {
      */
     public Command applyPositionSetpointCommandWithWait(PositionSetpoint setpoint) {
         return waitForPositionCommand(setpoint.get()).deadlineFor(applySetpointCommand(setpoint));
+    }
+
+    @Override
+    public void log(String path) {
+        super.log(path);
+        if (worldPosition.isPresent()) {
+            Logger.log(path, "World Position", worldPosition.get().getPose());
+        }
     }
     
 }

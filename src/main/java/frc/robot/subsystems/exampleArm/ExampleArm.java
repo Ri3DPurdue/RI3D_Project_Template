@@ -11,7 +11,6 @@ import frc.lib.component.HomingServoMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.rev.SparkBaseIO;
-import frc.lib.util.logging.Logger;
 import frc.lib.util.visualization.AngularNode;
 import frc.lib.util.visualization.LinearNode;
 import frc.lib.util.visualization.PositionNode;
@@ -40,6 +39,8 @@ public class ExampleArm extends ComponentSubsystem {
             Transform3d.kZero, 
             wrist
         );
+        elevator.setPositionNode(elevatorNode);
+        wrist.setPositionNode(wristNode);
     }
 
     public Command prepScore() {
@@ -65,12 +66,5 @@ public class ExampleArm extends ComponentSubsystem {
                 endEffector.applySetpointCommand(EndEffectorConstants.idleSetpoint)
             )
         );
-    }
-
-    @Override
-    public void log(String name) {
-        super.log(name);
-        Logger.log(name, "Wrist Node", wristNode);
-        Logger.log(name, "Elevator Node", elevatorNode);
     }
 }

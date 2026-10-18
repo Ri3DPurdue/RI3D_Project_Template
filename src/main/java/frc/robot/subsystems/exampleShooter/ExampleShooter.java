@@ -12,7 +12,6 @@ import frc.lib.component.FlywheelMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
-import frc.lib.util.logging.Logger;
 import frc.lib.util.visualization.AngularNode;
 import frc.lib.util.visualization.PositionNode;
 
@@ -34,6 +33,7 @@ public class ExampleShooter extends ComponentSubsystem {
             new Transform3d(0.028, -0.28, 0.66, new Rotation3d(Degrees.of(90), Degrees.of(0), Degrees.of(90))), 
             hood
         );
+        hood.setPositionNode(hoodNode);
     }
 
     public Command prepShot() {
@@ -79,11 +79,5 @@ public class ExampleShooter extends ComponentSubsystem {
                 feeder.applySetpointCommand(FeederConstants.idleSetpoint) // Then stop to not fire too early
             )
         );
-    }
-
-    @Override
-    public void log(String name) {
-        super.log(name);
-        Logger.log(name, "Hood Node", hoodNode);
     }
 }

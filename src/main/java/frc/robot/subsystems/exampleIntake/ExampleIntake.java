@@ -12,7 +12,6 @@ import frc.lib.component.HomingServoMotorComponent;
 import frc.lib.component.MotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
 import frc.lib.io.motor.rev.SparkBaseIO;
-import frc.lib.util.logging.Logger;
 import frc.lib.util.visualization.AngularNode;
 import frc.lib.util.visualization.PositionNode;
 
@@ -32,6 +31,7 @@ public class ExampleIntake extends ComponentSubsystem {
             new Transform3d(.27, 0, .33, new Rotation3d(Degrees.of(0), Degrees.of(-90), Degrees.of(90))), 
             pivot
         );
+        pivot.setPositionNode(pivotNode);
     }
 
     public Command intake() {
@@ -69,11 +69,5 @@ public class ExampleIntake extends ComponentSubsystem {
                 stow()
             )
         );
-    }
-
-    @Override
-    public void log(String name) {
-        super.log(name);
-        Logger.log(name, "Pivot Node", pivotNode);
     }
 }

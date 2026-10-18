@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.component.ComponentSubsystem;
 import frc.lib.component.ServoMotorComponent;
 import frc.lib.io.motor.ctre.TalonFXIO;
-import frc.lib.util.logging.Logger;
 import frc.lib.util.visualization.LinearNode;
 import frc.lib.util.visualization.PositionNode;
 
@@ -25,6 +24,7 @@ public class ExampleClimber extends ComponentSubsystem {
             climber,
             ClimberConstants.converter
         );
+        climber.setPositionNode(climberNode);
     }
 
     public Command extend() {
@@ -43,11 +43,5 @@ public class ExampleClimber extends ComponentSubsystem {
         return withRequirement(
             climber.applyPositionSetpointCommandWithWait(ClimberConstants.stowSetpoint)
         );
-    }
-
-    @Override
-    public void log(String name) {
-        super.log(name);
-        Logger.log(name, "Climber Node", climberNode);
     }
 }
