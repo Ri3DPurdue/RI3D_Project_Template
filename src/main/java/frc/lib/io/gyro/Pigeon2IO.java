@@ -3,6 +3,7 @@ package frc.lib.io.gyro;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 
 public class Pigeon2IO extends GyroIO {
     private Pigeon2 pigeon;
@@ -22,5 +23,15 @@ public class Pigeon2IO extends GyroIO {
 
     public void setYaw(Rotation2d yaw) {
         this.pigeon.setYaw(yaw.getDegrees());
+    }
+
+    @Override
+    public Rotation2d getPitch() {
+        return new Rotation2d(this.pigeon.getPitch().getValue().in(Units.Radians));
+    }
+
+    @Override
+    public Rotation2d getRoll() {
+        return new Rotation2d(this.pigeon.getRoll().getValue().in(Units.Radians));
     }
 }

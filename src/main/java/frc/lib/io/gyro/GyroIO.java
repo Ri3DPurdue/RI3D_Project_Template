@@ -15,27 +15,27 @@ public abstract class GyroIO extends Logger {
     public abstract void setYaw(Rotation2d yaw);
 
     /*
-     * Gets the pitch of the gyroscope
-     * Defaults to throwing an 
-     * UnsupportedOperationException
-     */
-    public void getPitch() {
-        throw new UnsupportedOperationException("getPitch is unsupported on the gyro");
-    }
-
-    /*
-     * Sets the pitch of the gyroscope
-     * Defaults to throwing an 
-     * UnsupportedOperationException
-     */
-    public void setPitch() {
-        throw new UnsupportedOperationException("setPitch is unsupported on the gyro");
-    }
-
-    /*
      * Sets the yaw of the gyroscope to zero
      */
     public void zero() {
         setYaw(new Rotation2d());
+    }
+
+    /*
+     * Gets the pitch of the gyroscope
+     * Defaults to throwing an 
+     * UnsupportedOperationException
+     */
+    public Rotation2d getPitch() {
+        throw new UnsupportedOperationException("getPitch is unsupported on the gyro");
+    }
+
+    /*
+     * Gets the roll of the gyroscope
+     * Defaults to throwing an 
+     * UnsupportedOperationException
+     */
+    public Rotation2d getRoll() {
+        throw new UnsupportedOperationException("getRoll is unsupported on the gyro");
     }
 }
