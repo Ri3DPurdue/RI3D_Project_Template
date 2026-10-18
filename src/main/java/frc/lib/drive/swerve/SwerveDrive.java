@@ -1,6 +1,5 @@
 package frc.lib.drive.swerve;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import edu.wpi.first.math.Pair;
@@ -31,6 +30,7 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
     private final GyroIOComponent gyroscope;
     private final LinearVelocity maxModuleSpeed;
 
+    @SuppressWarnings("unchecked")
     public SwerveDrive(
         Map<String, Pair<SwerveModuleComponent<D, S, E>, Translation2d>> modules,
         String gyroName,
