@@ -2,30 +2,21 @@ package frc.lib.component;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.io.motor.MotorIO;
-import frc.lib.io.motor.MotorOutputs;
-import frc.lib.io.motor.setpoints.BaseSetpoint;
+import frc.lib.io.motor.setpoints.PositionSetpoint;
+import frc.lib.io.motor.setpoints.VelocitySetpoint;
+import frc.lib.io.motor.setpoints.VoltageSetpoint;
+import frc.lib.util.logging.Logger;
 
 public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> implements Component {
-    public class SwerveModuleSetpoint {
-        public BaseSetpoint<?> steerSetpoint;
-        public BaseSetpoint<?> driveSetpoint;
-
-        public SwerveModuleSetpoint(BaseSetpoint<?> steerSetpoint, BaseSetpoint<?> driveSetpoint) {
-            this.steerSetpoint = steerSetpoint;
-            this.driveSetpoint = driveSetpoint;
-        }
-    }
-
-    private D driveMotor;
-    private S steerMotor;
+    private FlywheelMotorComponent<D> driveMotor;
+    private ServoMotorComponent<S> steerMotor;
 
     /**
      * Updates the motor I/O state.
@@ -49,6 +40,13 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
     public void log(String path) {
         driveMotor.log(path, "Drive Motor");
         steerMotor.log(path, "Steer Motor");
+
+        double steerActual = steerMotor.getPosition().in(Units.Degrees) % 360.0;
+        if (steerActual < 0) {
+            steerActual += 360.0;
+        }
+
+        Logger.log(path, "Actual Angle", Rotation2d.fromDegrees(steerActual));
     }
 
     /**
@@ -82,246 +80,104 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
         return driveMotor.isEnabled() && steerMotor.isEnabled();
     }
 
-    public D getDriveMotor() {
+    public FlywheelMotorComponent<D> getDriveComponent() {
         return driveMotor;
     }
 
-    public S getSteerMotor() {
+    public ServoMotorComponent<S> getSteerComponent() {
         return steerMotor;
     }
 
     /**
-     * Gets all steer motor outputs including sensor readings and status information.
+     * Applies a new control setpoint to the module
      * 
-     * @return an array of MotorOutputs containing telemetry for all motors
+     * @param angle the angle to rotate the wheel at
+     * @param vel the angular velocity to rotate the drive wheel at
      */
-    public MotorOutputs[] getSteerOutputs() {
-        return steerMotor.getOutputs();
-    }
-
-
-    /**
-     * Gets all drive motor outputs including sensor readings and status information.
-     * 
-     * @return an array of MotorOutputs containing telemetry for all motors
-     */
-    public MotorOutputs[] getDriveOutputs() {
-        return driveMotor.getOutputs();
+    public void applySetpoint(Rotation2d angle, AngularVelocity vel) {
+        steerMotor.applySetpoint(new PositionSetpoint(Units.Radians.of(angle.getRadians())));
+        driveMotor.applySetpoint(new VelocitySetpoint(vel));
     }
 
     /**
-     * Gets the current position of the steer motor.
+     * Applies a new control setpoint to the module
      * 
-     * @return the motor position as an Angle measurement
+     * @param angle the angle to rotate the wheel at
+     * @param voltage the voltage to run the drive motor at
      */
-    public Angle getSteerAngle() {
-        return getSteerOutputs()[0].position;
-    }
-
-    /**
-     * Gets the current position of the drive motor.
-     * 
-     * @return the motor position as an Angle measurement
-     */
-    public Angle getDrivePosition() {
-        return getDriveOutputs()[0].position;
-    }
-
-    /**
-     * Gets the current velocity of the drive motor.
-     * 
-     * @return the motor velocity as an AngularVelocity measurement
-     */
-    public AngularVelocity getDriveSpeed() {
-        return getDriveOutputs()[0].velocity;
-    }
-
-    /**
-     * Gets the stator voltage of the steer motor.
-     * 
-     * <p>
-     * The stator voltage is the voltage applied to the motor windings.
-     * 
-     * @return the stator voltage as a Voltage measurement
-     */
-    public Voltage getSteerStatorVoltage() {
-        return getSteerOutputs()[0].statorVoltage;
-    }
-
-    /**
-     * Gets the stator voltage of the drive motor.
-     * 
-     * <p>
-     * The stator voltage is the voltage applied to the motor windings.
-     * 
-     * @return the stator voltage as a Voltage measurement
-     */
-    public Voltage getDriveStatorVoltage() {
-        return getDriveOutputs()[0].statorVoltage;
-    }
-
-    /**
-     * Gets the supply voltage of the steer motor.
-     * 
-     * <p>
-     * The supply voltage is the voltage from the power source to the motor
-     * controller.
-     * 
-     * @return the supply voltage as a Voltage measurement
-     */
-    public Voltage getSteerSupplyVoltage() {
-        return getSteerOutputs()[0].supplyVoltage;
-    }
-
-    /**
-     * Gets the supply voltage of the drive motor.
-     * 
-     * <p>
-     * The supply voltage is the voltage from the power source to the motor
-     * controller.
-     * 
-     * @return the supply voltage as a Voltage measurement
-     */
-    public Voltage getDriveSupplyVoltage() {
-        return getDriveOutputs()[0].supplyVoltage;
-    }
-
-    /**
-     * Gets the stator current of the steer motor.
-     * 
-     * <p>
-     * The stator current is the current flowing through the motor windings.
-     * 
-     * @return the stator current as a Current measurement
-     */
-    public Current getSteerStatorCurrent() {
-        return getSteerOutputs()[0].statorCurrent;
-    }
-
-    /**
-     * Gets the stator current of the drive motor.
-     * 
-     * <p>
-     * The stator current is the current flowing through the motor windings.
-     * 
-     * @return the stator current as a Current measurement
-     */
-    public Current getDriveStatorCurrent() {
-        return getDriveOutputs()[0].statorCurrent;
-    }
-
-    /**
-     * Gets the supply current of the supply motor.
-     * 
-     * <p>
-     * The supply current is the current drawn from the power source.
-     * 
-     * @return the supply current as a Current measurement
-     */
-    public Current getSteerSupplyCurrent() {
-        return getSteerOutputs()[0].supplyCurrent;
-    }
-
-    /**
-     * Gets the supply current of the drive motor.
-     * 
-     * <p>
-     * The supply current is the current drawn from the power source.
-     * 
-     * @return the supply current as a Current measurement
-     */
-    public Current getDriveSupplyCurrent() {
-        return getDriveOutputs()[0].supplyCurrent;
-    }
-
-
-    /**
-     * Gets the temperature of the steer motor.
-     * 
-     * @return the motor temperature as a Temperature measurement
-     */
-    public Temperature getSteerTemperature() {
-        return getSteerOutputs()[0].temperature;
-    }
-
-    /**
-     * Gets the temperature of the drive motor.
-     * 
-     * @return the motor temperature as a Temperature measurement
-     */
-    public Temperature getDriveTemperature() {
-        return getDriveOutputs()[0].temperature;
-    }
-
-    /**
-     * Gets the current setpoint being applied to the motor.
-     * 
-     * @return the current setpoint, which may be position, velocity, voltage, etc.
-     */
-    public SwerveModuleSetpoint getSetpoint() {
-        return new SwerveModuleSetpoint(steerMotor.getCurrentSetpoint(), driveMotor.getCurrentSetpoint());
-    }
-
-    /**
-     * Resets the steer motor's position encoder to a specified value.
-     * 
-     * <p>
-     * This is typically used during homing or calibration procedures.
-     * 
-     * @param position the new position value to set
-     */
-    public void resetSteeringAngle(Angle position) {
-        steerMotor.resetPosition(position);
-    }
-
-    /**
-     * Resets the drive motor's position encoder to a specified value.
-     * 
-     * <p>
-     * This is typically used during homing or calibration procedures.
-     * 
-     * @param position the new position value to set
-     */
-    public void resetDrivePosition(Angle position) {
-        driveMotor.resetPosition(position);
-    }
-
-    /**
-     * Applies a new control setpoint to the motor.
-     * 
-     * <p>
-     * The setpoint determines the motor's control mode and target value.
-     * Supported setpoint types include position, velocity, voltage, and current.
-     * 
-     * @param setpoint the setpoint to apply
-     */
-    public void applySetpoint(SwerveModuleSetpoint setpoint) {
-        steerMotor.applySetpoint(setpoint.steerSetpoint);
-        driveMotor.applySetpoint(setpoint.driveSetpoint);
+    public void applySetpoint(Rotation2d angle, Voltage voltage) {
+        steerMotor.applySetpoint(new PositionSetpoint(Units.Radians.of(angle.getRadians())));
+        driveMotor.applySetpoint(new VoltageSetpoint(voltage));
     }
 
     /**
      * Creates a command that applies a setpoint once and ends immediately.
      * 
-     * @param setpoint the setpoint to apply
-     * @return a command that applies the setpoint once
+     * @param angle the angle to rotate the wheel at
+     * @param vel the angular velocity to rotate the drive wheel at
      */
-    public Command applySetpointCommand(SwerveModuleSetpoint setpoint) {
-        return Commands.runOnce(() -> applySetpoint(setpoint));
+    public Command applySetpointCommand(Rotation2d angle, AngularVelocity vel) {
+        return Commands.runOnce(() -> applySetpoint(angle, vel));
+    }
+
+    /**
+     * Creates a command that applies a setpoint once and ends immediately.
+     * 
+     * @param angle the angle to rotate the wheel at
+     * @param voltage the voltage to run the drive motor at
+     */
+    public Command applySetpointCommand(Rotation2d angle, Voltage voltage) {
+        return Commands.runOnce(() -> applySetpoint(angle, voltage));
+    }
+
+    public static class SwerveModuleVelocitySetpoint {
+        public Rotation2d angle;
+        public AngularVelocity vel;
+
+        public SwerveModuleVelocitySetpoint(Rotation2d angle, AngularVelocity vel) {
+            this.angle = angle;
+            this.vel = vel;
+        }
+    }
+    
+    public static class SwerveModuleVoltageSetpoint {
+        public Rotation2d angle;
+        public Voltage voltage;
+
+        public SwerveModuleVoltageSetpoint(Rotation2d angle, Voltage voltage) {
+            this.angle = angle;
+            this.voltage = voltage;
+        }
     }
 
     /**
      * Creates a command that continuously follows a dynamic setpoint.
      * 
-     * <p>
-     * The supplier is called repeatedly to get updated setpoint values,
-     * allowing for real-time setpoint adjustments during command execution.
-     * 
-     * @param supplier a supplier that provides the setpoint to follow
-     * @return a command that continuously applies setpoints from the supplier
+     * @apiNote Unfortunately, Java generics don't let you override a method
+     * with a generic of a different type (cannot have a(Supplier[A]) and
+     * void a(Supplier[B]) (using square brackets because cannot use angle
+     * brackets, apparently))
+     * @param angle the angle to rotate the wheel at
+     * @param vel the angular velocity to rotate the drive wheel at
      */
-    public Command followSetpointCommand(Supplier<SwerveModuleSetpoint> supplier) {
-        return Commands.run(() -> applySetpoint(supplier.get()));
+    public Command followVelocitySetpointCommand(Supplier<SwerveModuleVelocitySetpoint> supplier) {
+        return Commands.run(() -> {
+            SwerveModuleVelocitySetpoint s = supplier.get();
+            applySetpoint(s.angle, s.vel);
+        });
+    }
+
+    /**
+     * Creates a command that continuously follows a dynamic setpoint.
+     * 
+     * @param angle the angle to rotate the wheel at
+     * @param vel the angular velocity to rotate the drive wheel at
+     */
+    public Command followVoltageSetpointCommand(Supplier<SwerveModuleVoltageSetpoint> supplier) {
+        return Commands.run(() -> {
+            SwerveModuleVoltageSetpoint s = supplier.get();
+            applySetpoint(s.angle, s.voltage);
+        });
     }
 
     /**
