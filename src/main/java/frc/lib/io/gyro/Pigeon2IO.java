@@ -1,5 +1,7 @@
 package frc.lib.io.gyro;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,12 +28,12 @@ public class Pigeon2IO extends GyroIO {
     }
 
     @Override
-    public Rotation2d getPitch() {
-        return new Rotation2d(this.pigeon.getPitch().getValue().in(Units.Radians));
+    public Optional<Rotation2d> getPitch() {
+        return Optional.of(new Rotation2d(this.pigeon.getPitch().getValue().in(Units.Radians)));
     }
 
     @Override
-    public Rotation2d getRoll() {
-        return new Rotation2d(this.pigeon.getRoll().getValue().in(Units.Radians));
+    public Optional<Rotation2d> getRoll() {
+        return Optional.of(new Rotation2d(this.pigeon.getRoll().getValue().in(Units.Radians)));
     }
 }
