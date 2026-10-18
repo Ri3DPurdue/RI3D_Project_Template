@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,11 +13,36 @@ import frc.lib.io.motor.MotorIO;
 import frc.lib.io.motor.setpoints.PositionSetpoint;
 import frc.lib.io.motor.setpoints.VelocitySetpoint;
 import frc.lib.io.motor.setpoints.VoltageSetpoint;
+import frc.lib.io.sensor.encoder.EncoderIO;
 import frc.lib.util.logging.Logger;
 
-public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> implements Component {
-    private FlywheelMotorComponent<D> driveMotor;
-    private ServoMotorComponent<S> steerMotor;
+public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E extends EncoderIO> implements Component {
+    private final FlywheelMotorComponent<D> driveMotor;
+    private final ServoMotorComponent<S> steerMotor;
+    private final E encoder;
+
+    public SwerveModuleComponent(D driveMotor, AngularVelocity driveEpsilon, S steerMotor, Angle steerEpsilon, E driveEncoder) {
+        this.driveMotor = new FlywheelMotorComponent<>(
+            driveMotor,
+            driveEpsilon
+        );
+        this.steerMotor = new ServoMotorComponent<>(
+            steerMotor,
+            steerEpsilon,
+            Units.Radians.of(driveEncoder.getPosition().getRadians())
+        );
+        this.encoder = driveEncoder;
+    }
+
+    public SwerveModuleComponent(D driveMotor, S steerMotor, E driveEncoder) {
+        this(
+            driveMotor,
+            Units.RPM.of(10),
+            steerMotor,
+            Units.Degrees.of(5),
+            driveEncoder
+        );
+    }
 
     /**
      * Updates the motor I/O state.
@@ -39,6 +65,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
     @Override
     public void log(String path) {
         driveMotor.log(path, "Drive Motor");
+        encoder.log(path, "Drive Encoder");
         steerMotor.log(path, "Steer Motor");
 
         double steerActual = steerMotor.getPosition().in(Units.Degrees) % 360.0;
@@ -86,6 +113,16 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO> impleme
 
     public ServoMotorComponent<S> getSteerComponent() {
         return steerMotor;
+    }
+
+    public E getEncoder() {
+        return encoder;
+    }
+
+    public void resetToAbsolute() {
+        this.steerMotor.resetPosition(
+            Units.Radians.of(this.encoder.getPosition().getRadians())
+        );
     }
 
     /**
