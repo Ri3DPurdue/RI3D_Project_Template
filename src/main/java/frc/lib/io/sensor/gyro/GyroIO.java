@@ -41,6 +41,8 @@ public abstract class GyroIO implements Loggable {
         return Optional.empty();
     }
 
+    public void periodic() {}
+
     @Override
     public void log(String path) {
         Logger.log(path, "Yaw", getYaw());

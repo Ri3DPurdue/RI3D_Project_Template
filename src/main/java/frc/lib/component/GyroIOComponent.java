@@ -13,7 +13,9 @@ public class GyroIOComponent implements Component {
     }
 
     @Override
-    public void periodic() { }
+    public void periodic() { 
+        gyro.periodic();    
+    }
 
     @Override
     public void log(String path) {

@@ -8,7 +8,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
 public class Pigeon2IO extends GyroIO {
-    private Pigeon2 pigeon;
+    protected Pigeon2 pigeon;
 
     public Pigeon2IO(int canID) {
         this.pigeon = new Pigeon2(canID);
