@@ -8,7 +8,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
 public class CANCoderIO extends EncoderIO {
-    private CANcoder canCoder;
+    protected CANcoder canCoder;
     private MagnetSensorConfigs magCfg;
 
     public CANCoderIO(int canID, String bus) {

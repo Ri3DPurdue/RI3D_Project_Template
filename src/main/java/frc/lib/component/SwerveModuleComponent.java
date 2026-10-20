@@ -57,6 +57,7 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
     public void periodic() {
         driveMotor.periodic();
         steerMotor.periodic();
+        encoder.periodic();
     }
 
     /**

@@ -14,6 +14,8 @@ public abstract class EncoderIO implements Loggable {
     public abstract void setOffset(Angle offset);
     public abstract void setInverted(boolean inverted);
 
+    public void periodic() {}
+
     @Override
     public void log(String path) {
         Logger.log(path, "Position", getPosition());
