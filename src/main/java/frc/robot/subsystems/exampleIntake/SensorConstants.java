@@ -1,9 +1,9 @@
 package frc.robot.subsystems.exampleIntake;
 
 import frc.lib.component.DigitalIOComponent;
-import frc.lib.io.sensor.DigitalBooleanSupplierIO;
-import frc.lib.io.sensor.DigitalIO;
-import frc.lib.io.sensor.DigitalInIO;
+import frc.lib.io.sensor.digital.DigitalBooleanSupplierIO;
+import frc.lib.io.sensor.digital.DigitalIO;
+import frc.lib.io.sensor.digital.DigitalInIO;
 import frc.robot.IDs;
 import frc.robot.Robot;
 import frc.robot.controlBoard.ControlBoardConstants;

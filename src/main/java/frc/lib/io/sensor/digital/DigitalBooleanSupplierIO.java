@@ -1,4 +1,4 @@
-package frc.lib.io.sensor;
+package frc.lib.io.sensor.digital;
 
 import java.util.function.BooleanSupplier;
 

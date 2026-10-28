@@ -1,4 +1,4 @@
-package frc.lib.io.sensor;
+package frc.lib.io.sensor.digital;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
