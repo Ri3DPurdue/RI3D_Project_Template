@@ -42,20 +42,20 @@ public class SwerveDrive<D extends MotorIO, S extends MotorIO, E extends Encoder
         SwerveModulePosition[] positions = new SwerveModulePosition[modules.size()];
 
         this.modules = new SwerveModuleComponent[modules.size()];
-        int idx = 0;
+        int i = 0;
 
-        for (var e : modules.entrySet()) {
-            this.modules[idx] = e.getValue().getFirst();
-            moduleTranslations[idx] = e.getValue().getSecond();
+        for (var entry : modules.entrySet()) {
+            this.modules[i] = entry.getValue().getFirst();
+            moduleTranslations[i] = entry.getValue().getSecond();
 
-            positions[idx] = new SwerveModulePosition(
+            positions[i] = new SwerveModulePosition(
                 Units.Meter.of(0),
-                Rotation2d.fromRadians(e.getValue().getFirst().getSteerComponent().getPosition().in(Units.Radians))
+                Rotation2d.fromRadians(entry.getValue().getFirst().getSteerComponent().getPosition().in(Units.Radians))
             );
 
-            this.registerComponent(e.getKey(), e.getValue().getFirst());
+            this.registerComponent(entry.getKey(), entry.getValue().getFirst());
 
-            idx++;
+            i++;
         }
 
         this.gyroscope = registerComponent(gyroName, new GyroIOComponent(gyro)); 

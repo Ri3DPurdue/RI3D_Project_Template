@@ -21,10 +21,11 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
     private final E encoder;
     private final DistanceAngleConverter conv;
 
-    public SwerveModuleComponent(D driveMotor, AngularVelocity driveEpsilon, S steerMotor, Angle steerEpsilon, E driveEncoder, Distance wheelRadius) {
+    public SwerveModuleComponent(D driveMotor, LinearVelocity driveEpsilon, S steerMotor, Angle steerEpsilon, E driveEncoder, Distance wheelRadius) {
+        this.conv = new DistanceAngleConverter(wheelRadius);
         this.driveMotor = new FlywheelMotorComponent<>(
             driveMotor,
-            driveEpsilon
+            conv.toAngle(driveEpsilon)
         );
         this.steerMotor = new ServoMotorComponent<>(
             steerMotor,
@@ -32,13 +33,12 @@ public class SwerveModuleComponent<D extends MotorIO, S extends MotorIO, E exten
             driveEncoder.getPosition()
         );
         this.encoder = driveEncoder;
-        this.conv = new DistanceAngleConverter(wheelRadius);
     }
 
     public SwerveModuleComponent(D driveMotor, S steerMotor, E driveEncoder, Distance wheelRadius) {
         this(
             driveMotor,
-            Units.RPM.of(10),
+            Units.FeetPerSecond.of(0.1),
             steerMotor,
             Units.Degrees.of(5),
             driveEncoder,
